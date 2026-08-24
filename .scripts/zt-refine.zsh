@@ -275,6 +275,14 @@ print_plan() {
     print -r -- "  add link: $new_fname <-> $file"
   done
 
+  if [[ "$archive_source" == "Да" ]]; then
+    print -r -- "  archive: $source_topic"
+
+    for file in "${unselected_files[@]}"; do
+      print -r -- "  archive with source: $file"
+    done
+  fi
+
   print -r -- "  provenance: $source_topic <-> $new_fname"
 }
 
@@ -339,9 +347,13 @@ done
 
 typeset -a candidate_files
 typeset -a selected_files
+typeset -a unselected_files
+typeset -A selected_file_set
 
 candidate_files=()
 selected_files=()
+unselected_files=()
+selected_file_set=()
 
 for file in *.adoc; do
   [[ "$file" == "$source_topic" ]] && continue
@@ -368,16 +380,20 @@ done <<< "$selected"
 
 (( ${#selected_files} > 0 )) || exit 0
 
+for file in "${selected_files[@]}"; do
+  selected_file_set[$file]=1
+done
+
+for file in "${candidate_files[@]}"; do
+  [[ -n "${selected_file_set[$file]-}" ]] && continue
+  unselected_files+=("$file")
+done
+
 archive_source="$(select_archive_source)"
 [[ -n "$archive_source" ]] || exit 0
 
 if [[ "$archive_source" != "Да" && "$archive_source" != "Нет" ]]; then
   print -ru2 -- "ERROR unknown archive choice: $archive_source"
-  exit 1
-fi
-
-if [[ "$archive_source" == "Да" && ${#selected_files} -ne ${#candidate_files} ]]; then
-  print -ru2 -- "ERROR source Topic can be archived only when all active documents are selected"
   exit 1
 fi
 
@@ -387,6 +403,15 @@ for file in "$source_topic" "${selected_files[@]}"; do
     exit 1
   fi
 done
+
+if [[ "$archive_source" == "Да" ]]; then
+  for file in "${unselected_files[@]}"; do
+    if ! validate_header "$file"; then
+      print -ru2 -- "ERROR cannot determine AsciiDoc header boundary: $file"
+      exit 1
+    fi
+  done
+fi
 
 new_fname="$(zk_new_adoc_filename)" || exit 1
 new_title="${new_key} - ключевая тема"
@@ -408,6 +433,12 @@ for file in "${selected_files[@]}"; do
   cp "$file" "$stage_dir/$file" || exit 1
 done
 
+if [[ "$archive_source" == "Да" ]]; then
+  for file in "${unselected_files[@]}"; do
+    cp "$file" "$stage_dir/$file" || exit 1
+  done
+fi
+
 create_topic "$stage_dir/$new_fname" "$new_fname" "$new_key" || exit 1
 
 for file in "${selected_files[@]}"; do
@@ -427,6 +458,10 @@ zk_append_related_link "$stage_dir/$new_fname" "== Связанные Topic" "В
 
 if [[ "$archive_source" == "Да" ]]; then
   mark_deprecated "$stage_dir/$source_topic" || exit 1
+
+  for file in "${unselected_files[@]}"; do
+    mark_deprecated "$stage_dir/$file" || exit 1
+  done
 fi
 
 today_file="$(zk_today_file)"
@@ -448,8 +483,21 @@ for file in "$source_topic" "${selected_files[@]}" "$new_fname"; do
   }
 done
 
+if [[ "$archive_source" == "Да" ]]; then
+  for file in "${unselected_files[@]}"; do
+    validate_header "$stage_dir/$file" || {
+      print -ru2 -- "ERROR staged document has invalid header: $file"
+      exit 1
+    }
+  done
+fi
+
 typeset -a existing_apply_files
 existing_apply_files=("$source_topic" "${selected_files[@]}")
+
+if [[ "$archive_source" == "Да" ]]; then
+  existing_apply_files+=("${unselected_files[@]}")
+fi
 
 for file in "${existing_apply_files[@]}"; do
   cp "$file" "$backup_dir/${file:t}" || exit 1
@@ -464,7 +512,8 @@ apply_failed=0
 
 trap 'rollback_apply; print -ru2 -- "ERROR Refine interrupted; changes rolled back"; exit 1' INT TERM HUP
 
-for file in "$source_topic" "${selected_files[@]}" "$new_fname"; do
+for file in "$source_topic" "${selected_files[@]}" "${unselected_files[@]}" "$new_fname"; do
+  [[ -f "$stage_dir/$file" ]] || continue
   cp "$stage_dir/$file" "$file" || apply_failed=1
 done
 
@@ -486,6 +535,9 @@ print -r -- "Source Topic: $source_topic"
 print -r -- "New Topic: $new_fname"
 print -r -- "Rekeyed Documents: ${#selected_files}"
 print -r -- "Archived Source Topic: $archive_source"
+if [[ "$archive_source" == "Да" ]]; then
+  print -r -- "Archived Unselected Documents: ${#unselected_files}"
+fi
 
 vim "$new_fname"
 
