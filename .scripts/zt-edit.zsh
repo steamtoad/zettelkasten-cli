@@ -10,12 +10,12 @@ emulate -L zsh
 setopt null_glob
 
 script_dir="${0:A:h}"
+source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/asciidoc.zsh"
 
-zk="${ZK_HOME:-$HOME/zettelkasten}"
 sep=$'\x1f'
 
-cd "$zk" || exit 1
+zk_cd_notes
 
 selected="$(
   for file in *.adoc; do

@@ -48,8 +48,8 @@ extract_memo_chain_link() {
   ' "$file"
 }
 
-zk_cd
 zk_ensure_dirs
+zk_cd_notes
 
 selected="$(select_memo_file)"
 [[ -n "$selected" ]] || exit 0
@@ -72,12 +72,12 @@ title="Memo - $key от $(date +"%d-%m-%Y")"
 new_description="$title"
 
 new_link="$(zk_link "$new_fname" "$new_description")"
-previous_link="link:${source_file}[Предыдущее memo]"
+previous_link="$(zk_link "$source_file" "Предыдущее memo")"
 
 if [[ -n "$existing_next" ]]; then
-  forward_link="link:${new_fname}[Ветка: ${new_description}]"
+  forward_link="$(zk_link "$new_fname" "Ветка: ${new_description}")"
 else
-  forward_link="link:${new_fname}[Следующее memo]"
+  forward_link="$(zk_link "$new_fname" "Следующее memo")"
 fi
 
 zk_today_entry "$new_fname" "$title" >> "$(zk_today_file)"

@@ -42,12 +42,12 @@ select_keytopic_file() {
       --prompt='topic> '
 }
 
+zk_ensure_dirs
+zk_cd_notes
+
 read -r "?Введите название для нового Memo: " key
 
 [[ -z "$key" ]] && exit 1
-
-zk_cd
-zk_ensure_dirs
 
 topic_file=""
 topic_key_line=""

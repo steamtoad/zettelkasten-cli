@@ -320,7 +320,8 @@ confirm_reduce() {
   [[ "$answer" == [yY] ]]
 }
 
-zk_cd
+zk_ensure_notes_dir
+zk_cd_notes
 
 selected="$(select_topic_file)"
 [[ -n "$selected" ]] || exit 0

@@ -98,21 +98,32 @@ Reduce создаёт новое поколение Topic, сохраняя ис
 
 ---
 
-## Репозиторные навыки
+## Управляемые навыки
 
 Проект документирует не только пользовательские знания, но и собственное устройство.
 
-Для этого используется трёхуровневая модель:
+Для этого используется трёхуровневая модель authority и связанная с ней
+история пояснительных редакций:
 
 ```text
-AGENTS.adoc
+AGENTS.md
         ↓
-.agent-skills
+managed zettelkasten-* skills
         ↓
-подробные Note
+scripts + requirements
+        ↘
+        подробные Note revisions
 ```
 
-Каждый исполняемый скрипт имеет собственный репозиторный навык.
+Каждый top-level `zt-*.zsh` имеет собственный управляемый OpenClaw-навык.
+Исторический каталог `.agent-skills` сохранён только как read-only архив и не
+участвует в runtime routing.
+
+Managed skills находятся вне Git-репозитория. Совместимая с текущим checkout
+редакция фиксируется в `.scripts/docs/managed-skills.adoc` и проверяется через
+`zt-skills-review.zsh`. Интерактивные creation scripts являются механическим
+reference для agent workflow, но до появления `zcreate --no-edit` не считаются
+unattended deterministic primitives.
 
 При изменении поведения создаётся новая редакция подробной Note, а предыдущая переводится в состояние `:deprecated:`.
 
@@ -189,23 +200,33 @@ This allows the knowledge base to evolve without losing its past.
 
 ---
 
-## Repository Skills
+## Managed Skills
 
 The repository documents not only user knowledge but also its own behaviour.
 
-It follows a three-level model:
+It follows a three-level authority model with an adjacent explanatory revision
+history:
 
 ```text
-AGENTS.adoc
+AGENTS.md
         ↓
-.agent-skills
+managed zettelkasten-* skills
         ↓
-detailed Notes
+scripts + requirements
+        ↘
+        detailed Note revisions
 ```
 
-Every executable script has its own repository skill.
+Every top-level `zt-*.zsh` script has one managed OpenClaw skill. The historical
+`.agent-skills` directory is retained only as a read-only archive and is not
+part of runtime routing.
+
+Managed skills live outside the Git repository. The revision compatible with
+the current checkout is recorded in `.scripts/docs/managed-skills.adoc` and
+verified by `zt-skills-review.zsh`. Interactive creation scripts are mechanical
+references for agent workflows, but are not unattended deterministic primitives
+until `zcreate --no-edit` exists.
 
 When behaviour changes, a new detailed Note revision is created and the previous one becomes deprecated.
 
 The project therefore evolves using the same mechanisms that it uses for knowledge management.
-

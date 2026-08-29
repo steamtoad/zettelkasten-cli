@@ -21,7 +21,7 @@ select_documents() {
   local type
   local description
 
-  for file in *.adoc; do
+  for file in "$(zk_notes_dir)"/*.adoc; do
     [[ -f "$file" ]] || continue
     zk_is_deprecated "$file" && continue
 
@@ -33,7 +33,7 @@ select_documents() {
     esac
 
     description="$(zk_link_description "$file")"
-    print -r -- "${type} - ${file} - ${description}${sep}${file}${sep}${description}"
+    print -r -- "${type} - ${file:t} - ${description}${sep}${file:t}${sep}${description}"
   done |
     fzf \
       --multi \
@@ -60,8 +60,8 @@ while IFS= read -r selected_document; do
 
   doc_file="${${selected_document#*$sep}%%$sep*}"
   description="${selected_document##*$sep}"
-  relative_target="../${doc_file}"
-  link="$(zk_link "$relative_target" "$description")"
+  relative_target="../notes/${doc_file}"
+  link="$(zk_workspace_link "$doc_file" "$description")"
 
   if zk_has_link_to "$workspace_file" "$relative_target"; then
     print -r -- "Already in workspace: $link"

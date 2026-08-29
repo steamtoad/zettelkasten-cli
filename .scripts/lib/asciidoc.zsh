@@ -11,11 +11,25 @@ zk_link() {
   print -r -- "link:${fname}[$title]"
 }
 
+zk_root_note_link() {
+  local fname="$1"
+  local title="$2"
+
+  zk_link "notes/${fname}" "$title"
+}
+
 zk_today_link() {
   local fname="$1"
   local title="$2"
 
-  print -r -- "link:../${fname}[$title]"
+  zk_link "../notes/${fname}" "$title"
+}
+
+zk_workspace_link() {
+  local fname="$1"
+  local title="$2"
+
+  zk_link "../notes/${fname}" "$title"
 }
 
 zk_today_entry() {

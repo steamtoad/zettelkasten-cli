@@ -1,6 +1,6 @@
 = Feature List zettelkasten-cli
-:revdate: 2026-06-13
-:revnumber: 6
+:revdate: 2026-08-26
+:revnumber: 9
 :toc:
 
 == Назначение
@@ -53,6 +53,17 @@
 * `META-012` — исключение тега непосредственного исходного типа: `topic` при Topic→Memo и `memo` при Memo→Note.
 * `META-013` — получение описания ссылки через последовательный fallback: `:description:`, заголовок документа, имя файла.
 
+== Физическое пространство документов
+
+* `PATH-001` — постоянные UUID-документы типов Note, Memo, Todo, Diary и Topic создаются и обрабатываются в `notes/`.
+* `PATH-002` — документы внутри `notes/` сохраняют взаимные ссылки вида `link:UUID.adoc[...]`.
+* `PATH-003` — `all-todays` и Workspace используют ссылки `../notes/UUID.adoc`.
+* `PATH-004` — root-level поисковое представление `zt-find` использует ссылки `notes/UUID.adoc`.
+* `PATH-005` — `:docfilename:` остаётся basename `UUID.adoc`, а `:doclink:` — `link:UUID.adoc[...]`.
+* `PATH-006` — `.last-diary` хранит basename `UUID.adoc`, который разрешается внутри `notes/`.
+* `PATH-007` — repository-level документы, Inbox, Workspace и дневные индексы не являются документами ядра и не перемещаются в `notes/`.
+* `PATH-008` — `zt-migrate-notes-dir.zsh` поддерживает dry-run и явный `--apply`, переносит только корневые документы известных постоянных типов и переписывает ссылки `all-todays`/Workspace.
+
 == Дневник
 
 * `DIARY-001` — хранение имени последней дневниковой записи в `.last-diary`.
@@ -61,13 +72,26 @@
 * `DIARY-004` — формирование двунаправленной временной цепочки дневников.
 * `DIARY-005` — регистрация новой дневниковой записи в `all-todays`.
 
+== Inbox Layer
+
+* `INBOX-001` — захват сырого AsciiDoc-элемента через `zt-inbox.zsh` в `inbox/raw/`.
+* `INBOX-002` — обязательный однострочный непустой заголовок capture-элемента.
+* `INBOX-003` — metadata `:captured-at:` и `:source: manual` располагаются в заголовке AsciiDoc и распознаются как document attributes.
+* `INBOX-004` — имя raw-файла строится по локальному timestamp с числовым suffix при коллизии; exclusive create через `zsh/system` не перезаписывает существующий файл.
+* `INBOX-005` — созданный raw-файл выводится в stdout и открывается через `$EDITOR`; строка редактора может содержать аргументы.
+* `INBOX-006` — `zt-processed.zsh` принимает basename или полный путь непосредственного файла `inbox/raw/`.
+* `INBOX-007` — обработанный файл атомарно резервирует то же имя в `inbox/processed/` и не перезаписывает существующий файл.
+* `INBOX-008` — `zt-processed.zsh` отклоняет каталоги, вложенные пути, symlink-выходы и любые файлы вне `inbox/raw/`.
+* `INBOX-009` — `ZK_HOME` задаёт корень хранилища; `ZETTELKASTEN_ROOT` сохранён как совместимый fallback.
+* `INBOX-010` — raw capture и перевод в processed являются разными явными операциями; автоматического импорта в постоянные Note/Memo нет.
+
 == Workspace
 
 * `WORKSPACE-001` — создание Workspace в каталоге `workspaces/` через `zt-workspace-create.zsh`.
 * `WORKSPACE-002` — безопасное смысловое имя файла Workspace с отклонением пустых, скрытых и содержащих разделители пути названий.
 * `WORKSPACE-003` — защита существующего Workspace от перезаписи при создании.
 * `WORKSPACE-004` — множественный выбор и добавление активных Note, Memo, Todo, Diary и Topic через `zt-workspace-add.zsh`.
-* `WORKSPACE-005` — идемпотентные относительные ссылки Workspace вида `link:../UUID.adoc[...]`.
+* `WORKSPACE-005` — идемпотентные относительные ссылки Workspace вида `link:../notes/UUID.adoc[...]`.
 * `WORKSPACE-006` — вывод выбранного Workspace в stdout через `zt-workspace-open.zsh`.
 * `WORKSPACE-007` — множественный выбор через `fzf --multi` и атомарное удаление выбранных ссылок на активные, deprecated или отсутствующие документы через `zt-workspace-remove.zsh`.
 * `WORKSPACE-008` — игнорирование ссылок внутри поддерживаемых блоков кода при удалении.
@@ -161,7 +185,7 @@
 == Проверка целостности
 
 * `CHECK-001` — проверка существования основных элементов структуры репозитория.
-* `CHECK-002` — проверка обязательных метаданных постоянных документов в корне Zettelkasten.
+* `CHECK-002` — проверка обязательных метаданных постоянных документов в `notes/`.
 * `CHECK-003` — проверка наличия заголовков.
 * `CHECK-004` — проверка известных значений `:type:`.
 * `CHECK-005` — рекомендация добавить значение `:type:` в `:keywords:`.
@@ -181,8 +205,9 @@
 
 * `MAINT-001` — исправление отсутствующего завершающего LF в CLI-скриптах через `zt-scripts-patch.zsh`.
 * `MAINT-002` — вывод всех CLI-скриптов и библиотек для ревью через `zt-scripts-review.zsh`.
-* `MAINT-003` — вывод всех репозиторных навыков `zt-*.adoc` для ревью через `zt-skills-review.zsh`; индекс `README.adoc` не включается.
-* `MAINT-004` — `zt-skills-review.zsh` использует `ZK_HOME`, выводит read-only секции с разделителями и именами файлов и завершается с ошибкой, если `.agent-skills` отсутствует.
+* `MAINT-003` — проверка и вывод всех управляемых OpenClaw-навыков `zettelkasten-*/SKILL.md` через integration-команду `zt-skills-review.zsh`.
+* `MAINT-004` — `zt-skills-review.zsh` использует `ZK_SKILLS_HOME` или `$HOME/.openclaw/workspace/skills`, сверяет runtime skills с `.scripts/docs/managed-skills.adoc`, SHA-256, script mapping и обязательными Detailed Note, затем выводит read-only секции; отсутствие или несовпадение managed skills является ошибкой.
+* `MAINT-005` — Git-версионируемый manifest `managed-skills.adoc` фиксирует совместимую с checkout логическую редакцию внешнего OpenClaw skill state без копирования живых `SKILL.md` в репозиторий.
 * `CORE-001` — общие библиотеки для путей, UUID и AsciiDoc.
 * `CORE-002` — поддержка `ZK_HOME` большинством скриптов.
 * `CORE-003` — локализованные русские приглашения, сообщения и заголовки.
@@ -218,6 +243,9 @@ zt-workspace-create.zsh
 zt-workspace-add.zsh
 zt-workspace-open.zsh
 zt-workspace-remove.zsh
+zt-inbox.zsh
+zt-processed.zsh
+zt-migrate-notes-dir.zsh
 
 zt-find.zsh
 zt-read.zsh
@@ -270,3 +298,6 @@ ztscripts
 * Скрипты доступны как файлы `.scripts/zt-*.zsh`; команды без расширения не устанавливаются в `PATH`.
 * Корневой каталог назначения публикации должен существовать до запуска `zt-develop-publish-version.zsh`.
 * Публикация пока не запускает `zt-check`, не проверяет зависимости и состояние Git репозитория назначения.
+* `zt-processed.zsh` использует hard link для атомарной защиты назначения, поэтому `inbox/raw` и `inbox/processed` должны находиться на одной файловой системе.
+* Inbox Layer пока не преобразует raw-элементы в постоянные UUID-документы и не регистрирует их в `all-todays`.
+* `zt-migrate-notes-dir.zsh --apply` требует чистый Git worktree; dry-run доступен без изменения данных.

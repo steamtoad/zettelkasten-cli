@@ -1,6 +1,6 @@
 = Требования и инварианты zettelkasten-cli
-:revdate: 2026-06-13
-:revnumber: 7
+:revdate: 2026-08-26
+:revnumber: 9
 :toc:
 
 == Назначение документа
@@ -45,6 +45,20 @@
 * `DOC-006 [IMPLEMENTED]` — `:key-topic:` является действующим ключом тематической группировки и связи документов; он также сохраняет обратную совместимость.
 * `DOC-007 [INVARIANT]` — `:type:` является каноническим источником типа документа. Вывод типа из `:keywords:` допустим только как временный механизм совместимости и миграции.
 * `DOC-008 [PROCESS]` — значение `:type:` должно присутствовать в `:keywords:`; `zt-check` может сообщать об отсутствии как о рекомендации до введения строгой проверки.
+
+== Физическое пространство документов
+
+* `PATH-001 [INVARIANT]` — все постоянные UUID-документы типов `note`, `memo`, `todo`, `diary` и `topic` находятся непосредственно в `notes/`.
+* `PATH-002 [INVARIANT]` — постоянные документы внутри `notes/` ссылаются друг на друга через `link:UUID.adoc[...]`.
+* `PATH-003 [INVARIANT]` — `all-todays` ссылается на постоянные документы через `link:../notes/UUID.adoc[...]`.
+* `PATH-004 [INVARIANT]` — Workspace ссылается на постоянные документы через `link:../notes/UUID.adoc[...]`.
+* `PATH-005 [INVARIANT]` — root-level генерируемый индекс ссылается на постоянные документы через `link:notes/UUID.adoc[...]`.
+* `PATH-006 [INVARIANT]` — `:docfilename:` содержит basename `UUID.adoc`, а `:doclink:` остаётся контекстной ссылкой `link:UUID.adoc[...]`.
+* `PATH-007 [INVARIANT]` — `.last-diary` содержит basename `UUID.adoc` без `notes/`; Diary разрешает его относительно `notes/`.
+* `PATH-008 [INVARIANT]` — repository-level документы, `all-todays`, Workspace, Inbox, scripts и state не перемещаются автоматически в `notes/`.
+* `PATH-009 [IMPLEMENTED]` — генераторы, Reduce/Refine, поиск, навигация, Workspace и `zt-check` используют единый `notes/` namespace.
+* `PATH-010 [IMPLEMENTED]` — `zt-check` разрешает ссылки относительно физического расположения исходного документа и отдельно проверяет `notes`, `all-todays`, Workspace и Diary.
+* `PATH-011 [IMPLEMENTED]` — `zt-migrate-notes-dir.zsh` по умолчанию выполняет dry-run; `--apply` требует чистого Git worktree, проверяет коллизии, переносит только известные постоянные типы и обновляет внешние ссылки.
 * `DATA-001 [INVARIANT]` — все постоянные документы являются объектами единой модели Document.
 * `DATA-002 [IMPLEMENTED]` — модель постоянных документов включает Note, Memo, Todo, Diary и Topic.
 * `DATA-003 [IMPLEMENTED]` — Diary образует двунаправленную хронологическую цепочку; индексом активности является `all-todays`.
@@ -73,20 +87,26 @@
 * `WORKSPACE-007 [INVARIANT]` — Workspace допускает ручное редактирование.
 * `WORKSPACE-008 [IMPLEMENTED]` — специализированные CLI-команды работают с Workspace как с отдельной сущностью.
 * `WORKSPACE-009 [IMPLEMENTED]` — `zt-workspace-create.zsh` создаёт Workspace с разделом `Документы`, отклоняет пустые, скрытые и содержащие разделители пути названия и не перезаписывает существующий файл.
-* `WORKSPACE-010 [IMPLEMENTED]` — `zt-workspace-add.zsh` добавляет выбранные активные постоянные документы идемпотентными относительными ссылками `link:../UUID.adoc[...]`.
+* `WORKSPACE-010 [IMPLEMENTED]` — `zt-workspace-add.zsh` добавляет выбранные активные постоянные документы идемпотентными относительными ссылками `link:../notes/UUID.adoc[...]`.
 * `WORKSPACE-011 [IMPLEMENTED]` — `zt-workspace-open.zsh` выводит выбранный Workspace в stdout без изменения файла.
-* `WORKSPACE-012 [IMPLEMENTED]` — `zt-workspace-remove.zsh` через один `fzf --multi` выбирает и одним атомарным переписыванием удаляет несколько ссылок на активные, deprecated и отсутствующие корневые документы.
+* `WORKSPACE-012 [IMPLEMENTED]` — `zt-workspace-remove.zsh` через один `fzf --multi` выбирает и одним атомарным переписыванием удаляет несколько ссылок на активные, deprecated и отсутствующие targets Workspace вида `../notes/UUID.adoc`.
 * `WORKSPACE-013 [IMPLEMENTED]` — удаление ссылки из Workspace игнорирует поддерживаемые блоки кода, выполняется через временный файл и сохраняет режим исходного файла.
 * `WORKSPACE-014 [INVARIANT]` — операции Workspace не изменяют документы, на которые ссылается Workspace.
 
 == Inbox Layer
 
-* `INBOX-001 [ROADMAP]` — источник захвата не является источником истины.
-* `INBOX-002 [ROADMAP]` — источником истины после импорта остаются AsciiDoc-документы.
+* `INBOX-001 [INVARIANT]` — источник захвата не является источником истины.
+* `INBOX-002 [INVARIANT]` — источником истины после будущего импорта остаются постоянные AsciiDoc-документы; raw/processed являются staging layer.
 * `INBOX-003 [ROADMAP]` — импорт является идемпотентным.
-* `INBOX-004 [ROADMAP]` — импортированные данные содержат информацию об источнике.
-* `INBOX-005 [ROADMAP]` — захват и очистка являются разными операциями.
+* `INBOX-004 [IMPLEMENTED]` — raw capture содержит `:captured-at:` и `:source:` в заголовке AsciiDoc.
+* `INBOX-005 [IMPLEMENTED]` — захват в `inbox/raw` и перевод в `inbox/processed` являются разными явными операциями.
 * `INBOX-006 [ROADMAP]` — Inbox Layer расширяется для новых источников без изменения канонической модели документов.
+* `INBOX-007 [IMPLEMENTED]` — `zt-inbox.zsh` создаёт raw-элемент с однострочным непустым заголовком и защищает существующие файлы от перезаписи.
+* `INBOX-008 [IMPLEMENTED]` — `zt-inbox.zsh` открывает созданный элемент через непустой существующий `$EDITOR`, включая editor command с аргументами.
+* `INBOX-009 [IMPLEMENTED]` — `zt-processed.zsh` обрабатывает только непосредственный обычный файл `inbox/raw` и отклоняет внешние, вложенные и symlink-пути.
+* `INBOX-010 [IMPLEMENTED]` — перевод в processed не перезаписывает существующее назначение и атомарно резервирует destination до удаления raw-файла.
+* `INBOX-011 [IMPLEMENTED]` — оба Inbox-скрипта используют `ZK_HOME`; `ZETTELKASTEN_ROOT` поддерживается как совместимый fallback.
+* `INBOX-012 [INVARIANT]` — raw и processed сохраняют исходное имя и содержимое; операция processed не создаёт постоянную Note/Memo и не регистрирует элемент в `all-todays`.
 
 == Архитектура
 
@@ -100,19 +120,26 @@
 * `ARCH-008 [ROADMAP]` — `zcreate` становится каноническим генератором постоянных документов.
 * `ARCH-009 [ROADMAP]` — существующие команды создания становятся совместимыми CLI-обёртками над `zcreate`.
 * `ARCH-010 [ROADMAP]` — генерация UUID, метаданных, `doclink`, `docfilename` и регистрация в `all-todays` выполняются через `zcreate`.
+* `ARCH-011 [INVARIANT]` — до реализации `zcreate --no-edit` интерактивные `zt-note`, `zt-memo` и другие creation scripts не считаются unattended deterministic agent primitives; агент использует их поведение как механический reference и запускает их только в подходящем интерактивном контексте.
+* `ARCH-012 [ROADMAP]` — после реализации `zcreate --no-edit` managed skills используют `zcreate` как детерминированную границу между семантическими решениями агента и файловой моделью Zettelkasten.
 
 == Инструкции и навыки агентов
 
-* `AGENT-001 [INVARIANT]` — инструкции агентов организованы в три уровня: обязательная точка входа `AGENTS.adoc`, репозиторные операционные навыки `.agent-skills/`, технические требования и фактическое поведение в `.scripts/` и `.scripts/docs/requirements.adoc`.
-* `AGENT-002 [INVARIANT]` — `AGENTS.adoc` содержит общие инварианты, правила безопасности и маршрутизацию, но не дублирует полные процедуры всех операций.
-* `AGENT-003 [PROCESS]` — каждый скрипт `.scripts/zt-*.zsh` имеет ровно один соответствующий навык `.agent-skills/zt-*.adoc`.
-* `AGENT-004 [PROCESS]` — репозиторный навык является агент-независимой операционной процедурой и не может переопределять требования, правила безопасности или фактическое поведение скрипта.
-* `AGENT-005 [PROCESS]` — при изменении `zt-*.zsh` или связанного требования соответствующий навык обновляется и проверяется в рамках того же изменения.
-* `AGENT-006 [PROCESS]` — агент читает только навыки, относящиеся к текущей задаче; индексом маршрутизации служит `.agent-skills/README.adoc`.
-* `AGENT-007 [PROCESS]` — каждый навык самостоятельно или через явную ссылку на `.agent-skills/README.adoc` фиксирует область применения, источники истины, предварительные проверки, шаги, побочные эффекты, проверки результата, ограничения и обработку ошибок.
-* `AGENT-008 [PROCESS]` — каждый навык имеет одну активную подробную Note-редакцию, на которую ссылается соответствующий файл `.agent-skills/zt-*.adoc`.
+* `AGENT-001 [INVARIANT]` — инструкции агентов организованы в три уровня: обязательная точка входа `AGENTS.md`, управляемые OpenClaw-навыки `zettelkasten-*`, технические требования и фактическое поведение в `.scripts/` и `.scripts/docs/requirements.adoc`.
+* `AGENT-002 [INVARIANT]` — `AGENTS.md` содержит общие инварианты, правила безопасности и маршрутизацию, но не дублирует полные процедуры всех операций.
+* `AGENT-003 [PROCESS]` — каждый top-level скрипт `.scripts/zt-*.zsh` имеет ровно один соответствующий управляемый навык `zettelkasten-*`.
+* `AGENT-004 [PROCESS]` — требования являются normative truth, scripts/libs — executable truth, managed skills — procedural truth, Feature List — descriptive truth; расхождение между слоями считается конфликтом specification, implementation, procedure или documentation и должно быть явно сообщено.
+* `AGENT-005 [PROCESS]` — при изменении `zt-*.zsh` или связанного требования соответствующий managed `SKILL.md` обновляется и проверяется через Skill Workshop в рамках того же изменения.
+* `AGENT-006 [PROCESS]` — агент читает только навыки, относящиеся к текущей задаче; маршрутизация `zt-*` → `zettelkasten-*` задаётся в `AGENTS.md` и runtime-каталоге skills.
+* `AGENT-007 [PROCESS]` — каждый managed skill фиксирует область применения, источники истины, предварительные проверки, шаги, побочные эффекты, проверки результата, ограничения и обработку ошибок.
+* `AGENT-008 [PROCESS]` — каждый operational skill, привязанный к top-level `zt-*.zsh`, имеет одну активную подробную Note-редакцию в `notes/`, указанную как `Detailed reference` в его `SKILL.md`; thin routing, inspection и domain/meta skills без one-to-one CLI operation могут не иметь Detailed Note, если manifest классифицирует их как `meta`.
 * `AGENT-009 [PROCESS]` — при смысловом изменении навыка создаётся новая UUID v1 Note-редакция; предыдущая помечается `:deprecated:`, а обе редакции связываются ссылками `Предыдущая редакция` и `Следующая редакция`.
-* `AGENT-010 [PROCESS]` — краткий файл навыка является актуальной операционной процедурой, а Note-редакции сохраняют подробное объяснение, обоснование, ограничения и историю развития навыка.
+* `AGENT-010 [PROCESS]` — managed `SKILL.md` является актуальной операционной процедурой, а Note-редакции сохраняют подробное объяснение, обоснование, ограничения и историю развития навыка.
+* `AGENT-011 [INVARIANT]` — `.agent-skills/` является read-only историческим архивом прежнего AsciiDoc-слоя и не участвует в runtime routing или синхронизации со скриптами.
+* `AGENT-012 [INVARIANT]` — Git-версионируемый `.scripts/docs/managed-skills.adoc` является integration contract между checkout Zettelkasten и внешним OpenClaw state: он фиксирует имя skill, класс, mapping на script, Detailed Note и SHA-256 активного `SKILL.md`.
+* `AGENT-013 [PROCESS]` — `zt-skills-review` проверяет полноту manifest, отсутствие лишних runtime skills, SHA-256, script mapping, существование и активность обязательных Detailed Note; несовпадение завершает проверку ошибкой.
+* `AGENT-014 [PROCESS]` — изменение managed skill через Skill Workshop и обновление manifest являются одной логической операцией, но не одним Git transaction; до совпадения manifest и runtime skill интеграция считается несогласованной.
+* `AGENT-015 [INVARIANT]` — специальные workflow в `AGENTS.md` переопределяют ordinary binding defaults managed skills; OpenClaw Memo не получает Topic binding, а OpenClaw Note получает обязательную Topic binding независимо от ограничений интерактивного `zt-note.zsh`.
 
 == Миграции
 
@@ -142,7 +169,7 @@
 
 == Связанные документы
 
-* `LINK-001 [INVARIANT]` — связи оформляются обычными относительными AsciiDoc-ссылками вида `link:UUID.adoc[Описание]`.
+* `LINK-001 [INVARIANT]` — связи между core documents внутри `notes/` оформляются относительными AsciiDoc-ссылками вида `link:UUID.adoc[Описание]`; внешние контексты используют правила `PATH-003`–`PATH-005`.
 * `LINK-002 [IMPLEMENTED]` — Topic хранит ссылки на явно связанные с ней Memo и Note.
 * `LINK-003 [INVARIANT]` — добавление новых связей не создаёт дублирующиеся заголовки разделов.
 * `LINK-004 [INVARIANT]` — механизм перекрёстных ссылок идемпотентен.
@@ -262,6 +289,7 @@
 * `PUB-021 [ROADMAP]` — перед публикацией выполняются `zt-check`, проверка зависимостей и проверка состояния репозитория назначения.
 * `PUB-022 [ROADMAP]` — временный скрипт публикации заменяется полноценным release/workflow-слоем.
 * `PUB-023 [IMPLEMENTED]` — ошибка `mkdir` или любого вызова `rsync` завершает публикацию с ненулевым кодом и сообщением в stderr.
+* `PUB-024 [INVARIANT]` — персональные agent-integration файлы `AGENTS.md`, `.hermes.md`, `.agent-skills/` и managed OpenClaw skills не входят в публичный `zettelkasten-cli`; публичная agent-инструкция при необходимости проектируется отдельно как sanitized generic artifact.
 
 == Стиль CLI-скриптов
 
@@ -322,11 +350,7 @@
 * `ROADMAP-001 [ROADMAP]` — новые механизмы проектируются так, чтобы позднее их можно было встроить в `zcreate`.
 * `ROADMAP-002 [PROCESS]` — каждое изменение оценивается по пользе сейчас, совместимости с текущим workflow и пользе для будущей архитектуры.
 * `ROADMAP-003 [PROCESS]` — новые типы документов и команды сначала получают формальное описание модели данных и поведения.
-* `ROADMAP-004 [PROCESS]` — реализация Inbox, SQLite и `zcreate` не получает статус `IMPLEMENTED` до появления подтверждённой функции и обновления Feature List.
-
-== Известные расхождения
-
-* `GAP-002 [ROADMAP]` — создать репозиторные навыки для `zt-continue.zsh` и `zt-develop-publish-version.zsh`, чтобы восстановить соответствие `AGENT-003`.
+* `ROADMAP-004 [PROCESS]` — отдельные функции Inbox, SQLite и `zcreate` получают статус `IMPLEMENTED` только после подтверждения кода, тестов и обновления Feature List; наличие raw/processed staging не означает реализацию импорта Inbox в постоянные документы.
 
 == Ключевые инварианты
 
@@ -341,7 +365,7 @@
 . Reduce не изменяет deprecated Note, чужие тематические линии и содержимое исходных документов.
 . Любое изменение данных должно быть проверяемым через Git и проверки целостности.
 . Каждый созданный агентом постоянный документ проходит проверку UUID v1, Asciidoctor-рендеринг, `zt-check` и `git diff --check`.
-. Для каждого `zt-*.zsh` поддерживается соответствующий репозиторный навык в `.agent-skills/`.
+. Для каждого top-level `zt-*.zsh` поддерживается соответствующий managed `zettelkasten-*` skill.
 . Для каждого навыка поддерживается одна активная подробная Note-редакция и цепочка deprecated-редакций.
 . Статус `IMPLEMENTED` назначается только подтверждённому фактическому поведению.
 . Inbox, SQLite и `zcreate` остаются Roadmap до появления подтверждённой реализации.

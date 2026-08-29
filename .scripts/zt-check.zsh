@@ -10,9 +10,11 @@ emulate -L zsh
 setopt null_glob
 
 script_dir="${0:A:h}"
+source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/asciidoc.zsh"
 
-zk="${ZK_HOME:-$HOME/zettelkasten}"
+zk="$(zk_home)"
+notes_dir="$(zk_notes_dir)"
 errors=0
 warnings=0
 
@@ -97,16 +99,14 @@ extract_links() {
   ' "$1"
 }
 
-target_exists_from_root() {
-  local target="$1"
+target_exists_from_source() {
+  local source_file="$1"
+  local target="$2"
+  local candidate
 
-  target="${target#./}"
-
-  if [[ "$target" == ../* ]]; then
-    target="${target#../}"
-  fi
-
-  [[ -f "$zk/$target" ]]
+  [[ "$target" != /* ]] || return 1
+  candidate="${source_file:h}/$target"
+  [[ -f "${candidate:A}" ]]
 }
 
 extract_diary_chain_link() {
@@ -140,49 +140,124 @@ print -r -- "== Repository structure"
 }
 
 [[ -d "$zk/all-todays" ]] && ok "all-todays" || err "all-todays not found"
+[[ -d "$notes_dir" ]] && ok "notes" || err "notes not found"
 [[ -d "$zk/.scripts" ]] && ok ".scripts" || err ".scripts not found"
 [[ -f "$zk/.last-diary" ]] && ok ".last-diary" || err ".last-diary not found"
+
+typeset -a note_files
+note_files=("$notes_dir"/*.adoc)
 
 print -r -- ""
 print -r -- "== AsciiDoc metadata"
 
-for file in "$zk"/*.adoc; do
-  base="${file:t}"
+metadata_errors_before=$errors
+metadata_count=0
+metadata_report="$(mktemp "${TMPDIR:-/tmp}/zt-check-metadata.XXXXXX")" || {
+  err "cannot create metadata report"
+  metadata_report=""
+}
 
-  is_metadata_exempt_file "$base" && continue
+if [[ -n "$metadata_report" ]] && (( ${#note_files[@]} > 0 )) && ! awk '
+  function reset_file() {
+    delete attr
+    title = 0
+    title_spacing_valid = 0
+  }
 
-  grep -q '^= .\+' "$file" || err "$base missing title"
+  function basename(path, parts, count) {
+    count = split(path, parts, "/")
+    return parts[count]
+  }
 
-  for attr in date keywords type author description doclink docfilename; do
-    has_attr "$file" "$attr" || err "$base missing :$attr:"
-  done
+  function emit(level, message) {
+    print level "\037" message
+  }
 
-  if has_attr "$file" keywords && has_attr "$file" type; then
-    keywords="$(attr_value "$file" keywords)"
-    note_type="$(attr_value "$file" type)"
+  function finish_file(    base, required, count, i, type, keywords, normalized) {
+    if (current_file == "") return
 
-    known_type "$note_type" || err "$base invalid :type: unknown value '$note_type'"
+    base = basename(current_file)
+    if (base == "AGENTS.adoc") return
 
-    if [[ -n "$note_type" ]] && ! keyword_has "$keywords" "$note_type"; then
-      warn "$base recommendation: add :type: value '$note_type' to :keywords:"
-    fi
-  fi
+    if (!title) {
+      emit("ERROR", base " missing title")
+    } else if (!title_spacing_valid) {
+      emit("ERROR", base " invalid title: expected exactly one space after =")
+    }
 
-  if has_attr "$file" docfilename; then
-    docfilename="$(attr_value "$file" docfilename)"
-    [[ "$docfilename" == "$base" ]] || err "$base invalid :docfilename:"
-  fi
+    count = split("date keywords type author description doclink docfilename", required, " ")
+    for (i = 1; i <= count; i++) {
+      if (!(required[i] in attr)) emit("ERROR", base " missing :" required[i] ":")
+    }
 
-  if has_attr "$file" doclink; then
-    doclink="$(attr_value "$file" doclink)"
-    [[ "$doclink" == "link:${base}"\[* ]] || err "$base invalid :doclink:"
-  fi
-done
+    if (("type" in attr) && ("keywords" in attr)) {
+      type = attr["type"]
+      if (type !~ /^(diary|note|memo|todo|topic|list|index)$/) {
+        emit("ERROR", base " invalid :type: unknown value \047" type "\047")
+      }
+
+      normalized = tolower(attr["keywords"])
+      gsub(/[[:space:]]/, "", normalized)
+      if (type != "" && index("," normalized ",", "," type ",") == 0) {
+        emit("WARN", base " recommendation: add :type: value \047" type "\047 to :keywords:")
+      }
+    }
+
+    if (("docfilename" in attr) && attr["docfilename"] != base) {
+      emit("ERROR", base " invalid :docfilename:")
+    }
+
+    if (("doclink" in attr) && index(attr["doclink"], "link:" base "[") != 1) {
+      emit("ERROR", base " invalid :doclink:")
+    }
+  }
+
+  FNR == 1 {
+    if (seen_file) finish_file()
+    reset_file()
+    current_file = FILENAME
+    seen_file = 1
+    if ($0 ~ /^= /) title = 1
+    if ($0 ~ /^= [^[:space:]]/) title_spacing_valid = 1
+  }
+
+  /^:[[:alnum:]_-]+:/ {
+    value = substr($0, 2)
+    separator = index(value, ":")
+    name = substr(value, 1, separator - 1)
+    value = substr(value, separator + 1)
+
+    if (!(name in attr) && value != "" && value !~ /^ [^[:space:]]/) {
+      emit("ERROR", basename(FILENAME) " invalid :" name ": spacing: expected exactly one space before value")
+    }
+
+    sub(/^[[:space:]]*/, "", value)
+    if (!(name in attr)) attr[name] = value
+  }
+
+  END { finish_file() }
+' "${note_files[@]}" > "$metadata_report"; then
+  err "metadata scan failed"
+fi
+
+while [[ -n "$metadata_report" ]] && IFS=$'\x1f' read -r level message; do
+  case "$level" in
+    ERROR) err "$message" ;;
+    WARN) warn "$message" ;;
+  esac
+done < "$metadata_report"
+
+[[ -z "$metadata_report" ]] || rm -f "$metadata_report"
+
+metadata_count=${#note_files[@]}
+(( errors == metadata_errors_before )) && ok "AsciiDoc metadata: $metadata_count"
 
 print -r -- ""
 print -r -- "== Note links"
 
-for file in "$zk"/*.adoc; do
+note_links_errors_before=$errors
+note_links_count=0
+for file in "${note_files[@]}"; do
   base="${file:t}"
 
   extract_links "$file" | while IFS= read -r target; do
@@ -191,13 +266,18 @@ for file in "$zk"/*.adoc; do
 
     target="${target#link:}"
 
-    target_exists_from_root "$target" || broken_link "$base" "$target"
+    (( note_links_count++ ))
+    target_exists_from_source "$file" "$target" || broken_link "notes/$base" "$target"
   done
 done
+
+(( errors == note_links_errors_before )) && ok "Note links: $note_links_count"
 
 print -r -- ""
 print -r -- "== all-todays links"
 
+all_today_links_errors_before=$errors
+all_today_links_count=0
 for file in "$zk/all-todays"/*.adoc; do
   rel="all-todays/${file:t}"
   date_id="${file:t:r}"
@@ -217,9 +297,32 @@ for file in "$zk/all-todays"/*.adoc; do
 
     target="${target#link:}"
 
-    target_exists_from_root "$target" || broken_diary_link "$rel" "${target:t}"
+    (( all_today_links_count++ ))
+    target_exists_from_source "$file" "$target" || broken_diary_link "$rel" "$target"
   done
 done
+
+(( errors == all_today_links_errors_before )) && ok "all-todays links: $all_today_links_count"
+
+print -r -- ""
+print -r -- "== Workspace links"
+
+workspace_links_errors_before=$errors
+workspace_links_count=0
+for file in "$zk/workspaces"/*.adoc; do
+  rel="workspaces/${file:t}"
+
+  extract_links "$file" | while IFS= read -r target; do
+    [[ -z "$target" ]] && continue
+    is_placeholder_link "$target" && continue
+
+    target="${target#link:}"
+    (( workspace_links_count++ ))
+    target_exists_from_source "$file" "$target" || broken_link "$rel" "$target"
+  done
+done
+
+(( errors == workspace_links_errors_before )) && ok "Workspace links: $workspace_links_count"
 
 print -r -- ""
 print -r -- "== .last-diary"
@@ -229,7 +332,7 @@ if [[ -f "$zk/.last-diary" ]]; then
 
   if [[ -z "$last" ]]; then
     err ".last-diary is empty"
-  elif [[ ! -f "$zk/$last" ]]; then
+  elif [[ "$last" == */* || ! -f "$notes_dir/$last" ]]; then
     err ".last-diary points to missing file"
   else
     ok ".last-diary -> $last"
@@ -239,20 +342,27 @@ fi
 print -r -- ""
 print -r -- "== Diary chain"
 
-for file in "$zk"/*.adoc; do
+diary_chain_errors_before=$errors
+diary_chain_count=0
+for file in "${note_files[@]}"; do
   base="${file:t}"
+
+  [[ "$(attr_value "$file" type)" == "diary" ]] || continue
+  (( diary_chain_count++ ))
 
   prev="$(extract_diary_chain_link "$file" "Предыдущая запись")"
   next="$(extract_diary_chain_link "$file" "Следующая запись")"
 
   if [[ -n "$prev" ]]; then
-    is_placeholder_link "$prev" || target_exists_from_root "$prev" || broken_diary_chain "$base" "$prev"
+    is_placeholder_link "$prev" || target_exists_from_source "$file" "$prev" || broken_diary_chain "$base" "$prev"
   fi
 
   if [[ -n "$next" ]]; then
-    is_placeholder_link "$next" || target_exists_from_root "$next" || broken_diary_chain "$base" "$next"
+    is_placeholder_link "$next" || target_exists_from_source "$file" "$next" || broken_diary_chain "$base" "$next"
   fi
 done
+
+(( errors == diary_chain_errors_before )) && ok "Diary chain: $diary_chain_count"
 
 print -r -- ""
 print -r -- "== Summary"

@@ -80,12 +80,12 @@ zk_keywords_for_note_from_memo() {
     '
 }
 
+zk_ensure_dirs
+zk_cd_notes
+
 read -r "?Введите название для новой заметки: " key
 
 [[ -z "$key" ]] && exit 1
-
-zk_cd
-zk_ensure_dirs
 
 memo_file=""
 memo_key_line=""

@@ -27,10 +27,11 @@ select_workspace_documents() {
 
   while IFS= read -r target; do
     [[ -n "$target" ]] || continue
-    [[ "$target" == ../*.adoc ]] || continue
+    [[ "$target" == ../notes/*.adoc ]] || continue
 
     normalized_target="${target#../}"
-    [[ "$normalized_target" != */* ]] || continue
+    [[ "$normalized_target" == notes/*.adoc ]] || continue
+    [[ "${normalized_target#notes/}" != */* ]] || continue
 
     root_file="$zk/$normalized_target"
 

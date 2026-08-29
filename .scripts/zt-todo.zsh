@@ -14,12 +14,12 @@ source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/uuid.zsh"
 source "$script_dir/lib/asciidoc.zsh"
 
+zk_ensure_dirs
+zk_cd_notes
+
 read -r "?Введите название для нового списка дел Todo: " key
 
 [[ -z "$key" ]] && exit 1
-
-zk_cd
-zk_ensure_dirs
 
 fname="$(zk_new_adoc_filename)"
 title="TODO - $key от $(date +"%d-%m-%Y")"

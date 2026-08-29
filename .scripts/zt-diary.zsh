@@ -14,26 +14,27 @@ source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/uuid.zsh"
 source "$script_dir/lib/asciidoc.zsh"
 
-zk_cd
 zk_ensure_dirs
+zk_cd_notes
+
+last_diary_file="$(zk_last_diary_file)"
 
 last=""
-[[ -f ".last-diary" ]] && last="$(< ".last-diary")"
+[[ -f "$last_diary_file" ]] && last="$(< "$last_diary_file")"
 
 fname="$(zk_new_adoc_filename)"
 title="Diary - $(date +"%d-%m-%Y")"
 link="$(zk_link "$fname" "$title")"
-today_link="link:../${fname}[$title]"
-next_link="link:${fname}[Следующая запись]"
+next_link="$(zk_link "$fname" "Следующая запись")"
 
-print -r -- "* $(date +"%H.%M") - $today_link" >> "$(zk_today_file)"
+zk_today_entry "$fname" "$title" >> "$(zk_today_file)"
 
 {
   zk_metadata "$fname" "$title" "diary" "diary"
 
   if [[ -n "$last" && -f "$last" ]]; then
     print -r -- ""
-    print -r -- "link:${last}[Предыдущая запись]"
+    print -r -- "$(zk_link "$last" "Предыдущая запись")"
   fi
 
   print -r -- ""
@@ -43,7 +44,7 @@ if [[ -n "$last" && -f "$last" ]]; then
   print -r -- "| $next_link" >> "$last"
 fi
 
-print -r -- "$fname" > ".last-diary"
+print -r -- "$fname" > "$last_diary_file"
 
 vim "$fname"
 
