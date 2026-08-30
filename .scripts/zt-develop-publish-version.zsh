@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # zt-develop-publish-version.zsh
 # Тип: Maintenance
-# Назначение: публикация версии скриптов и документации в открытый репозиторий
+# Назначение: публикация версии скриптов, OpenSpec, development skills, tests и документации
 #------------------------------------------------------------------------------
 
 emulate -L zsh
@@ -16,12 +16,15 @@ dst="${ZK_PUBLISH_HOME:-$HOME/dev/zettelkasten-cli}"
 
 apply=0
 
+typeset -a publish_dirs=(.scripts openspec skills tests)
+typeset -a publish_files=(LICENSE README.MD AGENTS.MD .gitignore)
+
 fail() {
   print -ru2 -- "ERROR $1"
   exit 1
 }
 
-case "$1" in
+case "${1:-}" in
   --apply) apply=1 ;;
   --dry-run|"") apply=0 ;;
   *)
@@ -30,26 +33,15 @@ case "$1" in
     ;;
 esac
 
-[[ -d "$src" ]] || {
-  print -ru2 -- "ERROR source not found: $src"
-  exit 1
-}
+[[ -d "$src" ]] || fail "source not found: $src"
+[[ -d "$dst" ]] || fail "destination not found: $dst"
 
-[[ -d "$dst" ]] || {
-  print -ru2 -- "ERROR destination not found: $dst"
-  exit 1
-}
+for d in "${publish_dirs[@]}"; do
+  [[ -d "$src/$d" ]] || fail "source directory not found: $src/$d"
+done
 
-[[ -d "$src/.scripts" ]] || {
-  print -ru2 -- "ERROR source .scripts not found: $src/.scripts"
-  exit 1
-}
-
-for f in LICENSE README.MD .gitignore; do
-  [[ -f "$src/$f" ]] || {
-    print -ru2 -- "ERROR source file not found: $src/$f"
-    exit 1
-  }
+for f in "${publish_files[@]}"; do
+  [[ -f "$src/$f" ]] || fail "source file not found: $src/$f"
 done
 
 print -r -- "== zt-develop-publish-version"
@@ -57,27 +49,50 @@ print -r -- "From: $src"
 print -r -- "To:   $dst"
 print -r -- ""
 
+mirror_tree() {
+  local mode="$1"
+  local tree="$2"
+  local -a rsync_args
+
+  rsync_args=(-av --delete --delete-excluded --exclude='.DS_Store' --exclude='__MACOSX/')
+  [[ "$mode" == dry-run ]] && rsync_args+=(--dry-run)
+
+  rsync "${rsync_args[@]}" "$src/$tree/" "$dst/$tree/" ||
+    fail "$mode failed for $tree"
+}
+
+copy_root_files() {
+  local mode="$1"
+  local -a rsync_args sources
+
+  rsync_args=(-av)
+  [[ "$mode" == dry-run ]] && rsync_args+=(--dry-run)
+
+  sources=()
+  for f in "${publish_files[@]}"; do
+    sources+=("$src/$f")
+  done
+
+  rsync "${rsync_args[@]}" "${sources[@]}" "$dst/" ||
+    fail "$mode failed for root artifacts"
+}
+
 if (( apply == 0 )); then
   print -r -- "DRY RUN"
-  rsync -av --dry-run --delete --delete-excluded \
-    --exclude='.DS_Store' --exclude='__MACOSX/' \
-    "$src/.scripts/" "$dst/.scripts/" ||
-    fail "dry-run failed for .scripts"
-  rsync -av --dry-run "$src/LICENSE" "$src/README.MD" "$src/.gitignore" "$dst/" ||
-    fail "dry-run failed for root artifacts"
+  for d in "${publish_dirs[@]}"; do
+    mirror_tree dry-run "$d"
+  done
+  copy_root_files dry-run
   print -r -- ""
   print -r -- "Run with --apply to copy files."
   exit 0
 fi
 
-mkdir -p "$dst/.scripts" || fail "cannot create destination .scripts: $dst/.scripts"
-
-rsync -av --delete --delete-excluded \
-  --exclude='.DS_Store' --exclude='__MACOSX/' \
-  "$src/.scripts/" "$dst/.scripts/" ||
-  fail "copy failed for .scripts"
-rsync -av "$src/LICENSE" "$src/README.MD" "$src/.gitignore" "$dst/" ||
-  fail "copy failed for root artifacts"
+for d in "${publish_dirs[@]}"; do
+  mkdir -p "$dst/$d" || fail "cannot create destination directory: $dst/$d"
+  mirror_tree apply "$d"
+done
+copy_root_files apply
 
 print -r -- ""
 print -r -- "Publish copy complete."

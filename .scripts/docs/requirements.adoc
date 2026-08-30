@@ -1,14 +1,21 @@
 = Требования и инварианты zettelkasten-cli
-:revdate: 2026-08-29
-:revnumber: 13
+:revdate: 2026-08-30
+:revnumber: 14
 :toc:
 
 == Назначение документа
 
-Документ является актуальной технической спецификацией проекта `zettelkasten-cli`.
-Он фиксирует обязательные инварианты, реализованное поведение, правила разработки и целевую архитектуру.
-Он сохраняет требования host CLI и основного движка с историческими стабильными
-ID. Дополнительный контракт Zettelkasten plugin находится в
+Документ сохраняется как legacy traceability source проекта `zettelkasten-cli`: он
+фиксирует исторические стабильные ID, статус требований и связь с прежней
+технической спецификацией. Нормативный baseline требований находится в
+`openspec/specs/*/spec.md`.
+
+При расхождении фактическое поведение сверяется с OpenSpec. Изменение baseline
+выполняется через OpenSpec workflow; этот файл обновляется вместе с изменением,
+когда меняются legacy ID, их статус или traceability.
+
+Документ сохраняет требования host CLI и основного движка. Дополнительный
+контракт Zettelkasten plugin находится в
 `.scripts/zettelkasten/docs/requirements.adoc` и использует отдельный namespace
 `ZP-*`.
 
@@ -23,13 +30,13 @@ ID. Дополнительный контракт Zettelkasten plugin наход
 
 == Управление спецификацией
 
-* `SPEC-001 [INVARIANT]` — источником истины для статуса `IMPLEMENTED` является подтверждённое фактическое поведение разработанных функций.
+* `SPEC-001 [INVARIANT]` — нормативным baseline требований является `openspec/specs/*/spec.md`; статус `IMPLEMENTED` в legacy traceability подтверждается фактическим поведением разработанных функций.
 * `SPEC-002 [PROCESS]` — перед назначением статуса `IMPLEMENTED` требование проверяется по коду и подходящему сценарию проверки, тесту или dry-run.
 * `SPEC-003 [PROCESS]` — при добавлении, изменении или удалении реализованной функции одновременно обновляется `.scripts/docs/features.adoc`.
 * `SPEC-004 [INVARIANT]` — новая редакция требований не удаляет действующие требования к реализованным функциям без явного решения, миграции или перевода функции в deprecated.
 * `SPEC-005 [PROCESS]` — будущие обязательные свойства получают статус `ROADMAP` до появления подтверждённой реализации.
 * `SPEC-006 [INVARIANT]` — требования и Feature List не должны утверждать наличие отсутствующей реализации.
-* `SPEC-007 [INVARIANT]` — этот файл сохраняет полную непрерывную спецификацию host CLI и прежние стабильные ID; Zettelkasten plugin дополняется отдельными `ZP-*` требованиями в `.scripts/zettelkasten/docs/requirements.adoc`, не переиспользуя существующие ID.
+* `SPEC-007 [INVARIANT]` — этот файл сохраняет непрерывную legacy traceability host CLI и прежние стабильные ID; Zettelkasten plugin дополняется отдельными `ZP-*` требованиями в `.scripts/zettelkasten/docs/requirements.adoc`, не переиспользуя существующие ID; каждый действующий legacy ID должен иметь соответствующее OpenSpec requirement.
 
 == UUID
 
@@ -138,12 +145,12 @@ ID. Дополнительный контракт Zettelkasten plugin наход
 
 == Инструкции и навыки агентов
 
-* `AGENT-001 [INVARIANT]` — инструкции агентов организованы в три уровня: обязательная точка входа `AGENTS.md`, управляемые OpenClaw-навыки `zettelkasten-*`, технические требования и фактическое поведение в `.scripts/` и `.scripts/docs/requirements.adoc`.
-* `AGENT-002 [INVARIANT]` — `AGENTS.md` содержит общие инварианты, правила безопасности и маршрутизацию, но не дублирует полные процедуры всех операций.
+* `AGENT-001 [INVARIANT]` — operational инструкции агентов организованы вокруг обязательной точки входа `AGENTS.MD`, управляемых OpenClaw-навыков `zettelkasten-*`, OpenSpec normative baseline, фактического поведения в `.scripts/` и legacy traceability в `.scripts/docs/requirements.adoc`.
+* `AGENT-002 [INVARIANT]` — `AGENTS.MD` содержит общие инварианты, правила безопасности и маршрутизацию, но не дублирует полные процедуры всех операций.
 * `AGENT-003 [PROCESS]` — каждый top-level скрипт `.scripts/zt-*.zsh` имеет ровно один соответствующий управляемый навык `zettelkasten-*`.
-* `AGENT-004 [PROCESS]` — требования являются normative truth, scripts/libs — executable truth, managed skills — procedural truth, Feature List — descriptive truth; расхождение между слоями считается конфликтом specification, implementation, procedure или documentation и должно быть явно сообщено.
+* `AGENT-004 [PROCESS]` — OpenSpec является normative truth, scripts/libs — executable truth, managed operational skills — procedural truth, legacy requirements — stable-ID/status traceability truth, Feature List — descriptive truth; расхождение между слоями считается конфликтом specification, implementation, procedure, traceability или documentation и должно быть явно сообщено.
 * `AGENT-005 [PROCESS]` — при изменении `zt-*.zsh` или связанного требования соответствующий managed `SKILL.md` обновляется и проверяется через Skill Workshop в рамках того же изменения.
-* `AGENT-006 [PROCESS]` — агент читает только навыки, относящиеся к текущей задаче; маршрутизация `zt-*` → `zettelkasten-*` задаётся в `AGENTS.md` и runtime-каталоге skills.
+* `AGENT-006 [PROCESS]` — агент читает только навыки, относящиеся к текущей задаче; маршрутизация `zt-*` → `zettelkasten-*` задаётся в `AGENTS.MD` и runtime-каталоге skills.
 * `AGENT-007 [PROCESS]` — каждый managed skill фиксирует область применения, источники истины, предварительные проверки, шаги, побочные эффекты, проверки результата, ограничения и обработку ошибок.
 * `AGENT-008 [PROCESS]` — каждый operational skill, привязанный к top-level `zt-*.zsh`, имеет одну активную подробную Note-редакцию в `notes/`, указанную как `Detailed reference` в его `SKILL.md`; thin routing, inspection и domain/meta skills без one-to-one CLI operation могут не иметь Detailed Note, если manifest классифицирует их как `meta`.
 * `AGENT-009 [PROCESS]` — при смысловом изменении навыка создаётся новая UUID v1 Note-редакция; предыдущая помечается `:deprecated:`, а обе редакции связываются ссылками `Предыдущая редакция` и `Следующая редакция`.
@@ -152,7 +159,22 @@ ID. Дополнительный контракт Zettelkasten plugin наход
 * `AGENT-012 [INVARIANT]` — Git-версионируемый `.scripts/docs/managed-skills.adoc` является integration contract между checkout Zettelkasten и внешним OpenClaw state: он фиксирует имя skill, класс, mapping на script, Detailed Note и SHA-256 активного `SKILL.md`.
 * `AGENT-013 [PROCESS]` — `zt-skills-review` проверяет полноту manifest, отсутствие лишних runtime skills, SHA-256, script mapping, существование и активность обязательных Detailed Note; несовпадение завершает проверку ошибкой.
 * `AGENT-014 [PROCESS]` — изменение managed skill через Skill Workshop и обновление manifest являются одной логической операцией, но не одним Git transaction; до совпадения manifest и runtime skill интеграция считается несогласованной.
-* `AGENT-015 [INVARIANT]` — специальные workflow в `AGENTS.md` переопределяют ordinary binding defaults managed skills; OpenClaw Memo не получает Topic binding, а OpenClaw Note получает обязательную Topic binding независимо от ограничений интерактивного `zt-note.zsh`.
+* `AGENT-015 [INVARIANT]` — специальные workflow в `AGENTS.MD` переопределяют ordinary binding defaults managed skills; OpenClaw Memo не получает Topic binding, а OpenClaw Note получает обязательную Topic binding независимо от ограничений интерактивного `zt-note.zsh`.
+
+== Агент разработки и repo-local development skills
+
+* `DEVAGENT-001 [INVARIANT]` — Marta является специализированным агентом разработки `zettelkasten-cli`; runtime knowledge-management операции и изменение пользовательского Vault не входят в её обычный development scope.
+* `DEVAGENT-002 [INVARIANT]` — точка входа агента разработки — `AGENTS.MD`; repo-local development skills находятся в `skills/zettelkasten-*` и не заменяют существующие внешние managed operational skills, привязанные к top-level `zt-*.zsh`.
+* `DEVAGENT-003 [PROCESS]` — каждый development skill перед действием разрешает корень репозитория, загружает общий operational contract, authorization policy и только релевантный OpenSpec scope.
+* `DEVAGENT-004 [INVARIANT]` — OpenSpec является normative truth, `.scripts/` — executable truth, development skills — procedural truth, legacy requirements — traceability truth, Feature List — descriptive truth; расхождение между слоями явно диагностируется и не маскируется fallback-поведением агента.
+* `DEVAGENT-005 [PROCESS]` — поведенческое изменение сначала оформляется как OpenSpec change или как явное обновление baseline, после чего реализуется минимальный совместимый patch и соответствующие проверки.
+* `DEVAGENT-006 [PROCESS]` — read-only review skill не изменяет repository, пользовательские документы, Git index или external managed skill state.
+* `DEVAGENT-007 [INVARIANT]` — development agent не использует destructive Git reset, checkout поверх локальных изменений или иные операции, уничтожающие несвязанные изменения пользователя.
+* `DEVAGENT-008 [PROCESS]` — интеграционные проверки development agent выполняются на временном Zettelkasten через `ZK_HOME`, если тест прямо не является read-only проверкой текущего checkout.
+* `DEVAGENT-009 [PROCESS]` — сложная migration или массовая mutation требует отдельного dry-run/plan, проверки Git preconditions, явного scope и проверки целостности после применения.
+* `DEVAGENT-010 [PROCESS]` — release workflow сначала выполняет dry-run публикации и verification; apply, commit, tag и push не считаются подразумеваемыми одним фактом подготовки release.
+* `DEVAGENT-011 [PROCESS]` — `.scripts/dev/zt-agent-skills-check.zsh` проверяет packaging development skills, canonical references, authorization levels и корректность OpenSpec requirement references.
+* `DEVAGENT-012 [PROCESS]` — `.scripts/dev/zt-openspec-check.zsh` проверяет, что все действующие legacy requirement ID host CLI и Zettelkasten plugin покрыты OpenSpec baseline ровно один раз и имеют проверяемый Scenario.
 
 == Миграции
 
@@ -283,28 +305,28 @@ ID. Дополнительный контракт Zettelkasten plugin наход
 * `PUB-002 [IMPLEMENTED]` — источник по умолчанию: `/Users/steamtoad/zettelkasten`.
 * `PUB-003 [IMPLEMENTED]` — репозиторий назначения по умолчанию: `/Users/steamtoad/dev/zettelkasten-cli`.
 * `PUB-004 [INVARIANT]` — пути источника и назначения переопределяются через `ZK_DEV_HOME` и `ZK_PUBLISH_HOME`.
-* `PUB-005 [IMPLEMENTED]` — копируются `.scripts/`, `LICENSE`, `README.MD` и `.gitignore`.
+* `PUB-005 [IMPLEMENTED]` — копируются `.scripts/`, `openspec/`, `skills/`, `tests/`, `LICENSE`, `README.MD`, `AGENTS.MD` и `.gitignore`.
 * `PUB-006 [INVARIANT]` — личные материалы Zettelkasten не публикуются.
 * `PUB-007 [INVARIANT]` — режим по умолчанию — `dry-run`.
 * `PUB-008 [INVARIANT]` — реальное копирование выполняется только с `--apply`.
 * `PUB-009 [IMPLEMENTED]` — поддерживается явный режим `--dry-run`.
-* `PUB-010 [IMPLEMENTED]` — до копирования проверяются источник, назначение, `.scripts/`, `LICENSE`, `README.MD` и `.gitignore`.
+* `PUB-010 [IMPLEMENTED]` — до копирования проверяются источник, назначение, `.scripts/`, `openspec/`, `skills/`, `tests/`, `LICENSE`, `README.MD`, `AGENTS.MD` и `.gitignore`.
 * `PUB-011 [INVARIANT]` — ошибки печатаются в stderr.
 * `PUB-012 [IMPLEMENTED]` — для копирования используется `rsync`.
-* `PUB-013 [IMPLEMENTED]` — содержимое `.scripts/` копируется в `.scripts/` репозитория назначения.
-* `PUB-014 [IMPLEMENTED]` — `LICENSE`, `README.MD` и `.gitignore` копируются в корень репозитория назначения.
-* `PUB-015 [IMPLEMENTED]` — каталог `.scripts/` назначения создаётся автоматически в режиме `--apply`.
+* `PUB-013 [IMPLEMENTED]` — содержимое `.scripts/`, `openspec/`, `skills/` и `tests/` копируется в одноимённые каталоги репозитория назначения.
+* `PUB-014 [IMPLEMENTED]` — `LICENSE`, `README.MD`, `AGENTS.MD` и `.gitignore` копируются в корень репозитория назначения.
+* `PUB-015 [IMPLEMENTED]` — каталоги `.scripts/`, `openspec/`, `skills/` и `tests/` назначения создаются автоматически в режиме `--apply` через directory-mirror copy.
 * `PUB-016 [INVARIANT]` — автоматические `git add`, `git commit` и `git push` запрещены.
 * `PUB-017 [IMPLEMENTED]` — скрипт выводит источник, назначение, режим и отчёт `rsync`.
 * `PUB-018 [INVARIANT]` — служебные файлы операционной системы не публикуются.
-* `PUB-019 [IMPLEMENTED]` — `.DS_Store` исключается из dry-run и реального копирования `.scripts/`.
+* `PUB-019 [IMPLEMENTED]` — `.DS_Store` исключается из dry-run и реального копирования публикуемых directory trees.
 * `PUB-020 [IMPLEMENTED]` — `.gitignore` копируется в публичный репозиторий.
 * `PUB-021 [ROADMAP]` — перед публикацией выполняются `zt-check`, проверка зависимостей и проверка состояния репозитория назначения.
 * `PUB-022 [ROADMAP]` — временный скрипт публикации заменяется полноценным release/workflow-слоем.
 * `PUB-023 [IMPLEMENTED]` — ошибка `mkdir` или любого вызова `rsync` завершает публикацию с ненулевым кодом и сообщением в stderr.
-* `PUB-024 [INVARIANT]` — персональные agent-integration файлы `AGENTS.md`, `.hermes.md`, `.agent-skills/` и managed OpenClaw skills не входят в публичный `zettelkasten-cli`; публичная agent-инструкция при необходимости проектируется отдельно как sanitized generic artifact.
-* `PUB-025 [IMPLEMENTED]` — по явному решению о публикации exact mirror destination `.scripts/` синхронизируется через `rsync --delete --delete-excluded`; dry-run показывает удаления, а реальное удаление возможно только с `--apply` и только внутри destination `.scripts/`.
-* `PUB-026 [IMPLEMENTED]` — `.DS_Store` и каталоги `__MACOSX/` исключаются из dry-run и реального зеркала `.scripts/`, а `--delete-excluded` удаляет ранее опубликованные экземпляры из destination.
+* `PUB-024 [INVARIANT]` — персональные agent-integration файлы `IDENTITY.md`, `SOUL.md`, `USER.md`, `TOOLS.md`, `HEARTBEAT.md`, `.hermes.md`, `.agent-skills/` и внешние managed operational OpenClaw skills не входят в публичный `zettelkasten-cli`; sanitized generic `AGENTS.MD` и repo-local development skills Marta являются публичными development artifacts.
+* `PUB-025 [IMPLEMENTED]` — по явному решению о публикации destination `.scripts/`, `openspec/`, `skills/` и `tests/` синхронизируются как отдельные exact mirrors через `rsync --delete --delete-excluded`; dry-run показывает удаления, а реальное удаление возможно только с `--apply` и только внутри этих destination trees.
+* `PUB-026 [IMPLEMENTED]` — `.DS_Store` и каталоги `__MACOSX/` исключаются из dry-run и реального зеркала публикуемых directory trees, а `--delete-excluded` удаляет ранее опубликованные экземпляры из соответствующего destination tree.
 
 == Стиль CLI-скриптов
 

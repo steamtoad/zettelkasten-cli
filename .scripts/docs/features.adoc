@@ -1,6 +1,6 @@
 = Feature List zettelkasten-cli
-:revdate: 2026-08-29
-:revnumber: 13
+:revdate: 2026-08-30
+:revnumber: 14
 :toc:
 
 == Назначение
@@ -206,6 +206,20 @@ feature list и прежние стабильные ID.
 * `CHECK-015` — проверка без автоматического изменения файлов.
 * `CHECK-016` — исключение placeholder-ссылок `UUID.adoc`, `previous.adoc` и `next.adoc` из проверки битых ссылок.
 
+== Система разработки и OpenSpec
+
+* `DEV-001` — нормативный baseline требований хранится в `openspec/specs/*/spec.md`; legacy `requirements.adoc` сохраняют stable-ID и status traceability.
+* `DEV-002` — `openspec/config.yaml` фиксирует architecture, data, development-agent и specification policy проекта.
+* `DEV-003` — `AGENTS.MD` является общей точкой входа Marta для разработки repository и маршрутизации семи repo-local development skills.
+* `DEV-004` — repo-local development skills разделяют implementation, OpenSpec changes, script review, system review, validation, migration и release workflows.
+* `DEV-005` — общие skill contracts и authorization policy хранятся канонически в `.scripts/dev/docs/skill-contracts/` и копируются в skill references.
+* `DEV-006` — `.scripts/dev/zt-openspec-check.zsh` проверяет полное однозначное покрытие legacy requirement ID OpenSpec baseline и наличие Scenario.
+* `DEV-007` — `.scripts/dev/zt-agent-skills-check.zsh` проверяет routing descriptions, authorization, canonical reference drift и OpenSpec references skills Marta.
+* `DEV-008` — `tests/zt-openspec-coverage.zsh` и `tests/zt-agent-skills-check.zsh` содержат negative fixtures для development checker regression.
+* `DEV-009` — `tests/zt-agent-routing.zsh` предоставляет opt-in live routing smoke test для семи skills Marta без выполнения development operations.
+* `DEV-010` — `tests/zt-all.zsh` объединяет статические проверки системы разработки и пропускает live routing без явного `ZK_RUN_LIVE_ROUTING=1`.
+* `DEV-011` — `tests/zt-repository-boundary.zsh` проверяет public/private boundary agent artifacts, а `tests/zt-publish-development-artifacts.zsh` проверяет публикацию development directories, sanitized `AGENTS.MD` и исключение персональных agent-файлов во временном destination.
+
 == Обслуживание и инфраструктура
 
 * `MAINT-001` — исправление отсутствующего завершающего LF в CLI-скриптах через `zt-scripts-patch.zsh`.
@@ -225,14 +239,14 @@ feature list и прежние стабильные ID.
 * `PUBLISH-002` — dry-run является режимом по умолчанию и поддерживается явно через `--dry-run`.
 * `PUBLISH-003` — реальное копирование выполняется только с `--apply`.
 * `PUBLISH-004` — источник и назначение переопределяются через `ZK_DEV_HOME` и `ZK_PUBLISH_HOME`.
-* `PUBLISH-005` — перед копированием проверяются источник, назначение, `.scripts/`, `LICENSE`, `README.MD` и `.gitignore`.
-* `PUBLISH-006` — содержимое `.scripts/` копируется через `rsync` в `.scripts/` назначения.
-* `PUBLISH-007` — `LICENSE`, `README.MD` и `.gitignore` копируются в корень назначения.
-* `PUBLISH-008` — `.DS_Store` исключается из dry-run и реального копирования `.scripts/`.
+* `PUBLISH-005` — перед копированием проверяются источник, назначение, `.scripts/`, `openspec/`, `skills/`, `tests/`, `LICENSE`, `README.MD`, `AGENTS.MD` и `.gitignore`.
+* `PUBLISH-006` — `.scripts/`, `openspec/`, `skills/` и `tests/` копируются через `rsync` как отдельные exact-mirror directory trees.
+* `PUBLISH-007` — `LICENSE`, `README.MD`, `AGENTS.MD` и `.gitignore` копируются в корень назначения.
+* `PUBLISH-008` — `.DS_Store` исключается из dry-run и реального копирования публикуемых directory trees.
 * `PUBLISH-009` — скрипт не выполняет `git add`, `git commit` или `git push`.
 * `PUBLISH-010` — ошибка создания целевого каталога или любого вызова `rsync` завершает публикацию с ненулевым кодом и сообщением в stderr.
-* `PUBLISH-011` — destination `.scripts/` является exact mirror source: dry-run показывает удаления, а `--apply` удаляет устаревшие файлы только внутри destination `.scripts/`.
-* `PUBLISH-012` — `.DS_Store` и каталоги `__MACOSX/` исключаются и удаляются из destination mirror.
+* `PUBLISH-011` — destination `.scripts/`, `openspec/`, `skills/` и `tests/` являются отдельными exact mirrors source: dry-run показывает удаления, а `--apply` удаляет устаревшие файлы только внутри соответствующих destination trees.
+* `PUBLISH-012` — `.DS_Store` и каталоги `__MACOSX/` исключаются и удаляются из публикуемых destination mirrors.
 
 == Архитектурные слои создания документов
 

@@ -1,13 +1,16 @@
 = Требования к плагину Zettelkasten
-:revdate: 2026-08-29
-:revnumber: 2
+:revdate: 2026-08-30
+:revnumber: 3
 :toc:
 
 == Назначение
 
-Документ задаёт требования только к реализации под `.scripts/zettelkasten/`.
-Плагин добавляет Zettelkasten policy поверх нейтральных API движка. Требования
-движка находятся в `../../docs/requirements.adoc`.
+Документ сохраняется как legacy traceability source для требований реализации
+под `.scripts/zettelkasten/` и стабильных ID `ZP-*`. Нормативный baseline этих
+требований находится в `../../../openspec/specs/*/spec.md`.
+
+Плагин добавляет Zettelkasten policy поверх нейтральных API движка. Legacy
+traceability движка находится в `../../docs/requirements.adoc`.
 
 == Граница плагина
 

@@ -6,6 +6,8 @@
 
 # Русский
 
+Нормативный baseline требований: `openspec/specs/*/spec.md`. Legacy stable-ID traceability: `.scripts/docs/requirements.adoc` и `.scripts/zettelkasten/docs/requirements.adoc`.
+
 ## Описание
 
 Zettelkasten-CLI — это попытка сделать систему управления знаниями настолько простой, насколько это вообще возможно.
@@ -98,17 +100,33 @@ Reduce создаёт новое поколение Topic, сохраняя ис
 
 ---
 
-## Управляемые навыки
+## Агентная система разработки
 
-Проект документирует не только пользовательские знания, но и собственное устройство.
+Разработка repository теперь использует ту же specification-driven схему, что и English Reading Lab:
 
-Для этого используется трёхуровневая модель authority и связанная с ней
+```text
+AGENTS.MD
+    ↓
+repo-local skills/zettelkasten-* (Marta)
+    ↓
+OpenSpec baseline + scripts + tests
+    ↓
+legacy stable-ID traceability + Feature List
+```
+
+Семь development skills разделяют implementation, OpenSpec changes, script review, system review, validation, migration и release. Общие operational contracts хранятся в `.scripts/dev/docs/skill-contracts/`; drift skills и coverage OpenSpec проверяются через `.scripts/dev/zt-agent-skills-check.zsh` и `.scripts/dev/zt-openspec-check.zsh`. Интеграционные проверки development agent должны использовать временный `ZK_HOME`, а не пользовательские документы.
+
+## Управляемые runtime-навыки
+
+Существующий operational слой пользовательских managed skills сохраняется отдельно и не заменяется skills Marta.
+
+Для runtime-операций используется трёхуровневая модель authority и связанная с ней
 история пояснительных редакций:
 
 ```text
-AGENTS.md
+AGENTS.MD
         ↓
-managed zettelkasten-* skills
+managed operational zettelkasten-* skills
         ↓
 scripts + requirements
         ↘
@@ -131,6 +149,8 @@ unattended deterministic primitives.
 
 
 # English
+
+Normative requirements baseline: `openspec/specs/*/spec.md`. Legacy stable-ID traceability remains in `.scripts/docs/requirements.adoc` and `.scripts/zettelkasten/docs/requirements.adoc`.
 
 ## Description
 
@@ -200,17 +220,33 @@ This allows the knowledge base to evolve without losing its past.
 
 ---
 
-## Managed Skills
+## Development Agent System
 
-The repository documents not only user knowledge but also its own behaviour.
+Repository development now follows the same specification-driven pattern as English Reading Lab:
+
+```text
+AGENTS.MD
+    ↓
+repo-local skills/zettelkasten-* (Marta)
+    ↓
+OpenSpec baseline + scripts + tests
+    ↓
+legacy stable-ID traceability + Feature List
+```
+
+Seven development skills separate implementation, OpenSpec changes, script review, system review, validation, migration, and release. Shared operational contracts live under `.scripts/dev/docs/skill-contracts/`; `.scripts/dev/zt-agent-skills-check.zsh` and `.scripts/dev/zt-openspec-check.zsh` detect skill drift and OpenSpec coverage regressions. Development integration tests use a temporary `ZK_HOME` rather than user knowledge documents.
+
+## Managed Runtime Skills
+
+The existing user-facing operational managed-skill layer remains separate and is not replaced by Marta's development skills.
 
 It follows a three-level authority model with an adjacent explanatory revision
 history:
 
 ```text
-AGENTS.md
+AGENTS.MD
         ↓
-managed zettelkasten-* skills
+managed operational zettelkasten-* skills
         ↓
 scripts + requirements
         ↘

@@ -1,0 +1,77 @@
+schema: spec-driven
+
+context: |
+  Project: Zettelkasten-CLI, a local AsciiDoc/Git/Zsh knowledge-management CLI.
+
+  Normative baseline:
+  - openspec/specs/*/spec.md is the normative requirements baseline.
+  - .scripts/docs/requirements.adoc and .scripts/zettelkasten/docs/requirements.adoc are legacy traceability sources with stable IDs and implementation-status metadata.
+  - Every active legacy requirement ID must be represented exactly once in the OpenSpec baseline.
+
+  Architecture:
+  - .scripts/lib contains domain-neutral primitives.
+  - .scripts/objects contains canonical persistent object constructors.
+  - .scripts/zettelkasten contains Zettelkasten-specific workflow and policy.
+  - top-level .scripts/zt-*.zsh contains host CLI and compatibility entrypoints.
+  - user knowledge remains local AsciiDoc and Git remains the primary history mechanism.
+
+  Data constraints:
+  - Persistent documents use UUID v1 identities and UUID.adoc filenames.
+  - Existing UUIDs and canonical internal links are compatibility-sensitive.
+  - Persistent document types are note, memo, todo, diary, and topic.
+  - Preserve :type:, :key-topic:, :deprecated:, Diary chain, all-todays and Workspace semantics when affected.
+
+  Development-agent constraints:
+  - Marta is a repository development agent, not a runtime knowledge-management agent.
+  - Repo-local development skills do not replace external managed operational skills mapped to top-level zt-*.zsh commands.
+  - Ordinary development must not mutate user Vault data; integration tests use a temporary ZK_HOME.
+
+  Legacy status policy:
+  - IMPLEMENTED means executable behavior has been confirmed.
+  - INVARIANT is a mandatory compatibility/data/architecture property.
+  - PROCESS governs development, migration, or validation procedure.
+  - ROADMAP is a target contract and must not be described as implemented until code, verification, Feature List, and legacy status are aligned.
+
+  Specification policy:
+  - Prefer small coherent changes over broad redesigns.
+  - Specifications describe required externally verifiable behavior or explicit engineering process contracts.
+  - Preserve stable legacy requirement IDs.
+  - Write prose in Russian. Keep code identifiers, paths, CLI commands, fields, and stable IDs unchanged.
+
+rules:
+  proposal:
+    - State the problem, current behavior, desired behavior, and non-goals before implementation ideas.
+    - Identify affected capabilities and stable legacy requirement IDs.
+    - Explicitly identify compatibility, migration, destructive-operation, user-data, and architecture impact.
+    - Keep unrelated refactoring outside the active change.
+
+  specs:
+    - Requirements must use MUST or SHALL for normative behavior/process.
+    - Every normative requirement must have at least one verifiable Scenario.
+    - Preserve ROADMAP versus IMPLEMENTED distinction from legacy traceability.
+    - Do not silently redefine existing UUID, link, path, type, key-topic, deprecated, Diary, or Workspace semantics.
+
+  design:
+    - Preserve layer dependency direction and user-data boundaries.
+    - Explain non-obvious architecture decisions and rejected alternatives.
+    - Include migration, rollback/recovery, compatibility, and Git-safety strategy when affected.
+
+  tasks:
+    - Every implementation task must trace to proposal, specs, or design.
+    - Include tests or other verification that demonstrates compliance.
+    - Use a temporary ZK_HOME for integration tests unless validating a real Vault read-only by explicit request.
+    - Do not add unrelated cleanup to the active change.
+
+operations:
+  apply:
+    guidance:
+      - Implement only behavior covered by the active change.
+      - If implementation reveals a specification gap, update change artifacts before expanding scope.
+      - Preserve unrelated local changes and never use destructive Git reset as cleanup.
+      - Run relevant tests and development checks before marking tasks complete.
+
+  archive:
+    guidance:
+      - Do not archive with unresolved implementation/specification/procedure discrepancies.
+      - Do not archive while required tasks remain incomplete.
+      - Preserve archived changes as the historical reason the baseline changed.
