@@ -329,3 +329,18 @@ Development, migration или runtime process MUST соблюдать следу
 - **WHEN** соответствующий workflow выполняется или проверяется
 - **THEN** наблюдаемое поведение SHALL соответствовать requirement
 - **AND** regression SHALL считаться validation failure
+
+### Requirement: CHECK-023 — runtime core проверяется на временном Zettelkasten
+
+**Legacy status:** `IMPLEMENTED`.
+**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+
+Repository regression suite MUST на временном `ZK_HOME` проверять canonical constructors Note, Memo, Todo, Diary и Topic, обязательные metadata, UUID filename, успешную проверку валидного Vault и обнаружение broken link через `zt-check`.
+
+#### Scenario: Runtime constructors and checker are exercised without user data
+
+- **GIVEN** создан новый временный Zettelkasten
+- **WHEN** runtime core integration test создаёт все canonical persistent object types и запускает `zt-check`
+- **THEN** корректный fixture SHALL пройти validation
+- **AND** broken link SHALL привести к validation failure
+- **AND** пользовательский Vault SHALL оставаться неизменным

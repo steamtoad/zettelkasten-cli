@@ -213,12 +213,13 @@ feature list и прежние стабильные ID.
 * `DEV-003` — `AGENTS.MD` является общей точкой входа Marta для разработки repository и маршрутизации семи repo-local development skills.
 * `DEV-004` — repo-local development skills разделяют implementation, OpenSpec changes, script review, system review, validation, migration и release workflows.
 * `DEV-005` — общие skill contracts и authorization policy хранятся канонически в `.scripts/dev/docs/skill-contracts/` и копируются в skill references.
-* `DEV-006` — `.scripts/dev/zt-openspec-check.zsh` проверяет полное однозначное покрытие legacy requirement ID OpenSpec baseline и наличие Scenario.
+* `DEV-006` — `.scripts/dev/zt-openspec-check.zsh` проверяет полное однозначное покрытие legacy requirement ID OpenSpec baseline, совпадение legacy status и наличие Scenario.
 * `DEV-007` — `.scripts/dev/zt-agent-skills-check.zsh` проверяет routing descriptions, authorization, canonical reference drift и OpenSpec references skills Marta.
-* `DEV-008` — `tests/zt-openspec-coverage.zsh` и `tests/zt-agent-skills-check.zsh` содержат negative fixtures для development checker regression.
+* `DEV-008` — `tests/zt-openspec-coverage.zsh` и `tests/zt-agent-skills-check.zsh` содержат negative fixtures для ID, status, Scenario, routing, authorization и reference drift.
 * `DEV-009` — `tests/zt-agent-routing.zsh` предоставляет opt-in live routing smoke test для семи skills Marta без выполнения development operations.
 * `DEV-010` — `tests/zt-all.zsh` объединяет статические проверки системы разработки и пропускает live routing без явного `ZK_RUN_LIVE_ROUTING=1`.
 * `DEV-011` — `tests/zt-repository-boundary.zsh` проверяет public/private boundary agent artifacts, а `tests/zt-publish-development-artifacts.zsh` проверяет публикацию development directories, sanitized `AGENTS.MD` и исключение персональных agent-файлов во временном destination.
+* `DEV-012` — `tests/zt-runtime-core.zsh` на временном `ZK_HOME` проверяет пять canonical constructors, metadata/UUID contract и положительный/отрицательный `zt-check` без доступа к пользовательскому Vault.
 
 == Обслуживание и инфраструктура
 

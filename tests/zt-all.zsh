@@ -17,6 +17,7 @@ repo="${0:A:h:h}"
 "$repo/tests/zt-agent-skills-check.zsh"
 "$repo/tests/zt-repository-boundary.zsh"
 "$repo/tests/zt-publish-development-artifacts.zsh"
+"$repo/tests/zt-runtime-core.zsh"
 "$repo/tests/zt-agent-routing.zsh"
 
 print -r -- 'PASS: Zettelkasten-CLI development checks'

@@ -160,16 +160,16 @@ Development, migration или runtime process MUST соблюдать следу
 - **THEN** указанное process rule SHALL быть выполнено
 - **AND** его обход SHALL считаться нарушением project contract
 
-### Requirement: DEVAGENT-012 — .scripts/dev/zt-openspec-check.zsh проверяет, что все действующие legacy requirement ID host...
+### Requirement: DEVAGENT-012 — OpenSpec checker сохраняет ID, status и Scenario traceability
 
 **Legacy status:** `PROCESS`.
 **Traceability:** `.scripts/docs/requirements.adoc` → section `Агент разработки и repo-local development skills`.
 
-Development, migration или runtime process MUST соблюдать следующее правило: `.scripts/dev/zt-openspec-check.zsh` проверяет, что все действующие legacy requirement ID host CLI и Zettelkasten plugin покрыты OpenSpec baseline ровно один раз и имеют проверяемый Scenario.
+Development, migration или runtime process MUST соблюдать следующее правило: `.scripts/dev/zt-openspec-check.zsh` проверяет, что все действующие legacy requirement ID host CLI и Zettelkasten plugin покрыты OpenSpec baseline ровно один раз, сохраняют legacy status и имеют проверяемый Scenario.
 
-#### Scenario: DEVAGENT-012 contract is verified
+#### Scenario: Legacy status drift is rejected
 
-- **GIVEN** выполняется изменение, проверка или операция, к которой относится это process requirement
-- **WHEN** workflow достигает соответствующего шага
-- **THEN** указанное process rule SHALL быть выполнено
-- **AND** его обход SHALL считаться нарушением project contract
+- **GIVEN** legacy requirement и соответствующий OpenSpec requirement имеют разные status
+- **WHEN** `.scripts/dev/zt-openspec-check.zsh` проверяет baseline
+- **THEN** checker SHALL завершиться ненулевым кодом
+- **AND** diagnostic SHALL назвать requirement ID и оба status

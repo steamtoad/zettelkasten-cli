@@ -17,8 +17,10 @@ fi
 command -v openclaw >/dev/null || { print -u2 -- 'FAIL: openclaw CLI is required'; exit 1; }
 command -v jq >/dev/null || { print -u2 -- 'FAIL: jq is required'; exit 1; }
 
+marta_agent_id="${ZK_MARTA_AGENT_ID:-main}"
+
 prompt='Routing smoke test only. Do not call tools and do not modify anything. Return exactly one compact JSON object mapping keys development, openspec, script_review, system_review, validation, migration, release to the exact Marta skill name you would select for: implement a scoped CLI fix; design a requirements change; review Zsh scripts; audit architecture/maturity; run repository checks; migrate stored documents/layout; prepare and publish a version. No markdown and no explanation.'
-output="$(openclaw agent --agent marta --session-key agent:marta:zt-routing-smoke --thinking minimal --timeout 180 --json --message "$prompt")"
+output="$(openclaw agent --agent "$marta_agent_id" --session-key "agent:${marta_agent_id}:zt-routing-smoke" --thinking minimal --timeout 180 --json --message "$prompt")"
 
 expected='{
   "development":"zettelkasten-development",

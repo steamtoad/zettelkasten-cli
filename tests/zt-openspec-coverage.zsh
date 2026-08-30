@@ -55,4 +55,15 @@ p.write_text(s[:start]+s[end:])
 PY
 expect_failure 'requirement has no Scenario'
 
+reset_fixture
+python3 - "$fixture/openspec/uuid/spec.md" <<'PY'
+from pathlib import Path
+import sys
+p = Path(sys.argv[1])
+s = p.read_text()
+s = s.replace('**Legacy status:** `INVARIANT`.', '**Legacy status:** `ROADMAP`.', 1)
+p.write_text(s)
+PY
+expect_failure 'legacy/OpenSpec status mismatch: UUID-001'
+
 print -r -- 'PASS: OpenSpec coverage checker negative fixtures'

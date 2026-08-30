@@ -174,7 +174,7 @@
 * `DEVAGENT-009 [PROCESS]` — сложная migration или массовая mutation требует отдельного dry-run/plan, проверки Git preconditions, явного scope и проверки целостности после применения.
 * `DEVAGENT-010 [PROCESS]` — release workflow сначала выполняет dry-run публикации и verification; apply, commit, tag и push не считаются подразумеваемыми одним фактом подготовки release.
 * `DEVAGENT-011 [PROCESS]` — `.scripts/dev/zt-agent-skills-check.zsh` проверяет packaging development skills, canonical references, authorization levels и корректность OpenSpec requirement references.
-* `DEVAGENT-012 [PROCESS]` — `.scripts/dev/zt-openspec-check.zsh` проверяет, что все действующие legacy requirement ID host CLI и Zettelkasten plugin покрыты OpenSpec baseline ровно один раз и имеют проверяемый Scenario.
+* `DEVAGENT-012 [PROCESS]` — `.scripts/dev/zt-openspec-check.zsh` проверяет, что все действующие legacy requirement ID host CLI и Zettelkasten plugin покрыты OpenSpec baseline ровно один раз, сохраняют legacy status и имеют проверяемый Scenario.
 
 == Миграции
 
@@ -363,6 +363,7 @@
 * `CHECK-020 [ROADMAP]` — интеграционный тест подтверждает, что Memo получает тематический ключ из `:key-topic:` выбранной Topic, а не из её заголовка или `:description:`.
 * `CHECK-021 [ROADMAP]` — интеграционный тест подтверждает, что ошибка разбора заголовка не приводит к добавлению `:deprecated:` в тело или конец документа.
 * `CHECK-022 [IMPLEMENTED]` — metadata scanner прекращает разбор header на первой пустой строке после title и не принимает атрибутоподобные строки body за обязательные metadata или `:deprecated:`.
+* `CHECK-023 [IMPLEMENTED]` — repository regression suite на временном `ZK_HOME` проверяет canonical constructors Note, Memo, Todo, Diary и Topic, обязательные metadata, UUID filename, успешную проверку валидного Vault и обнаружение broken link через `zt-check`.
 
 == Workflow
 

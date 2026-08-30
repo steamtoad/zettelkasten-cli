@@ -28,16 +28,37 @@ fail() {
 
 legacy_tmp="$(mktemp "${TMPDIR:-/tmp}/zt-legacy-ids.XXXXXX")"
 spec_tmp="$(mktemp "${TMPDIR:-/tmp}/zt-openspec-ids.XXXXXX")"
-trap 'rm -f -- "$legacy_tmp" "$spec_tmp"' EXIT HUP INT TERM
+legacy_status_tmp="$(mktemp "${TMPDIR:-/tmp}/zt-legacy-status.XXXXXX")"
+spec_status_tmp="$(mktemp "${TMPDIR:-/tmp}/zt-openspec-status.XXXXXX")"
+trap 'rm -f -- "$legacy_tmp" "$spec_tmp" "$legacy_status_tmp" "$spec_status_tmp"' EXIT HUP INT TERM
 
 rg -o '`[A-Z][A-Z0-9-]*-[0-9]{3} \[(IMPLEMENTED|ROADMAP|INVARIANT|PROCESS)\]`' \
   "$host_requirements" "$plugin_requirements" \
   | sed -E 's/.*`([A-Z][A-Z0-9-]*-[0-9]{3}) .*/\1/' \
   | sort > "$legacy_tmp"
 
+rg -o '`[A-Z][A-Z0-9-]*-[0-9]{3} \[(IMPLEMENTED|ROADMAP|INVARIANT|PROCESS)\]`' \
+  "$host_requirements" "$plugin_requirements" \
+  | sed -E 's/.*`([A-Z][A-Z0-9-]*-[0-9]{3}) \[([^]]+)\]`.*/\1\t\2/' \
+  | sort > "$legacy_status_tmp"
+
 rg -o '^### Requirement: [A-Z][A-Z0-9-]*-[0-9]{3} —' "$openspec_dir" \
   | sed -E 's/.*Requirement: ([A-Z][A-Z0-9-]*-[0-9]{3}) —/\1/' \
   | sort > "$spec_tmp"
+
+awk '
+  /^### Requirement: [A-Z][A-Z0-9-]*-[0-9][0-9][0-9] —/ {
+    id=$3
+    next
+  }
+  /^\*\*Legacy status:\*\* `(IMPLEMENTED|ROADMAP|INVARIANT|PROCESS)`\./ && id != "" {
+    status=$0
+    sub(/^\*\*Legacy status:\*\* `/, "", status)
+    sub(/`\.$/, "", status)
+    print id "\t" status
+    id=""
+  }
+' "$openspec_dir"/*/spec.md | sort > "$spec_status_tmp"
 
 while IFS= read -r requirement_id; do
   [[ -n "$requirement_id" ]] || continue
@@ -54,6 +75,12 @@ done < <(sort -u "$spec_tmp")
 while IFS= read -r duplicate; do
   [[ -z "$duplicate" ]] || fail "duplicate OpenSpec requirement ID: $duplicate"
 done < <(uniq -d "$spec_tmp")
+
+while IFS=$'\t' read -r requirement_id legacy_status; do
+  [[ -n "$requirement_id" ]] || continue
+  spec_status="$(awk -F '\t' -v id="$requirement_id" '$1 == id { print $2; exit }' "$spec_status_tmp")"
+  [[ "$spec_status" == "$legacy_status" ]] || fail "legacy/OpenSpec status mismatch: $requirement_id (legacy=$legacy_status, OpenSpec=${spec_status:-missing})"
+done < "$legacy_status_tmp"
 
 while IFS= read -r spec_file; do
   awk -v file="$spec_file" '
