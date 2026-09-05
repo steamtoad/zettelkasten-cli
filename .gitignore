@@ -4,6 +4,8 @@
 *.swp
 *.swo
 *~
+/audit/
+
 
 # Marta personal/local agent workspace
 /HEARTBEAT.md
