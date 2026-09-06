@@ -14,7 +14,6 @@
 * `ZP-FEATURE-002` — интерактивное создание датированного Memo.
 * `ZP-FEATURE-003` — интерактивное создание Topic.
 * `ZP-FEATURE-004` — интерактивное создание датированного Todo.
-* `ZP-FEATURE-005` — создание Diary и обновление Diary chain.
 * `ZP-FEATURE-006` — регистрация каждого успешно созданного объекта в `all-todays`.
 * `ZP-FEATURE-007` — открытие созданного документа в Vim и вывод ссылки.
 
@@ -29,16 +28,16 @@
 
 == Policy libraries
 
-* `ZP-FEATURE-020` — `today.zsh` полностью владеет форматом и регистрацией `all-todays`.
+* `ZP-FEATURE-020` — `today.zsh` регистрирует Note, Memo, Topic и Todo в `all-todays`; Diary использует собственный helper с тем же форматом.
 * `ZP-FEATURE-021` — `bindings.zsh` владеет выбором и наследованием связей.
-* `ZP-FEATURE-022` — `workspace.zsh` предоставляет Zettelkasten-specific naming и link helpers.
 
 == Compatibility
 
-* `ZP-FEATURE-030` — пять прежних top-level creation entrypoints делегируют плагину без изменения пользовательских команд.
+* `ZP-FEATURE-030` — четыре прежних top-level creation entrypoints делегируют плагину без изменения пользовательских команд.
 
 == Не входит в текущий плагин
 
-Поиск, Read, Check, Inbox, Workspace commands, Continue, Reduce, Refine,
+Diary, Inbox и Workspace реализованы в отдельных sibling plugins.
+Поиск, Read, Check, Continue, Reduce, Refine,
 публикация и skills tooling пока реализованы как host CLI. Они не заявлены как
 plugin features, даже если работают с данными Zettelkasten.

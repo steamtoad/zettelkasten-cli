@@ -19,12 +19,16 @@ reset_fixture() {
   cp -R "$repo/openspec/specs" "$fixture/openspec"
   cp "$repo/.scripts/docs/requirements.adoc" "$fixture/host.adoc"
   cp "$repo/.scripts/zettelkasten/docs/requirements.adoc" "$fixture/plugin.adoc"
+  local plugin
+  for plugin in diary inbox workspace; do
+    cp "$repo/.scripts/$plugin/docs/requirements.adoc" "$fixture/$plugin.adoc"
+  done
 }
 
 expect_failure() {
   local expected="$1" output rc
   set +e
-  output="$(ZK_OPENSPEC_DIR="$fixture/openspec" ZK_HOST_REQUIREMENTS="$fixture/host.adoc" ZK_PLUGIN_REQUIREMENTS="$fixture/plugin.adoc" "$checker" 2>&1)"
+  output="$(ZK_OPENSPEC_DIR="$fixture/openspec" ZK_HOST_REQUIREMENTS="$fixture/host.adoc" ZK_PLUGIN_REQUIREMENTS="$fixture/plugin.adoc" ZK_DIARY_REQUIREMENTS="$fixture/diary.adoc" ZK_INBOX_REQUIREMENTS="$fixture/inbox.adoc" ZK_WORKSPACE_REQUIREMENTS="$fixture/workspace.adoc" "$checker" 2>&1)"
   rc=$?
   set -e
   [[ "$rc" == 10 ]] || { print -u2 -- "FAIL: expected exit 10, got $rc"; print -u2 -- "$output"; return 1; }
@@ -32,7 +36,7 @@ expect_failure() {
 }
 
 reset_fixture
-ZK_OPENSPEC_DIR="$fixture/openspec" ZK_HOST_REQUIREMENTS="$fixture/host.adoc" ZK_PLUGIN_REQUIREMENTS="$fixture/plugin.adoc" "$checker" >/dev/null
+ZK_OPENSPEC_DIR="$fixture/openspec" ZK_HOST_REQUIREMENTS="$fixture/host.adoc" ZK_PLUGIN_REQUIREMENTS="$fixture/plugin.adoc" ZK_DIARY_REQUIREMENTS="$fixture/diary.adoc" ZK_INBOX_REQUIREMENTS="$fixture/inbox.adoc" ZK_WORKSPACE_REQUIREMENTS="$fixture/workspace.adoc" "$checker" >/dev/null
 
 reset_fixture
 sed -i.bak '/^### Requirement: UUID-001 —/,/^#### Scenario: UUID-001 contract is verified/ { /^### Requirement: UUID-001 —/d; }' "$fixture/openspec/uuid/spec.md"
@@ -65,5 +69,17 @@ s = s.replace('**Legacy status:** `INVARIANT`.', '**Legacy status:** `ROADMAP`.'
 p.write_text(s)
 PY
 expect_failure 'legacy/OpenSpec status mismatch: UUID-001'
+
+reset_fixture
+rm "$fixture/diary.adoc"
+expect_failure 'requirements not found:'
+
+reset_fixture
+cat "$fixture/inbox.adoc" >> "$fixture/workspace.adoc"
+expect_failure 'missing or duplicate legacy traceability: IP-ARCH-001'
+
+reset_fixture
+sed -i.bak 's/WP-ARCH-001 \[IMPLEMENTED\]/WP-ARCH-001 [ROADMAP]/' "$fixture/workspace.adoc"
+expect_failure 'legacy/OpenSpec status mismatch: WP-ARCH-001'
 
 print -r -- 'PASS: OpenSpec coverage checker negative fixtures'

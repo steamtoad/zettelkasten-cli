@@ -102,24 +102,13 @@
 * `WORKSPACE-009 [IMPLEMENTED]` — `zt-workspace-create.zsh` создаёт Workspace с разделом `Документы`, отклоняет пустые, скрытые и содержащие разделители пути названия и не перезаписывает существующий файл.
 * `WORKSPACE-010 [IMPLEMENTED]` — `zt-workspace-add.zsh` добавляет выбранные активные постоянные документы идемпотентными относительными ссылками `link:../notes/UUID.adoc[...]`.
 * `WORKSPACE-011 [IMPLEMENTED]` — `zt-workspace-open.zsh` выводит выбранный Workspace в stdout без изменения файла.
-* `WORKSPACE-012 [IMPLEMENTED]` — `zt-workspace-remove.zsh` через один `fzf --multi` выбирает и одним атомарным переписыванием удаляет несколько ссылок на активные, deprecated и отсутствующие targets Workspace вида `../notes/UUID.adoc`.
-* `WORKSPACE-013 [IMPLEMENTED]` — удаление ссылки из Workspace игнорирует поддерживаемые блоки кода, выполняется через временный файл и сохраняет режим исходного файла.
+* `WORKSPACE-012 [IMPLEMENTED]` — Workspace remove SHALL через один fzf --multi выбирать active/deprecated/broken targets ../notes/UUID.adoc и одним atomic rewrite удалять только выбранные link macros за пределами supported code blocks. Не выбранные ссылки и окружающий ручной текст MUST сохраняться; bullet line удаляется целиком только если после удаления macro содержит лишь bullet marker и whitespace.
+* `WORKSPACE-013 [IMPLEMENTED]` — Workspace remove MUST игнорировать supported code blocks, создавать temporary file в том же каталоге и filesystem, что и Workspace, сохранять исходный file mode и заменять файл только после успешной подготовки. Ошибка подготовки или замены MUST оставлять исходный Workspace неизменным и удалять созданный temporary file.
 * `WORKSPACE-014 [INVARIANT]` — операции Workspace не изменяют документы, на которые ссылается Workspace.
 
 == Inbox Layer
 
-* `INBOX-001 [INVARIANT]` — источник захвата не является источником истины.
-* `INBOX-002 [INVARIANT]` — источником истины после будущего импорта остаются постоянные AsciiDoc-документы; raw/processed являются staging layer.
-* `INBOX-003 [ROADMAP]` — импорт является идемпотентным.
-* `INBOX-004 [IMPLEMENTED]` — raw capture содержит `:captured-at:` и `:source:` в заголовке AsciiDoc.
-* `INBOX-005 [IMPLEMENTED]` — захват в `inbox/raw` и перевод в `inbox/processed` являются разными явными операциями.
-* `INBOX-006 [ROADMAP]` — Inbox Layer расширяется для новых источников без изменения канонической модели документов.
-* `INBOX-007 [IMPLEMENTED]` — `zt-inbox.zsh` создаёт raw-элемент с однострочным непустым заголовком и защищает существующие файлы от перезаписи.
-* `INBOX-008 [IMPLEMENTED]` — `zt-inbox.zsh` открывает созданный элемент через непустой существующий `$EDITOR`, включая editor command с аргументами.
-* `INBOX-009 [IMPLEMENTED]` — `zt-processed.zsh` обрабатывает только непосредственный обычный файл `inbox/raw` и отклоняет внешние, вложенные и symlink-пути.
-* `INBOX-010 [IMPLEMENTED]` — перевод в processed не перезаписывает существующее назначение и атомарно резервирует destination до удаления raw-файла.
-* `INBOX-011 [IMPLEMENTED]` — оба Inbox-скрипта используют `ZK_HOME`; `ZETTELKASTEN_ROOT` поддерживается как совместимый fallback.
-* `INBOX-012 [INVARIANT]` — raw и processed сохраняют исходное имя и содержимое; операция processed не создаёт постоянную Note/Memo и не регистрирует элемент в `all-todays`.
+Требования перенесены в `.scripts/inbox/docs/requirements.adoc`; stable IDs сохранены.
 
 == Архитектура
 
@@ -136,12 +125,12 @@
 * `ARCH-011 [INVARIANT]` — до реализации `zcreate --no-edit` интерактивные `zt-note`, `zt-memo` и другие creation scripts не считаются unattended deterministic agent primitives; агент использует их поведение как механический reference и запускает их только в подходящем интерактивном контексте.
 * `ARCH-012 [ROADMAP]` — после реализации `zcreate --no-edit` managed skills используют `zcreate` как детерминированную границу между семантическими решениями агента и файловой моделью Zettelkasten.
 * `ARCH-013 [IMPLEMENTED]` — `.scripts/objects/` содержит нейтральные constructors постоянных типов Note, Memo, Todo, Diary и Topic; constructors гарантируют UUID-файл, обязательные метаданные, `:type:` и специфический object contract, но не выполняют интерактивный workflow.
-* `ARCH-014 [IMPLEMENTED]` — `.scripts/zettelkasten/` и `.scripts/zettelkasten/lib/` содержат Zettelkasten-specific policy: интерактивный ввод, bindings, `all-todays`, Diary state и другие workflow-правила.
+* `ARCH-014 [IMPLEMENTED]` — `.scripts/zettelkasten/` и `.scripts/zettelkasten/lib/` содержат Zettelkasten-specific policy для Note, Memo, Topic и Todo, включая интерактивный ввод, bindings, `all-todays` и другие workflow-правила; Diary workflow и Diary state принадлежат отдельному `.scripts/diary/`.
 * `ARCH-015 [INVARIANT]` — `.scripts/lib/` содержит только нейтральные примитивы, доступные object layer, Zettelkasten layer и будущим plugin layers.
-* `ARCH-016 [INVARIANT]` — разрешённые зависимости: `objects -> lib`, `zettelkasten -> objects`, `zettelkasten -> lib`, `zettelkasten -> zettelkasten/lib`; зависимости `lib -> zettelkasten` и `objects -> zettelkasten` запрещены.
-* `ARCH-017 [IMPLEMENTED]` — top-level `zt-note.zsh`, `zt-memo.zsh`, `zt-keytopic.zsh`, `zt-todo.zsh` и `zt-diary.zsh` сохранены как compatibility entrypoints и делегируют каноническим workflow в `.scripts/zettelkasten/`.
+* `ARCH-016 [INVARIANT]` — Zettelkasten-CLI MUST сохранять следующий инвариант: разрешены зависимости `lib -> lib`, `objects -> lib`, `zettelkasten -> objects/lib/собственный код`, `diary -> objects/lib/собственный код`, `inbox -> lib/собственный код`, `workspace -> lib/собственный код`. Здесь собственный код включает library того же plugin. Зависимости между sibling plugins (`zettelkasten`, `diary`, `inbox`, `workspace`), из `lib` в objects/plugins, из `objects` в plugins и из Inbox/Workspace в objects запрещены. Boundary checker MUST проверять executable dependencies внутри command substitution и compound shell statements; bare relative source без directory anchor MUST диагностироваться как неподтверждённая dependency.
+* `ARCH-017 [IMPLEMENTED]` — top-level `zt-note.zsh`, `zt-memo.zsh`, `zt-keytopic.zsh` и `zt-todo.zsh` сохранены как compatibility entrypoints и делегируют каноническим workflow в `.scripts/zettelkasten/`; top-level `zt-diary.zsh` сохранён как compatibility entrypoint и делегирует каноническому workflow в `.scripts/diary/`.
 * `ARCH-018 [PROCESS]` — Zettelkasten-specific helper получает namespace `zt_*`; нейтральная инфраструктура и object constructors используют `zk_*`.
-* `ARCH-019 [IMPLEMENTED]` — в переходной архитектуре host CLI может напрямую использовать `.scripts/zettelkasten/lib/`: Continue, Reduce и Refine используют `today.zsh`, Continue использует `bindings.zsh`, Workspace-команды используют `workspace.zsh`; эта зависимость должна быть удалена или перенесена вместе с соответствующим workflow при дальнейшей миграции.
+* `ARCH-019 [IMPLEMENTED]` — в переходной архитектуре host CLI может напрямую использовать `.scripts/zettelkasten/lib/`: Continue, Reduce и Refine используют `today.zsh`, а Continue использует `bindings.zsh`; Workspace-команды являются compatibility entrypoints отдельного `.scripts/workspace/` и не используют `.scripts/zettelkasten/lib/workspace.zsh`.
 
 == Инструкции и навыки агентов
 

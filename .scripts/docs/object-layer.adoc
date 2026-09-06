@@ -61,4 +61,6 @@ fname="$(zk_note_create \
 
 Интерактивные workflow, bindings, `all-todays`, Diary chain и Workspace policy
 не входят в object layer. Они документированы в
-`../zettelkasten/docs/architecture.adoc`.
+`../zettelkasten/docs/architecture.adoc` и `plugin-development.adoc`.
+Note/Memo/Topic/Todo workflow принадлежат Zettelkasten; Diary chain/state —
+отдельному Diary plugin; Workspace — отдельному Workspace plugin.

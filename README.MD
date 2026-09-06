@@ -6,7 +6,7 @@
 
 # Русский
 
-Нормативный baseline требований: `openspec/specs/*/spec.md`. Legacy stable-ID traceability: `.scripts/docs/requirements.adoc` и `.scripts/zettelkasten/docs/requirements.adoc`.
+Нормативный baseline требований: `openspec/specs/*/spec.md`. Legacy stable-ID traceability: `.scripts/docs/requirements.adoc` и `.scripts/{zettelkasten,diary,inbox,workspace}/docs/requirements.adoc`.
 
 ## Описание
 
@@ -150,7 +150,7 @@ unattended deterministic primitives.
 
 # English
 
-Normative requirements baseline: `openspec/specs/*/spec.md`. Legacy stable-ID traceability remains in `.scripts/docs/requirements.adoc` and `.scripts/zettelkasten/docs/requirements.adoc`.
+Normative requirements baseline: `openspec/specs/*/spec.md`. Legacy stable-ID traceability remains in `.scripts/docs/requirements.adoc` and `.scripts/{zettelkasten,diary,inbox,workspace}/docs/requirements.adoc`.
 
 ## Description
 

@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------------
 # zt-diary.zsh
 # Тип: Compatibility Entrypoint
-# Назначение: совместимый запуск канонического workflow из zettelkasten/
+# Назначение: совместимый запуск канонического workflow из diary/
 #------------------------------------------------------------------------------
 
 script_dir="${0:A:h}"
-exec "$script_dir/zettelkasten/zt-diary.zsh" "$@"
+exec "$script_dir/diary/zt-diary.zsh" "$@"

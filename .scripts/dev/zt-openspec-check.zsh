@@ -14,6 +14,10 @@ repo_root="${script_dir:h:h}"
 openspec_dir="${ZK_OPENSPEC_DIR:-${repo_root}/openspec/specs}"
 host_requirements="${ZK_HOST_REQUIREMENTS:-${repo_root}/.scripts/docs/requirements.adoc}"
 plugin_requirements="${ZK_PLUGIN_REQUIREMENTS:-${repo_root}/.scripts/zettelkasten/docs/requirements.adoc}"
+diary_requirements="${ZK_DIARY_REQUIREMENTS:-${repo_root}/.scripts/diary/docs/requirements.adoc}"
+inbox_requirements="${ZK_INBOX_REQUIREMENTS:-${repo_root}/.scripts/inbox/docs/requirements.adoc}"
+workspace_requirements="${ZK_WORKSPACE_REQUIREMENTS:-${repo_root}/.scripts/workspace/docs/requirements.adoc}"
+typeset -a legacy_sources=("$host_requirements" "$plugin_requirements" "$diary_requirements" "$inbox_requirements" "$workspace_requirements")
 
 typeset failures=0
 
@@ -25,6 +29,9 @@ fail() {
 [[ -d "$openspec_dir" ]] || { print -u2 -- "ERROR: OpenSpec baseline not found: $openspec_dir"; exit 10; }
 [[ -f "$host_requirements" ]] || { print -u2 -- "ERROR: host requirements not found: $host_requirements"; exit 10; }
 [[ -f "$plugin_requirements" ]] || { print -u2 -- "ERROR: plugin requirements not found: $plugin_requirements"; exit 10; }
+for requirement_source in "${legacy_sources[@]}"; do
+  [[ -f "$requirement_source" ]] || { print -u2 -- "ERROR: requirements not found: $requirement_source"; exit 10; }
+done
 
 legacy_tmp="$(mktemp "${TMPDIR:-/tmp}/zt-legacy-ids.XXXXXX")"
 spec_tmp="$(mktemp "${TMPDIR:-/tmp}/zt-openspec-ids.XXXXXX")"
@@ -33,12 +40,12 @@ spec_status_tmp="$(mktemp "${TMPDIR:-/tmp}/zt-openspec-status.XXXXXX")"
 trap 'rm -f -- "$legacy_tmp" "$spec_tmp" "$legacy_status_tmp" "$spec_status_tmp"' EXIT HUP INT TERM
 
 rg -o '`[A-Z][A-Z0-9-]*-[0-9]{3} \[(IMPLEMENTED|ROADMAP|INVARIANT|PROCESS)\]`' \
-  "$host_requirements" "$plugin_requirements" \
+  "${legacy_sources[@]}" \
   | sed -E 's/.*`([A-Z][A-Z0-9-]*-[0-9]{3}) .*/\1/' \
   | sort > "$legacy_tmp"
 
 rg -o '`[A-Z][A-Z0-9-]*-[0-9]{3} \[(IMPLEMENTED|ROADMAP|INVARIANT|PROCESS)\]`' \
-  "$host_requirements" "$plugin_requirements" \
+  "${legacy_sources[@]}" \
   | sed -E 's/.*`([A-Z][A-Z0-9-]*-[0-9]{3}) \[([^]]+)\]`.*/\1\t\2/' \
   | sort > "$legacy_status_tmp"
 

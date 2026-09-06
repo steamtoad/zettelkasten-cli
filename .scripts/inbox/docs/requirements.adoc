@@ -1,0 +1,28 @@
+= Inbox plugin: требования
+:revdate: 2026-09-06
+:toc:
+
+Нормативный baseline: `openspec/specs/`. Здесь сохранены stable IDs и статусы.
+
+== Inbox Layer
+
+* `INBOX-001 [INVARIANT]` — источник захвата не является источником истины.
+* `INBOX-002 [INVARIANT]` — источником истины после будущего импорта остаются постоянные AsciiDoc-документы; raw/processed являются staging layer.
+* `INBOX-003 [ROADMAP]` — импорт является идемпотентным.
+* `INBOX-004 [IMPLEMENTED]` — raw capture содержит `:captured-at:` и `:source:` в заголовке AsciiDoc.
+* `INBOX-005 [IMPLEMENTED]` — захват в `inbox/raw` и перевод в `inbox/processed` являются разными явными операциями.
+* `INBOX-006 [ROADMAP]` — Inbox Layer расширяется для новых источников без изменения канонической модели документов.
+* `INBOX-007 [IMPLEMENTED]` — Capture SHALL создавать raw-элемент с однострочным непустым заголовком в пути с пробелами и Unicode; timestamp collisions, включая dangling symlink, MUST выбирать новый suffix без перезаписи существующего entry. Ошибка любой записи metadata MUST завершать capture ошибкой, удалять созданный неполный raw и не запускать editor.
+* `INBOX-008 [IMPLEMENTED]` — Capture SHALL запускать существующий непустой EDITOR, сохраняя lexical quoting пути и аргументов, включая пустой quoted argument; разбор MUST NOT выполнять eval, command substitution или shell operators из значения EDITOR. Проверка editor остаётся после создания raw.
+* `INBOX-009 [IMPLEMENTED]` — Processed MUST принимать только непосредственный обычный файл inbox/raw; symlink leaf MUST отклоняться до разрешения target, в том числе если он указывает на соседний raw. Внешние и вложенные physical paths MUST отклоняться.
+* `INBOX-010 [IMPLEMENTED]` — Processed MUST атомарно резервировать точное имя назначения hard link операцией без перезаписи и без directory-operand semantics. Любой существующий entry назначения, включая каталог, symlink и dangling symlink, MUST сохраняться, а raw MUST оставаться на месте при отказе. Создание directory destination между preflight и резервированием MUST NOT приводить к записи внутрь него.
+* `INBOX-011 [IMPLEMENTED]` — оба Inbox-скрипта используют `ZK_HOME`; `ZETTELKASTEN_ROOT` поддерживается как совместимый fallback.
+* `INBOX-012 [INVARIANT]` — raw и processed сохраняют исходное имя и содержимое; операция processed не создаёт постоянную Note/Memo и не регистрирует элемент в `all-todays`.
+
+== Архитектура и совместимость
+
+* `IP-ARCH-001 [IMPLEMENTED]` — Система SHALL размещать канонические Inbox workflow и их plugin-specific документацию в отдельном sibling plugin `.scripts/inbox/` внутри репозитория `zettelkasten-cli`; Inbox SHALL оставаться вне ownership `.scripts/zettelkasten/`.
+* `IP-ARCH-002 [INVARIANT]` — Inbox plugin MAY depend on domain-neutral primitives under `.scripts/lib/`. Inbox plugin MUST NOT depend on `.scripts/zettelkasten/`; `.scripts/lib/`, `.scripts/objects/` и `.scripts/zettelkasten/` MUST NOT depend on `.scripts/inbox/`.
+* `IP-COMPAT-001 [IMPLEMENTED]` — `.scripts/zt-inbox.zsh` и `.scripts/zt-processed.zsh` SHALL оставаться публичными compatibility entrypoints, делегировать каноническим workflow Inbox plugin и сохранять существующие CLI arguments, stdout/stderr и exit status, определённые `INBOX-001`–`INBOX-012`.
+* `IP-DATA-001 [INVARIANT]` — Выделение Inbox plugin MUST preserve `ZK_HOME/inbox/raw` и `ZK_HOME/inbox/processed`, существующие имена и содержимое файлов, collision behavior и same-filesystem hard-link semantics. Оно MUST NOT перемещать или преобразовывать существующие пользовательские данные и MUST NOT считать ROADMAP import в Note, Memo или `all-todays` реализованным.
+* `IP-DEV-001 [PROCESS]` — Изменения Inbox plugin MUST сопровождаться regression verification через top-level compatibility entrypoints с временным `ZK_HOME`; ordinary development и validation MUST NOT mutate пользовательский Vault.

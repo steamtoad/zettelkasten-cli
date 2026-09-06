@@ -41,3 +41,6 @@ push are outside ordinary source-edit authorization.
 5. temporary-Vault integration verification;
 6. migration dry-run only;
 7. release dry-run only before any explicitly authorized apply.
+
+Разработка sibling plugins Diary, Inbox и Workspace ведётся в этом же repository.
+Границы, источники traceability и regression checks описаны в [plugin-development.adoc](plugin-development.adoc).

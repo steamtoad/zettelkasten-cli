@@ -16,7 +16,7 @@ traceability движка находится в `../../docs/requirements.adoc`.
 
 * `ZP-ARCH-001 [INVARIANT]` — плагин зависит от `../../lib/`, `../../objects/` и собственных `lib/`.
 * `ZP-ARCH-002 [INVARIANT]` — движок не зависит от плагина.
-* `ZP-ARCH-003 [IMPLEMENTED]` — канонические workflow: Note, Memo, Topic, Todo и Diary.
+* `ZP-ARCH-003 [IMPLEMENTED]` — канонические workflow Zettelkasten plugin: Note, Memo, Topic и Todo; Diary является каноническим workflow отдельного Diary plugin.
 * `ZP-ARCH-004 [INVARIANT]` — top-level команды, не делегирующие файлу под `.scripts/zettelkasten/`, не являются функциями этого плагина.
 * `ZP-ARCH-005 [PROCESS]` — новая функция включается в документацию плагина только после появления реализации в plugin directory и проверки.
 
@@ -44,11 +44,7 @@ traceability движка находится в `../../docs/requirements.adoc`.
 
 == Diary
 
-* `ZP-DIARY-001 [IMPLEMENTED]` — Diary создаётся через neutral Diary constructor.
-* `ZP-DIARY-002 [IMPLEMENTED]` — `.last-diary` хранит basename последней записи.
-* `ZP-DIARY-003 [IMPLEMENTED]` — новая и предыдущая записи соединяются двунаправленно.
-* `ZP-DIARY-004 [INVARIANT]` — значение `.last-diary` с разделителем пути отклоняется.
-* `ZP-DIARY-005 [INVARIANT]` — state обновляется только после успешного создания и связывания.
+Требования перенесены в `.scripts/diary/docs/requirements.adoc`; stable IDs сохранены.
 
 == all-todays
 
@@ -58,8 +54,7 @@ traceability движка находится в `../../docs/requirements.adoc`.
 
 == Workspace policy library
 
-* `ZP-WORKSPACE-001 [IMPLEMENTED]` — plugin library вычисляет каталог, title, безопасное filename и ссылки Workspace.
-* `ZP-WORKSPACE-002 [INVARIANT]` — библиотека не владеет top-level Workspace workflow; соответствующие команды пока остаются host CLI.
+Требования перенесены в `.scripts/workspace/docs/requirements.adoc`; stable IDs сохранены.
 
 == Совместимость
 

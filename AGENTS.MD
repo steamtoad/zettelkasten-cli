@@ -16,6 +16,9 @@ Legacy traceability sources:
 ```text
 .scripts/docs/requirements.adoc
 .scripts/zettelkasten/docs/requirements.adoc
+.scripts/diary/docs/requirements.adoc
+.scripts/inbox/docs/requirements.adoc
+.scripts/workspace/docs/requirements.adoc
 ```
 
 При расхождении implementation сверяется с OpenSpec. Изменение observable
@@ -27,7 +30,10 @@ behavior выполняется через OpenSpec workflow. Stable legacy requ
 ```text
 .scripts/lib/             = domain-neutral primitives
 .scripts/objects/         = canonical persistent object constructors
-.scripts/zettelkasten/    = Zettelkasten-specific policy/workflow
+.scripts/zettelkasten/    = Note/Memo/Topic/Todo policy/workflow
+.scripts/diary/           = Diary workflow, chain/state, own today helper
+.scripts/inbox/           = capture/processed workflows
+.scripts/workspace/       = create/add/open/remove workflows and own policy
 .scripts/zt-*.zsh         = host CLI + compatibility entrypoints
 skills/zettelkasten-*     = Marta development procedures
 openspec/specs/           = normative behavior/process baseline
@@ -106,7 +112,10 @@ objects/      -> lib/
 zettelkasten/ -> objects/
 zettelkasten/ -> lib/
 zettelkasten/ -> zettelkasten/lib/
-host zt-*     -> lib/ / objects/ / zettelkasten/
+diary/        -> objects/ / lib/ / own code
+inbox/        -> lib/ / own code
+workspace/    -> lib/ / own code
+host zt-*     -> lib/ / objects/ / plugin entrypoints
 ```
 
 Запрещённые обратные зависимости:
@@ -114,12 +123,18 @@ host zt-*     -> lib/ / objects/ / zettelkasten/
 ```text
 lib/     -> objects/
 lib/     -> zettelkasten/
-objects/ -> zettelkasten/
+objects/ -> any plugin
+lib/     -> any plugin
+plugin/  -> sibling plugin
+inbox/ or workspace/ -> objects/
 ```
 
 Переходные host dependencies на `.scripts/zettelkasten/lib/` допускаются только
 там, где они уже зафиксированы baseline requirements. Новые такие зависимости не
-добавлять без архитектурного решения.
+добавлять без архитектурного решения. Continue/Reduce/Refine используют today,
+Continue использует bindings; Workspace использует только собственный plugin.
+Проверка зависимостей: `.scripts/dev/zt-plugin-boundaries-check.zsh`;
+процедура и ограничения анализатора: `.scripts/docs/plugin-development.adoc`.
 
 ---
 

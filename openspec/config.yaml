@@ -5,13 +5,16 @@ context: |
 
   Normative baseline:
   - openspec/specs/*/spec.md is the normative requirements baseline.
-  - .scripts/docs/requirements.adoc and .scripts/zettelkasten/docs/requirements.adoc are legacy traceability sources with stable IDs and implementation-status metadata.
+  - .scripts/docs/requirements.adoc and .scripts/{zettelkasten,diary,inbox,workspace}/docs/requirements.adoc are legacy traceability sources with stable IDs and implementation-status metadata.
   - Every active legacy requirement ID must be represented exactly once in the OpenSpec baseline.
 
   Architecture:
   - .scripts/lib contains domain-neutral primitives.
   - .scripts/objects contains canonical persistent object constructors.
-  - .scripts/zettelkasten contains Zettelkasten-specific workflow and policy.
+  - .scripts/zettelkasten contains Note/Memo/Topic/Todo workflow and policy.
+  - .scripts/diary owns Diary workflow and chain/state; it uses objects/lib and its own helpers.
+  - .scripts/inbox and .scripts/workspace own their workflows; they use lib and their own code.
+  - Sibling plugins do not source one another; neutral lib/objects never depend on plugins.
   - top-level .scripts/zt-*.zsh contains host CLI and compatibility entrypoints.
   - user knowledge remains local AsciiDoc and Git remains the primary history mechanism.
 

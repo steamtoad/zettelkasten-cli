@@ -1,0 +1,13 @@
+= Feature List плагина Diary
+:revdate: 2026-09-06
+:toc:
+
+== Реализованные возможности
+
+* `ZP-FEATURE-005` — создание Diary и обновление Diary chain.
+
+Канонический workflow: `.scripts/diary/zt-diary.zsh`. Публичный wrapper: `.scripts/zt-diary.zsh`. Neutral Diary constructor создаёт UUID v1 документ в `notes/`; plugin обновляет previous/next links, `.last-diary`, открывает Vim и выводит ссылку. Собственная `lib/today.zsh` регистрирует Diary в `all-todays` в общем формате журнала.
+
+== Разработка
+
+Проверка: `tests/zt-diary-as-plugin.zsh` на временном `ZK_HOME`; общие правила и команды — `.scripts/docs/plugin-development.adoc`. Данные существующего Vault при установке не преобразуются.

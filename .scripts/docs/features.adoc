@@ -7,8 +7,9 @@
 
 Документ описывает подтверждённую текущую функциональность `zettelkasten-cli`.
 В список не включаются планы и предполагаемое поведение, которое не подтверждено реализацией или проверкой.
-Подтверждённые возможности Zettelkasten plugin дополнительно описаны в
-`.scripts/zettelkasten/docs/features.adoc`; этот файл сохраняет полный host CLI
+Подтверждённые возможности отдельных plugins дополнительно описаны в
+`.scripts/zettelkasten/docs/features.adoc`, `.scripts/diary/docs/features.adoc`,
+`.scripts/inbox/docs/features.adoc` и `.scripts/workspace/docs/features.adoc`; этот файл сохраняет полный CLI
 feature list и прежние стабильные ID.
 
 == Создание заметок
@@ -78,6 +79,8 @@ feature list и прежние стабильные ID.
 
 == Inbox Layer
 
+Владелец: `.scripts/inbox/`; top-level команды сохранены как compatibility wrappers.
+
 * `INBOX-001` — захват сырого AsciiDoc-элемента через `zt-inbox.zsh` в `inbox/raw/`.
 * `INBOX-002` — обязательный однострочный непустой заголовок capture-элемента.
 * `INBOX-003` — metadata `:captured-at:` и `:source: manual` располагаются в заголовке AsciiDoc и распознаются как document attributes.
@@ -90,6 +93,8 @@ feature list и прежние стабильные ID.
 * `INBOX-010` — raw capture и перевод в processed являются разными явными операциями; автоматического импорта в постоянные Note/Memo нет.
 
 == Workspace
+
+Владелец: `.scripts/workspace/`; workflow и собственная policy library находятся в одном plugin.
 
 * `WORKSPACE-001` — создание Workspace в каталоге `workspaces/` через `zt-workspace-create.zsh`.
 * `WORKSPACE-002` — безопасное смысловое имя файла Workspace с отклонением пустых, скрытых и содержащих разделители пути названий.
@@ -249,31 +254,33 @@ feature list и прежние стабильные ID.
 * `PUBLISH-011` — destination `.scripts/`, `openspec/`, `skills/` и `tests/` являются отдельными exact mirrors source: dry-run показывает удаления, а `--apply` удаляет устаревшие файлы только внутри соответствующих destination trees.
 * `PUBLISH-012` — `.DS_Store` и каталоги `__MACOSX/` исключаются и удаляются из публикуемых destination mirrors.
 
+== Diary plugin
+
+Diary остаётся функцией продукта: `.scripts/zt-diary.zsh` делегирует `.scripts/diary/zt-diary.zsh`; plugin владеет chain/state и собственным today helper. Подробности: `.scripts/diary/docs/features.adoc`.
+
 == Архитектурные слои создания документов
 
 [source,text]
 ----
 .scripts/
-├── objects/
-│   ├── note-create.zsh
-│   ├── memo-create.zsh
-│   ├── topic-create.zsh
-│   ├── todo-create.zsh
-│   └── diary-create.zsh
-├── zettelkasten/
-│   ├── zt-note.zsh
-│   ├── zt-memo.zsh
-│   ├── zt-keytopic.zsh
-│   ├── zt-todo.zsh
+├── lib/                    # paths, uuid, asciidoc: neutral engine
+├── objects/                # Note, Memo, Topic, Todo, Diary constructors
+├── zettelkasten/            # Note, Memo, Topic, Todo workflows
+│   ├── lib/                # bindings.zsh, today.zsh
+│   └── docs/
+├── diary/
 │   ├── zt-diary.zsh
-│   └── lib/
-│       ├── today.zsh
-│       ├── bindings.zsh
-│       └── workspace.zsh
-└── lib/
-    ├── paths.zsh
-    ├── uuid.zsh
-    └── asciidoc.zsh
+│   ├── lib/today.zsh
+│   └── docs/
+├── inbox/
+│   ├── capture.zsh
+│   ├── processed.zsh
+│   └── docs/
+├── workspace/
+│   ├── zt-workspace-{create,add,open,remove}.zsh
+│   ├── lib/workspace.zsh
+│   └── docs/
+└── zt-*.zsh                # host CLI and compatibility entrypoints
 ----
 
 * `LAYER-001` — `objects/` создаёт корректные постоянные объекты и не знает про `fzf`, Vim, `all-todays`, bindings и Diary state.
@@ -281,7 +288,7 @@ feature list и прежние стабильные ID.
 * `LAYER-003` — `lib/` содержит нейтральные примитивы и не зависит от `zettelkasten/`.
 * `LAYER-004` — старые top-level creation scripts сохранены как compatibility entrypoints.
 * `LAYER-005` — `zt-continue` создаёт Memo через `objects/memo-create.zsh`; Clean Successor Reduce и Refine используют формальный Topic writer из `objects/topic-create.zsh`.
-* `LAYER-006` — переходные host-команды напрямую используют plugin policy libraries: Continue/Reduce/Refine — `today.zsh`, Continue — `bindings.zsh`, Workspace-команды — `workspace.zsh`.
+* `LAYER-006` — переходные host-команды напрямую используют plugin policy libraries: Continue/Reduce/Refine — `today.zsh`, Continue — `bindings.zsh`; Workspace-команды делегируют отдельному Workspace plugin.
 
 == Исполняемые скрипты
 
@@ -350,9 +357,19 @@ ztscripts
 * Исключение служебных тегов при наследовании ограничено тегом непосредственного исходного типа.
 * Проверка ссылок внутри блоков кода в `zt-check.zsh` распознаёт только блоки `----` и Markdown-блоки с тройными обратными кавычками.
 * Reduce не обеспечивает глобальную уникальность активной Topic по `:key-topic:`.
-* Публичные compatibility entrypoints доступны как `.scripts/zt-*.zsh`; канонические creation workflow находятся в `.scripts/zettelkasten/`; команды без расширения не устанавливаются в `PATH`.
+* Публичные compatibility entrypoints доступны как `.scripts/zt-*.zsh`; канонические Note/Memo/Topic/Todo workflow находятся в `.scripts/zettelkasten/`, Diary — в `.scripts/diary/`; команды без расширения не устанавливаются в `PATH`.
 * Корневой каталог назначения публикации должен существовать до запуска `zt-develop-publish-version.zsh`.
 * Публикация пока не запускает `zt-check`, не проверяет зависимости и состояние Git репозитория назначения.
 * `zt-processed.zsh` использует hard link для атомарной защиты назначения, поэтому `inbox/raw` и `inbox/processed` должны находиться на одной файловой системе.
 * Inbox Layer пока не преобразует raw-элементы в постоянные UUID-документы и не регистрирует их в `all-todays`.
 * `zt-migrate-notes-dir.zsh --apply` требует чистый Git worktree; dry-run доступен без изменения данных.
+
+== Повторная проверка plugin refactors
+
+Подтверждено `tests/zt-plugin-edge-cases.zsh`: capture на Unicode пути,
+quoted editor без eval, concurrent capture и ошибки записи; processed с точным
+atomic destination через POSIX `link`, отказ на symlink raw и directory collision;
+Workspace удаляет только выбранные macros, сохраняет соседние ссылки и текст,
+создаёт staging рядом с исходным файлом и очищает его при ошибке. Boundary check
+проверяет command substitution и compound statements. Контракты и причины:
+`openspec/changes/archive/2026-09-06-fix-plugin-regression-edge-cases/`.

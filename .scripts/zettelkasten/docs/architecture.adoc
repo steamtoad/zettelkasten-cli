@@ -1,5 +1,5 @@
 = Zettelkasten как плагин основного движка
-:revdate: 2026-08-29
+:revdate: 2026-09-06
 :toc:
 
 == Роль плагина
@@ -13,20 +13,24 @@
 [source,text]
 ----
 .scripts/
-├── lib/                    # neutral engine primitives
-├── objects/                # neutral object constructors
-├── zettelkasten/           # plugin
-│   ├── docs/
-│   ├── lib/
-│   │   ├── bindings.zsh
-│   │   ├── today.zsh
-│   │   └── workspace.zsh
-│   ├── zt-note.zsh
-│   ├── zt-memo.zsh
-│   ├── zt-keytopic.zsh
-│   ├── zt-todo.zsh
-│   └── zt-diary.zsh
-└── zt-*.zsh               # host CLI and compatibility entrypoints
+├── lib/                    # paths, uuid, asciidoc: neutral engine
+├── objects/                # Note, Memo, Topic, Todo, Diary constructors
+├── zettelkasten/            # Note, Memo, Topic, Todo workflows
+│   ├── lib/                # bindings.zsh, today.zsh
+│   └── docs/
+├── diary/
+│   ├── zt-diary.zsh
+│   ├── lib/today.zsh
+│   └── docs/
+├── inbox/
+│   ├── capture.zsh
+│   ├── processed.zsh
+│   └── docs/
+├── workspace/
+│   ├── zt-workspace-{create,add,open,remove}.zsh
+│   ├── lib/workspace.zsh
+│   └── docs/
+└── zt-*.zsh                # host CLI and compatibility entrypoints
 ----
 
 == Поток создания
@@ -37,7 +41,7 @@ compatibility entrypoint
   -> plugin workflow
      -> engine constructor
         -> neutral lib
-     -> plugin policy: binding / today / diary state
+     -> plugin policy: binding / today
      -> editor + output link
 ----
 
@@ -49,12 +53,16 @@ namespace подключающего скрипта.
 
 == Текущая граница миграции
 
-Плагин содержит только пять creation workflow и три policy library. Остальные
-доменные команды физически остаются host CLI. Часть из них временно использует
-plugin policy напрямую: Continue, Reduce и Refine используют `today.zsh`,
-Continue использует `bindings.zsh`, а Workspace-команды используют
-`workspace.zsh`. Их можно переносить в плагин позднее, но документация не
-считает такой перенос уже состоявшимся.
+Zettelkasten plugin содержит четыре creation workflow и две policy library.
+Diary, Inbox и Workspace принадлежат отдельным sibling plugins. Continue,
+Reduce и Refine временно используют Zettelkasten `today.zsh`, а Continue также
+`bindings.zsh`. Workspace больше не использует Zettelkasten policy.
+
+Diary зависит от neutral `objects/`, `lib/` и собственного кода. Inbox и
+Workspace зависят от `lib/` и собственного кода. Между sibling plugins нет
+source dependencies; `lib/` и `objects/` не зависят от plugins.
+Собственные helpers Diary используют prefix `dp_*`; общий формат `all-todays`
+проверяется behavioral regression suite без взаимного source.
 
 [source,text]
 ----
@@ -68,3 +76,5 @@ host CLI -> plugin/lib  # transitional dependency
 * `features.adoc` — подтверждённые возможности плагина.
 * `../../docs/requirements.adoc` — контракт основного движка.
 * `../../docs/object-layer.adoc` — API constructors.
+
+Общая процедура проверки plugins: `../../docs/plugin-development.adoc`.

@@ -88,3 +88,18 @@ Inbox Layer принимает быстрые сырые записи до их 
 . отказ при существующем destination без изменения обоих файлов;
 . `zt-check` рабочего Zettelkasten;
 . `git diff --check` изменённых файлов.
+
+== Владение реализацией
+
+Capture и processed реализованы в `.scripts/inbox/{capture,processed}.zsh`;
+публичные `.scripts/zt-inbox.zsh` и `.scripts/zt-processed.zsh` остаются совместимыми exec wrappers.
+Требования: `../inbox/docs/requirements.adoc`; проверки: `plugin-development.adoc`.
+
+== Проверенные пограничные случаи
+
+Capture поддерживает Unicode пути и quoted `$EDITOR`, сохраняя literal arguments
+без eval. Неполный raw удаляется при ошибке любой записи metadata.
+Processed использует стандартную Unix-команду `link` (доступна в macOS и GNU
+coreutils) для атомарного резервирования точного destination. Каталог и symlink
+на каталог не становятся местом вложенной записи; symlink raw отклоняется до
+разрешения target. Отсутствие `link` диагностируется до обработки файлов.

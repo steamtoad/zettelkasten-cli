@@ -4,14 +4,16 @@
 
 Определить границы Workspace policy library Zettelkasten plugin.
 
+Реализованные изменения: [refactor-workspace-as-plugin](../../changes/archive/2026-09-06-refactor-workspace-as-plugin/proposal.md).
+
 ## Requirements
 
 ### Requirement: ZP-WORKSPACE-001 — plugin library вычисляет каталог, title, безопасное filename и ссылки Workspace
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Workspace policy library`.
+**Traceability:** `.scripts/workspace/docs/requirements.adoc` → section `Workspace policy library`.
 
-Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: plugin library вычисляет каталог, title, безопасное filename и ссылки Workspace.
+Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: library отдельного Workspace plugin вычисляет каталог, title, безопасное filename и ссылки Workspace.
 
 #### Scenario: ZP-WORKSPACE-001 contract is verified
 
@@ -23,9 +25,9 @@
 ### Requirement: ZP-WORKSPACE-002 — библиотека не владеет top-level Workspace workflow
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Workspace policy library`.
+**Traceability:** `.scripts/workspace/docs/requirements.adoc` → section `Workspace policy library`.
 
-Zettelkasten-CLI MUST сохранять следующий инвариант: библиотека не владеет top-level Workspace workflow; соответствующие команды пока остаются host CLI.
+Zettelkasten-CLI MUST сохранять следующий инвариант: Workspace policy library не является top-level workflow; canonical create/add/open/remove workflows принадлежат executable scripts того же Workspace plugin, а соответствующие top-level host commands являются только compatibility entrypoints.
 
 #### Scenario: ZP-WORKSPACE-002 contract is verified
 

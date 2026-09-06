@@ -4,6 +4,8 @@
 
 Определить Zettelkasten plugin boundary поверх neutral engine и критерии принадлежности plugin functionality.
 
+Реализованные изменения: [refactor-diary-as-plugin](../../changes/archive/2026-09-06-refactor-diary-as-plugin/proposal.md).
+
 ## Requirements
 
 ### Requirement: ZP-ARCH-001 — плагин зависит от ../../lib/, ../../objects/ и собственных lib/
@@ -39,7 +41,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 **Legacy status:** `IMPLEMENTED`.
 **Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Граница плагина`.
 
-Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: канонические workflow: Note, Memo, Topic, Todo и Diary.
+Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: канонические workflow Zettelkasten plugin: Note, Memo, Topic и Todo; Diary является каноническим workflow отдельного Diary plugin.
 
 #### Scenario: ZP-ARCH-003 contract is verified
 

@@ -1,0 +1,13 @@
+= Feature List плагина Workspace
+:revdate: 2026-09-06
+:toc:
+
+== Реализованные возможности
+
+* `ZP-FEATURE-022` — собственная `lib/workspace.zsh` предоставляет безопасное именование, выбор Workspace и относительные ссылки.
+
+Канонические create/add/open/remove workflows: `.scripts/workspace/zt-workspace-*.zsh`. Публичные `.scripts/zt-workspace-*.zsh` — direct exec wrappers. Сохраняются каталог `workspaces/`, ручное редактирование, ссылки `../notes/UUID.adoc`, множественный выбор, идемпотентное добавление и удаление выбранных link macros с сохранением остального текста и соседних ссылок, через временный файл в каталоге Workspace с cleanup и сохранением режима. Workspace остаётся агрегатором, а не постоянным документом.
+
+== Разработка
+
+Проверка: `tests/zt-workspace-as-plugin.zsh` на временном `ZK_HOME`; общие правила и команды — `.scripts/docs/plugin-development.adoc`. Данные существующего Vault при установке не преобразуются.

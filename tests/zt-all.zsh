@@ -19,6 +19,12 @@ repo="${0:A:h:h}"
 "$repo/tests/zt-repository-boundary.zsh"
 "$repo/tests/zt-publish-development-artifacts.zsh"
 "$repo/tests/zt-runtime-core.zsh"
+"$repo/.scripts/dev/zt-plugin-boundaries-check.zsh"
+"$repo/tests/zt-plugin-boundaries.zsh"
+"$repo/tests/zt-diary-as-plugin.zsh"
+"$repo/tests/zt-inbox-as-plugin.zsh"
+"$repo/tests/zt-workspace-as-plugin.zsh"
+"$repo/tests/zt-plugin-edge-cases.zsh"
 "$repo/tests/zt-agent-routing.zsh"
 
 print -r -- 'PASS: Zettelkasten-CLI development checks'
