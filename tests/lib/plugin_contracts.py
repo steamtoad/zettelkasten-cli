@@ -63,7 +63,7 @@ elif name == 'fzf':
 elif name in ('ln', 'link', 'rm', 'mv'):
     if name in ('ln', 'link') and os.environ.get('FAIL_LN'): sys.exit(1)
     if name == 'rm' and os.environ.get('FAIL_RM') == sys.argv[-1]: sys.exit(1)
-    if name == 'mv' and os.environ.get('FAIL_MV') and 'zk-workspace-remove.' in sys.argv[1]: sys.exit(1)
+    if name == 'mv' and os.environ.get('FAIL_MV') and any('zk-workspace-remove.' in arg for arg in sys.argv[1:]): sys.exit(1)
     os.execv(os.environ['REAL_' + name.upper()], [name] + sys.argv[1:])
 '''
         for name in ("uuid", "uuidgen", "date", "vim", "fzf", "ln", "link", "rm", "mv"):

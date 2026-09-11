@@ -23,25 +23,14 @@ zk_todo_create() {
 
   extra_attrs=("${@:4}")
 
-  [[ -n "$title" ]] || {
-    print -ru2 -- "ERROR todo title is empty"
-    return 1
-  }
-
-  zk_validate_extra_attrs "${extra_attrs[@]}" || return 1
+  zk_validate_object_fields "pending.adoc" "$title" "$keywords" "todo" "$description" "${extra_attrs[@]}" || return 1
 
   zk_ensure_notes_dir || return 1
   fname="$(zk_new_adoc_filename)" || return 1
   target_path="$(zk_note_path "$fname")"
 
   {
-    zk_metadata "$fname" "$title" "$keywords" "todo" "$description"
-
-    for attr in "${extra_attrs[@]}"; do
-      [[ -n "$attr" ]] && print -r -- "$attr"
-    done
-
-    print -r -- ""
+    zk_object_render_header "$fname" "$title" "$keywords" "todo" "$description" "${extra_attrs[@]}"
     print -r -- "== TODO"
     print -r -- ""
     print -r -- "* [ ] "

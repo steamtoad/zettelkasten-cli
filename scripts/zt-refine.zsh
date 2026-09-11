@@ -20,30 +20,11 @@ source "$script_dir/zettelkasten/lib/today.zsh"
 sep=$'\x1f'
 
 header_attr_line() {
-  local file="$1"
-  local attr="$2"
-
-  awk -v attr="$attr" '
-    NR == 1 { next }
-    /^$/ { exit }
-
-    index($0, ":" attr ":") == 1 {
-      print
-      exit
-    }
-  ' "$file"
+  zk_attr_line "$1" "$2"
 }
 
 header_attr_value() {
-  local line
-  local attr="$2"
-
-  line="$(header_attr_line "$1" "$attr")"
-  [[ -n "$line" ]] || return 1
-
-  line="${line#:$attr:}"
-  line="${line#"${line%%[![:space:]]*}"}"
-  print -r -- "$line"
+  zk_attr_value "$1" "$2"
 }
 
 is_header_deprecated() {
@@ -51,28 +32,7 @@ is_header_deprecated() {
 }
 
 validate_header() {
-  local file="$1"
-
-  awk '
-    NR == 1 {
-      if ($0 !~ /^= /) invalid = 1
-      next
-    }
-
-    /^$/ {
-      boundary = 1
-      exit
-    }
-
-    $0 !~ /^:[^:]+:/ {
-      invalid = 1
-      exit
-    }
-
-    END {
-      exit invalid || !boundary
-    }
-  ' "$file"
+  zk_header_is_mutable "$1"
 }
 
 validate_topic_metadata() {
@@ -132,7 +92,9 @@ replace_header_key_topic() {
   local new_key="$2"
   local tmp
 
-  tmp="$(mktemp "${TMPDIR:-/tmp}/zk-refine-key.XXXXXX")" || return 1
+  zk_header_is_mutable "$file" || return 1
+  zk_validate_single_line ":key-topic:" "$new_key" required || return 1
+  tmp="$(mktemp "${file:h}/.${file:t}.key-topic.XXXXXX")" || return 1
 
   if ! awk -v new_key="$new_key" '
     BEGIN { in_header = 1 }
@@ -143,7 +105,7 @@ replace_header_key_topic() {
       next
     }
 
-    in_header && /^$/ {
+    in_header && /^[[:space:]]*$/ {
       in_header = 0
     }
 
@@ -157,61 +119,14 @@ replace_header_key_topic() {
     return 1
   fi
 
-  mv "$tmp" "$file"
+  zk_replace_with_prepared_file "$file" "$tmp"
 }
 
 remove_related_link() {
   local file="$1"
   local target="$2"
-  local tmp
 
-  tmp="$(mktemp "${TMPDIR:-/tmp}/zk-refine-link.XXXXXX")" || return 1
-
-  if ! awk -v target="link:${target}[" '
-    function trimmed(line) {
-      sub(/^[[:space:]]+/, "", line)
-      sub(/[[:space:]]+$/, "", line)
-      return line
-    }
-
-    in_block {
-      print
-      line = trimmed($0)
-
-      if (block_delim == "```") {
-        if (line ~ /^```/) in_block = 0
-      } else if (line == block_delim) {
-        in_block = 0
-      }
-
-      next
-    }
-
-    /^```/ {
-      in_block = 1
-      block_delim = "```"
-      print
-      next
-    }
-
-    /^(----|\.{4,}|_{4,}|\*{4,}|={4,}|\+{4,}|\/{4,})[[:space:]]*$/ {
-      in_block = 1
-      block_delim = trimmed($0)
-      print
-      next
-    }
-
-    /^[*][[:space:]]/ && index($0, target) {
-      next
-    }
-
-    { print }
-  ' "$file" > "$tmp"; then
-    rm -f "$tmp"
-    return 1
-  fi
-
-  mv "$tmp" "$file"
+  zk_remove_links_atomic "$file" --allow-absent "$target"
 }
 
 mark_deprecated() {
@@ -220,7 +135,8 @@ mark_deprecated() {
 
   is_header_deprecated "$file" && return 0
 
-  tmp="$(mktemp "${TMPDIR:-/tmp}/zk-refine-deprecated.XXXXXX")" || return 1
+  zk_header_is_mutable "$file" || return 1
+  tmp="$(mktemp "${file:h}/.${file:t}.deprecated.XXXXXX")" || return 1
 
   if ! awk '
     NR == 1 {
@@ -228,7 +144,7 @@ mark_deprecated() {
       next
     }
 
-    /^$/ && !inserted {
+    /^[[:space:]]*$/ && !inserted {
       print ":deprecated:"
       inserted = 1
       print
@@ -245,7 +161,7 @@ mark_deprecated() {
     return 1
   fi
 
-  mv "$tmp" "$file"
+  zk_replace_with_prepared_file "$file" "$tmp"
 }
 
 create_topic() {

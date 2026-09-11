@@ -21,14 +21,7 @@ extract_memo_chain_link() {
   local file="$1"
   local label="$2"
 
-  awk -v label="$label" '
-    index($0, label) {
-      if (match($0, /link:[^[]+\.adoc\[/)) {
-        print substr($0, RSTART + 5, RLENGTH - 6)
-        exit
-      }
-    }
-  ' "$file"
+  zk_extract_labeled_link "$file" "$label"
 }
 
 zk_ensure_notes_dir || exit 1

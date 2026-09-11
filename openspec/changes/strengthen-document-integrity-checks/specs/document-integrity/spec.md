@@ -1,3 +1,7 @@
+## Purpose
+
+Определить строгую read-only проверку схемы, UUID v1 и семантических metadata каждого постоянного документа Zettelkasten.
+
 ## ADDED Requirements
 
 ### Requirement: INTEGRITY-001 — Каждый файл получает проверку даже при отсутствии строк

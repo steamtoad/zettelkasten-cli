@@ -19,18 +19,14 @@ zk_diary_create() {
   local fname
   local target_path
 
-  [[ -n "$title" ]] || {
-    print -ru2 -- "ERROR diary title is empty"
-    return 1
-  }
+  zk_validate_object_fields "pending.adoc" "$title" "$keywords" "diary" "$description" || return 1
 
   zk_ensure_notes_dir || return 1
   fname="$(zk_new_adoc_filename)" || return 1
   target_path="$(zk_note_path "$fname")"
 
   {
-    zk_metadata "$fname" "$title" "$keywords" "diary" "$description"
-    print -r -- ""
+    zk_object_render_header "$fname" "$title" "$keywords" "diary" "$description"
   } | zk_create_exclusive_from_stdin "$target_path" || return 1
 
   print -r -- "$fname"

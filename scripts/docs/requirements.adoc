@@ -58,6 +58,10 @@
 * `DOC-007 [INVARIANT]` — `:type:` является каноническим источником типа документа. Вывод типа из `:keywords:` допустим только как временный механизм совместимости и миграции.
 * `DOC-008 [PROCESS]` — значение `:type:` должно присутствовать в `:keywords:`; `zt-check` может сообщать об отсутствии как о рекомендации до введения строгой проверки.
 * `DOC-009 [IMPLEMENTED]` — первая пустая строка после document title или атрибутов завершает AsciiDoc header; атрибутоподобные строки после неё являются body и не влияют на metadata semantics.
+* `ADOC-PARSE-001 [IMPLEMENTED]` — metadata readers, selectors, Reduce, Refine, Continue и checker используют одинаковую границу AsciiDoc header; неоднозначная граница блокирует mutation.
+* `ADOC-PARSE-002 [IMPLEMENTED]` — общий parser исключает ссылки внутри поддерживаемых opaque-блоков из рабочих связей; незакрытый блок блокирует mutation.
+* `ADOC-PARSE-003 [IMPLEMENTED]` — удаление выбранной связи сохраняет соседние ссылки и авторский текст либо отклоняется до записи.
+* `ADOC-PARSE-004 [IMPLEMENTED]` — пять object constructors используют общий нейтральный header writer и validator без обратных plugin dependencies.
 
 == Физическое пространство документов
 
@@ -340,19 +344,23 @@
 * `CHECK-008 [PROCESS]` — интеграционные тесты выполняются на временном Zettelkasten и не изменяют рабочее хранилище.
 * `CHECK-009 [ROADMAP]` — нужны интеграционные сценарии Note→Memo, Memo→Topic, обычного/повторного/Full Copy Reduce и Reduce с deprecated Note.
 * `CHECK-010 [INVARIANT]` — каждый постоянный документ, созданный агентом, до завершения задачи проходит минимальный набор проверок: UUID v1, Asciidoctor-рендеринг, `zt-check` и `git diff --check`.
-* `CHECK-011 [PROCESS]` — UUID v1 нового постоянного документа проверяется отдельно, поскольку текущий `zt-check` не проверяет версию UUID.
+* `CHECK-011 [PROCESS]` — UUID gate нового постоянного документа проверяет точный формат, version и variant; результат `zt-check` с `INTEGRITY-002` удовлетворяет этому шагу.
 * `CHECK-012 [PROCESS]` — каждый созданный или изменённый агентом AsciiDoc-документ рендерится Asciidoctor с `--failure-level WARN`; выход сохраняется во временный каталог и не добавляется в репозиторий.
 * `CHECK-013 [PROCESS]` — после создания или изменения документов агент запускает `scripts/zt-check.zsh`.
 * `CHECK-014 [PROCESS]` — после создания или изменения документов агент запускает `git diff --check -- <changed-files>`; полный `git diff --check` может использоваться дополнительно для обнаружения несвязанных проблем.
 * `CHECK-015 [PROCESS]` — минимальный набор проверок не заменяет проверку обязательных метаданных, `all-todays`, требуемых перекрёстных ссылок, Diary-цепочки, deprecated-семантики и специальных workflow.
 * `CHECK-016 [ROADMAP]` — `zt-check` проверяет, что `:deprecated:` находится в заголовке и является его последним атрибутом.
-* `CHECK-017 [ROADMAP]` — `zt-check` выявляет активные Topic с пустым `:key-topic:` и несогласованными каноническими заголовком, `:description:` и `:doclink:`.
+* `CHECK-017 [IMPLEMENTED]` — `zt-check` выявляет активные Topic с пустым `:key-topic:` и несогласованными каноническими заголовком, `:description:` и `:doclink:`.
 * `CHECK-018 [ROADMAP]` — `zt-check` выявляет новые или активные связи, ошибочно направленные на deprecated Topic.
 * `CHECK-019 [ROADMAP]` — интеграционные тесты покрывают следующую редакцию Topic через Reduce, выделение новой тематической линии, повторный запуск и создание Memo после каждой операции.
 * `CHECK-020 [ROADMAP]` — интеграционный тест подтверждает, что Memo получает тематический ключ из `:key-topic:` выбранной Topic, а не из её заголовка или `:description:`.
 * `CHECK-021 [ROADMAP]` — интеграционный тест подтверждает, что ошибка разбора заголовка не приводит к добавлению `:deprecated:` в тело или конец документа.
 * `CHECK-022 [IMPLEMENTED]` — metadata scanner прекращает разбор header на первой пустой строке после title и не принимает атрибутоподобные строки body за обязательные metadata или `:deprecated:`.
 * `CHECK-023 [IMPLEMENTED]` — repository regression suite на временном `ZK_HOME` проверяет canonical constructors Note, Memo, Todo, Diary и Topic, обязательные metadata, UUID filename, успешную проверку валидного Vault и обнаружение broken link через `zt-check`.
+* `INTEGRITY-001 [IMPLEMENTED]` — `zt-check` отдельно диагностирует zero-byte документы, missing/duplicate/invalid header metadata стабильными кодами и ненулевым итоговым exit.
+* `INTEGRITY-002 [IMPLEMENTED]` — UUID provider и `zt-check` проверяют точный UUID v1 format, version и variant до создания или подтверждения документа.
+* `INTEGRITY-003 [IMPLEMENTED]` — constructors отклоняют многострочные и пустые обязательные однострочные значения до создания документа и side effects.
+* `INTEGRITY-004 [IMPLEMENTED]` — checker проверяет canonical self-link и metadata активной Topic, не ослабляя базовую схему deprecated-документов.
 * `SCRIPT-FORMAT-001 [IMPLEMENTED]` — `zt-scripts-patch --check` работает read-only, отдельно диагностирует пустые файлы и файлы без LF; fix-режим передаёт ошибки записи и не сообщает ложный `patched`.
 
 == Workflow

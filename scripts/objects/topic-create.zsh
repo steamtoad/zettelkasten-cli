@@ -14,15 +14,8 @@ zk_topic_validate_required_fields() {
   local title="$1"
   local key_topic="$2"
 
-  [[ -n "$title" ]] || {
-    print -ru2 -- "ERROR topic title is empty"
-    return 1
-  }
-
-  [[ -n "$key_topic" ]] || {
-    print -ru2 -- "ERROR :key-topic: is empty"
-    return 1
-  }
+  zk_validate_single_line "topic title" "$title" required || return 1
+  zk_validate_single_line ":key-topic:" "$key_topic" required
 }
 
 zk_topic_render() {
@@ -33,9 +26,7 @@ zk_topic_render() {
   local description="${5:-$title}"
 
   zk_topic_validate_required_fields "$title" "$key_topic" || return 1
-  zk_metadata "$fname" "$title" "$keywords" "topic" "$description" || return 1
-  print -r -- ":key-topic: $key_topic" || return 1
-  print -r -- "" || return 1
+  zk_object_render_header "$fname" "$title" "$keywords" "topic" "$description" ":key-topic: $key_topic" || return 1
   print -r -- ""
 }
 
@@ -61,6 +52,7 @@ zk_topic_write() {
   }
 
   zk_topic_validate_required_fields "$title" "$key_topic" || return 1
+  zk_validate_object_fields "$fname" "$title" "$keywords" "topic" "$description" ":key-topic: $key_topic" || return 1
 
   prepared="$(mktemp "${output_file:h}/.${output_file:t}.topic.XXXXXX")" || return 1
   if ! zk_topic_render "$fname" "$title" "$key_topic" "$keywords" "$description" > "$prepared"; then
@@ -94,6 +86,7 @@ zk_topic_create() {
   local prepared
 
   zk_topic_validate_required_fields "$title" "$key_topic" || return 1
+  zk_validate_object_fields "pending.adoc" "$title" "$keywords" "topic" "$description" ":key-topic: $key_topic" || return 1
 
   zk_ensure_notes_dir || return 1
   fname="$(zk_new_adoc_filename)" || return 1

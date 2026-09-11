@@ -204,7 +204,15 @@ feature list и прежние стабильные ID.
 * `CHECK-008` — поиск битых ссылок между документами.
 * `CHECK-009` — проверка ссылок из `all-todays`.
 * `CHECK-010` — проверка `.last-diary`.
-* `CHECK-011` — проверка существования документов, указанных в diary-цепочке.
+* `CHECK-011` — UUID gate нового документа проверяет format, version и variant через актуальный `zt-check`.
+* `INTEGRITY-001` — стабильные diagnostics для zero-byte, отсутствующих, дублирующихся и некорректных metadata.
+* `INTEGRITY-002` — строгая проверка UUID v1 format/version/variant при генерации и в `zt-check`.
+* `INTEGRITY-003` — preflight однострочных constructor fields до создания файлов и side effects.
+* `INTEGRITY-004` — canonical self-link и Topic metadata проверяются read-only.
+* `ADOC-PARSE-001` — единая граница AsciiDoc header во всех затронутых потребителях.
+* `ADOC-PARSE-002` — общий opaque-block profile отделяет примеры от рабочих связей.
+* `ADOC-PARSE-003` — удаление связи сохраняет авторский текст, соседние ссылки и file mode.
+* `ADOC-PARSE-004` — пять constructors используют общий neutral writer/validator.
 * `CHECK-012` — игнорирование ссылок внутри блоков `----` и Markdown-блоков с тройными обратными кавычками.
 * `CHECK-013` — раздельный вывод ошибок и рекомендаций.
 * `CHECK-014` — ненулевой код завершения при наличии ошибок.

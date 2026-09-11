@@ -50,48 +50,7 @@ select_workspace_documents() {
     fi
 
     print -r -- "${state} - ${normalized_target} - ${description}${sep}${target}${sep}${description}"
-  done < <(
-    awk '
-      function trimmed(line) {
-        sub(/^[[:space:]]+/, "", line)
-        sub(/[[:space:]]+$/, "", line)
-        return line
-      }
-
-      in_block {
-        line = trimmed($0)
-
-        if (block_delim == "```") {
-          if (line ~ /^```/) in_block = 0
-        } else if (line == block_delim) {
-          in_block = 0
-        }
-
-        next
-      }
-
-      /^```/ {
-        in_block = 1
-        block_delim = "```"
-        next
-      }
-
-      /^(----|\.{4,}|_{4,}|\*{4,}|={4,}|\+{4,}|\/{4,})[[:space:]]*$/ {
-        in_block = 1
-        block_delim = trimmed($0)
-        next
-      }
-
-      {
-        line = $0
-        while (match(line, /link:[^[]+\.adoc\[/)) {
-          link = substr(line, RSTART + 5, RLENGTH - 6)
-          print link
-          line = substr(line, RSTART + RLENGTH)
-        }
-      }
-    ' "$file"
-  ) |
+  done < <(zk_extract_links "$file") |
     fzf \
       --multi \
       --delimiter="$sep" \
@@ -102,97 +61,10 @@ select_workspace_documents() {
 remove_workspace_links() {
   local file="$1"
   shift
-  local -a targets=("$@")
-  local serialized_targets=""
-  local target
-  local tmp
-  local mode
 
-  for target in "${targets[@]}"; do
-    serialized_targets+="${target}${sep}"
-  done
-
-  tmp="$(mktemp "${file:h}/.zk-workspace-remove.XXXXXX")" || return 1
-
-  {
-    if ! awk -v serialized_targets="$serialized_targets" -v sep="$sep" '
-      BEGIN {
-        target_count = split(serialized_targets, targets, sep)
-        if (targets[target_count] == "") {
-          delete targets[target_count]
-          target_count--
-        }
-      }
-      function trimmed(line) {
-        sub(/^[[:space:]]+/, "", line)
-        sub(/[[:space:]]+$/, "", line)
-        return line
-      }
-      in_block {
-        print
-        line = trimmed($0)
-        if (block_delim == "```") {
-          if (line ~ /^```/) in_block = 0
-        } else if (line == block_delim) {
-          in_block = 0
-        }
-        next
-      }
-      /^```/ {
-        in_block = 1
-        block_delim = "```"
-        print
-        next
-      }
-      /^(----|\.{4,}|_{4,}|\*{4,}|={4,}|\+{4,}|\/{4,})[[:space:]]*$/ {
-        in_block = 1
-        block_delim = trimmed($0)
-        print
-        next
-      }
-      {
-        line = $0
-        output = ""
-        changed = 0
-        while (match(line, /link:[^[]+\.adoc\[[^]]*\]/)) {
-          macro = substr(line, RSTART, RLENGTH)
-          target = macro
-          sub(/^link:/, "", target)
-          sub(/\[.*$/, "", target)
-          selected = 0
-          for (i = 1; i <= target_count; i++) {
-            if (target == targets[i]) {
-              selected = 1
-              removed[i] = 1
-            }
-          }
-          output = output substr(line, 1, RSTART - 1)
-          if (!selected) output = output macro
-          else changed = 1
-          line = substr(line, RSTART + RLENGTH)
-        }
-        output = output line
-        if (changed && output ~ /^[*][[:space:]]*$/) next
-        print output
-      }
-      END {
-        for (i = 1; i <= target_count; i++) {
-          if (!removed[i]) exit 2
-        }
-      }
-    ' "$file" > "$tmp"; then
-      return 1
-    fi
-    if [[ "$(uname)" == "Darwin" ]]; then
-      mode="$(stat -f '%Lp' "$file")" || return 1
-    else
-      mode="$(stat -c '%a' "$file")" || return 1
-    fi
-    chmod "$mode" "$tmp" || return 1
-    mv "$tmp" "$file"
-  } always {
-    rm -f -- "$tmp"
-  }
+  ZK_LINK_STAGE_PREFIX='.zk-workspace-remove' \
+    ZK_LINK_CLEANUP_ON_FAILURE=1 \
+    zk_remove_links_atomic "$file" "$@"
 }
 
 zk="$(zk_home)"

@@ -21,35 +21,11 @@ source "$script_dir/zettelkasten/lib/today.zsh"
 sep=$'\x1f'
 
 header_attr_line() {
-  local file="$1"
-  local attr="$2"
-
-  awk -v attr="$attr" '
-    NR == 1 {
-      next
-    }
-
-    /^$/ {
-      exit
-    }
-
-    index($0, ":" attr ":") == 1 {
-      print
-      exit
-    }
-  ' "$file"
+  zk_attr_line "$1" "$2"
 }
 
 header_attr_value() {
-  local line
-  local attr="$2"
-
-  line="$(header_attr_line "$1" "$attr")"
-  [[ -n "$line" ]] || return 1
-
-  line="${line#:$attr:}"
-  line="${line#"${line%%[![:space:]]*}"}"
-  print -r -- "$line"
+  zk_attr_value "$1" "$2"
 }
 
 is_header_deprecated() {
@@ -295,26 +271,7 @@ validate_topic_metadata() {
 validate_deprecated_target() {
   local file="$1"
 
-  if ! awk '
-    NR == 1 {
-      if ($0 !~ /^= /) invalid = 1
-      next
-    }
-
-    /^$/ {
-      boundary = 1
-      exit
-    }
-
-    $0 !~ /^:[^:]+:/ {
-      invalid = 1
-      exit
-    }
-
-    END {
-      exit invalid || !boundary
-    }
-  ' "$file"; then
+  if ! zk_header_is_mutable "$file"; then
     print -ru2 -- "ERROR cannot determine AsciiDoc header boundary: $file"
     return 1
   fi

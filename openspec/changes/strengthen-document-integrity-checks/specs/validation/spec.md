@@ -21,3 +21,19 @@ Workflow проверки нового постоянного документа
 - **WHEN** workflow достигает соответствующего шага
 - **THEN** указанное process rule SHALL быть выполнено
 - **AND** его обход SHALL считаться нарушением project contract
+
+### Requirement: CHECK-017 — zt-check выявляет активные Topic с пустым :key-topic
+
+**Baseline legacy status до дельты:** `ROADMAP`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
+
+**Статус изменения:** `IMPLEMENTED` после выполнения primary regression suite.
+
+Текущая реализация `zt-check` MUST выявлять активные Topic с пустым `:key-topic:` и несогласованными каноническими заголовком, `:description:` и `:doclink:`. Проверка SHALL быть read-only и SHALL давать ненулевой итоговый exit при нарушении.
+
+#### Scenario: CHECK-017 contract is verified
+
+- **GIVEN** активная Topic имеет пустой `:key-topic:` либо несогласованные canonical metadata
+- **WHEN** запущен `zt-check`
+- **THEN** checker SHALL вывести `TOPIC_METADATA` и завершиться с ненулевым status
+- **AND** исходный документ SHALL остаться побайтно неизменным

@@ -81,6 +81,12 @@ if git -C "$zk" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     die "working tree must be clean before migration"
 fi
 
+for file in "${documents[@]}" "${indexes[@]}"; do
+  [[ -f "$file" ]] || continue
+  zk_extract_links "$file" > /dev/null ||
+    die "unsupported or unclosed opaque block: $file"
+done
+
 backup_dir="$(mktemp -d "${TMPDIR:-/tmp}/zt-migrate-notes.XXXXXX")" ||
   die "cannot create backup directory"
 mkdir -p "$backup_dir/documents" "$backup_dir/all-todays" "$backup_dir/workspaces" ||

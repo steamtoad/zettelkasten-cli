@@ -167,7 +167,13 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 **Legacy status:** `PROCESS`.
 **Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
-Development, migration или runtime process MUST соблюдать следующее правило: UUID v1 нового постоянного документа проверяется отдельно, поскольку текущий `zt-check` не проверяет версию UUID.
+Workflow проверки нового постоянного документа MUST включать UUID v1, version и variant. Результат `zt-check`, поддерживающего `INTEGRITY-002`, SHALL удовлетворять этому шагу; отдельная проверка требуется только при использовании более ранней версии checker. Нельзя объявлять шаг успешным по одному hex-pattern без version check.
+
+#### Scenario: Новая проверка доступна
+
+- **GIVEN** checker поддерживает `INTEGRITY-002`
+- **WHEN** проверяется новый документ
+- **THEN** UUID gate подтверждён результатом checker без утверждения, что `zt-check` не умеет проверять UUID
 
 #### Scenario: CHECK-011 contract is verified
 
@@ -250,19 +256,17 @@ Development, migration или runtime process MUST соблюдать следу
 
 ### Requirement: CHECK-017 — zt-check выявляет активные Topic с пустым :key-topic
 
-**Legacy status:** `ROADMAP`.
+**Legacy status:** `IMPLEMENTED`.
 **Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
-Целевая архитектура или поведение MUST сохранять следующий target contract: `zt-check` выявляет активные Topic с пустым `:key-topic:` и несогласованными каноническими заголовком, `:description:` и `:doclink:`.
-
-До подтверждённой реализации проект MUST NOT описывать этот contract как `IMPLEMENTED`.
+Текущая реализация `zt-check` MUST выявлять активные Topic с пустым `:key-topic:` и несогласованными каноническими заголовком, `:description:` и `:doclink:`. Проверка SHALL быть read-only и SHALL давать ненулевой итоговый exit при нарушении.
 
 #### Scenario: CHECK-017 contract is verified
 
-- **GIVEN** соответствующая roadmap capability планируется, проектируется или реализуется
-- **WHEN** оценивается целевое поведение и его implementation status
-- **THEN** target contract SHALL быть сохранён
-- **AND** capability SHALL NOT считаться `IMPLEMENTED` без подтверждения кодом, проверками и traceability
+- **GIVEN** активная Topic имеет пустой `:key-topic:` либо несогласованные canonical metadata
+- **WHEN** запущен `zt-check`
+- **THEN** checker SHALL вывести `TOPIC_METADATA` и завершиться с ненулевым status
+- **AND** исходный документ SHALL остаться побайтно неизменным
 
 ### Requirement: CHECK-018 — zt-check выявляет новые или активные связи, ошибочно направленные на deprecated Topic
 

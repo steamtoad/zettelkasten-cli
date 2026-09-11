@@ -21,7 +21,7 @@ source "$repo/scripts/lib/asciidoc.zsh"
 typeset -a constructors types titles
 constructors=(note memo todo diary topic)
 types=(note memo todo diary topic)
-titles=('Runtime Note' 'Runtime Memo' 'Runtime Todo' 'Runtime Diary' 'Runtime Topic')
+titles=('Runtime Note' 'Runtime Memo' 'Runtime Todo' 'Runtime Diary' 'runtime-topic - ключевая тема')
 
 for index in {1..5}; do
   kind="${constructors[$index]}"
