@@ -1,8 +1,8 @@
 ## 1. Readiness и ownership
 
-- [ ] 1.1 Зафиксировать current baseline, code и verification evidence для `SAFE-001`, `SAFE-002`, `SAFE-004`, `CHECK-004`, `ZP-DIARY-005`, `FLOW-002` и завершённых core safety changes; проверить exact-once legacy traceability и записать конкретный blocker для каждого неподтверждённого prerequisite.
-- [ ] 1.2 Подтвердить, что `validate-diary-and-memo-chains`, `standardize-cli-preflight-and-selection` и `add-recoverable-workflow-transactions` остаются единственными владельцами `CHAIN-CHECK-*`, `CLI-PREFLIGHT-*`/`FZF-002` и `TXN-*`; проверить targeted search по baseline и active changes на competing IDs.
-- [ ] 1.3 Реализовать и верифицировать owner changes в порядке из design либо отметить integration tasks `BLOCKED` до их принятия; подтвердить каждый переход через актуальные tasks, focused suite, baseline sync и verification evidence, не повышая status по одному planning artifact.
+- [x] 1.1 Зафиксировать current baseline, code и verification evidence для `SAFE-001`, `SAFE-002`, `SAFE-004`, `CHECK-004`, `ZP-DIARY-005`, `FLOW-002` и завершённых core safety changes; проверить exact-once legacy traceability и записать конкретный blocker для каждого неподтверждённого prerequisite.
+- [x] 1.2 Подтвердить, что `validate-diary-and-memo-chains`, `standardize-cli-preflight-and-selection` и `add-recoverable-workflow-transactions` остаются единственными владельцами `CHAIN-CHECK-*`, `CLI-PREFLIGHT-*`/`FZF-002` и `TXN-*`; проверить targeted search по baseline и active changes на competing IDs.
+- [x] 1.3 Реализовать и верифицировать owner changes в порядке из design либо отметить integration tasks `BLOCKED` до их принятия; подтвердить каждый переход через актуальные tasks, focused suite, baseline sync и verification evidence, не повышая status по одному planning artifact. `BLOCKED` recorded in `readiness.md`; owner implementations are outside this change's scope.
 
 ## 2. Structured handoff и phase engine
 
