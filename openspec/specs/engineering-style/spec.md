@@ -9,7 +9,7 @@
 ### Requirement: STYLE-001 — новые shell-скрипты проекта пишутся на zsh
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: новые shell-скрипты проекта пишутся на zsh.
 
@@ -23,7 +23,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: STYLE-002 — используется единый заголовок файла
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: используется единый заголовок файла.
 
@@ -37,7 +37,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: STYLE-003 — текстовый файл завершается символом LF
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: текстовый файл завершается символом LF.
 
@@ -51,7 +51,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: STYLE-004 — жёстко прошитые пути не добавляются
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: жёстко прошитые пути не добавляются; существующие постепенно заменяются использованием `ZK_HOME`.
 
@@ -65,7 +65,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: STYLE-005 — учитывается совместимость Linux и macOS
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: учитывается совместимость Linux и macOS.
 
@@ -79,7 +79,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: STYLE-006 — пробелы, кавычки и специальные символы в пользовательских значениях обрабатываются корректно
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: пробелы, кавычки и специальные символы в пользовательских значениях обрабатываются корректно.
 
@@ -93,7 +93,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: STYLE-007 — пустой ввод и отмена интерактивного выбора обрабатываются без повреждения данных
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: пустой ввод и отмена интерактивного выбора обрабатываются без повреждения данных.
 
@@ -107,7 +107,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: STYLE-008 — пользовательские CLI-скрипты должны быть исполняемыми
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Стиль CLI-скриптов`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: пользовательские CLI-скрипты должны быть исполняемыми.
 

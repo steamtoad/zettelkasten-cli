@@ -17,12 +17,12 @@ import sys
 import tempfile
 sys.dont_write_bytecode = True
 repo = Path(sys.argv[1])
-spec = importlib.util.spec_from_file_location('boundaries', repo / '.scripts/dev/plugin_boundaries.py')
+spec = importlib.util.spec_from_file_location('boundaries', repo / 'scripts/dev/plugin_boundaries.py')
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 with tempfile.TemporaryDirectory(prefix='zt-boundaries-') as tmp:
-    root = Path(tmp).resolve() / '.scripts'
-    shutil.copytree(repo / '.scripts', root)
+    root = Path(tmp).resolve() / 'scripts'
+    shutil.copytree(repo / 'scripts', root)
     assert not module.check(root)[1]
     for owner, allowed in module.ALLOWED.items():
         for target in module.ALLOWED:

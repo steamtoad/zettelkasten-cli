@@ -13,7 +13,7 @@ repo="${0:A:h:h}"
 fixture="$(mktemp -d "${TMPDIR:-/tmp}/zt-write-safety.XXXXXX")"
 trap 'rm -rf -- "$fixture"' EXIT HUP INT TERM
 
-source "$repo/.scripts/lib/asciidoc.zsh"
+source "$repo/scripts/lib/asciidoc.zsh"
 
 hash_file() {
   if command -v shasum >/dev/null 2>&1; then
@@ -103,15 +103,15 @@ fi
   exit 1
 }
 
-rg -qF '|| reduce_write_failed' "$repo/.scripts/zt-reduce.zsh" || {
+rg -qF '|| reduce_write_failed' "$repo/scripts/zt-reduce.zsh" || {
   print -ru2 -- 'FAIL: Reduce does not propagate linkage failures'
   exit 1
 }
-rg -qF 'cat -- "$file" || {' "$repo/.scripts/zt-read.zsh" || {
+rg -qF 'cat -- "$file" || {' "$repo/scripts/zt-read.zsh" || {
   print -ru2 -- 'FAIL: zt-read does not propagate cat failures'
   exit 1
 }
-rg -qF 'zk_append_text_atomic "$source_file"' "$repo/.scripts/zt-continue.zsh" || {
+rg -qF 'zk_append_text_atomic "$source_file"' "$repo/scripts/zt-continue.zsh" || {
   print -ru2 -- 'FAIL: Continue does not use the checked reverse-link writer'
   exit 1
 }
@@ -163,7 +163,7 @@ if print -r -- y | env \
   PATH="$fake_bin:$PATH" \
   ZK_HOME="$reduce_failure" \
   ZK_TEST_FAIL_MV_DEST="$failed_note" \
-  "$repo/.scripts/zt-reduce.zsh" >"$fixture/reduce-failure.out" 2>"$fixture/reduce-failure.err"; then
+  "$repo/scripts/zt-reduce.zsh" >"$fixture/reduce-failure.out" 2>"$fixture/reduce-failure.err"; then
   print -ru2 -- 'FAIL: Reduce ignored a Note linkage failure'
   exit 1
 fi
@@ -187,7 +187,7 @@ rg -qF 'Already changed files:' "$fixture/reduce-failure.err" || {
 reduce_success="$fixture/reduce-success"
 write_reduce_fixture "$reduce_success"
 print -r -- y | env PATH="$fake_bin:$PATH" ZK_HOME="$reduce_success" \
-  "$repo/.scripts/zt-reduce.zsh" >"$fixture/reduce-success.out" 2>"$fixture/reduce-success.err"
+  "$repo/scripts/zt-reduce.zsh" >"$fixture/reduce-success.out" 2>"$fixture/reduce-success.err"
 rg -qF 'Reduce complete' "$fixture/reduce-success.out" || {
   print -ru2 -- 'FAIL: normal Reduce did not complete'
   exit 1
@@ -212,7 +212,7 @@ if print -r -- branch | env \
   PATH="$fake_bin:$PATH" \
   ZK_HOME="$continue_root" \
   ZK_TEST_FAIL_MV_DEST="$memo" \
-  "$repo/.scripts/zt-continue.zsh" >"$fixture/continue.out" 2>"$fixture/continue.err"; then
+  "$repo/scripts/zt-continue.zsh" >"$fixture/continue.out" 2>"$fixture/continue.err"; then
   print -ru2 -- 'FAIL: Continue ignored the reverse-link write failure'
   exit 1
 fi
@@ -234,7 +234,7 @@ print -rl -- \
   'exec /bin/cat "$@"' > "$fake_bin/cat"
 chmod +x "$fake_bin/cat"
 if print -r -- needle | env PATH="$fake_bin:$PATH" ZK_HOME="$read_root" \
-  "$repo/.scripts/zt-read.zsh" >"$fixture/read.out" 2>"$fixture/read.err"; then
+  "$repo/scripts/zt-read.zsh" >"$fixture/read.out" 2>"$fixture/read.err"; then
   print -ru2 -- 'FAIL: zt-read ignored cat failure'
   exit 1
 fi

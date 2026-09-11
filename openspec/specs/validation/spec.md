@@ -9,7 +9,7 @@
 ### Requirement: CHECK-001 — zt-check выполняет проверку без автоматического изменения документов
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-check` выполняет проверку без автоматического изменения документов.
 
@@ -23,7 +23,7 @@
 ### Requirement: CHECK-002 — zt-check проверяет структуру репозитория, заголовки, обязательные метаданные, известные типы,...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-check` проверяет структуру репозитория, заголовки, обязательные метаданные, известные типы, `:docfilename:`, `:doclink:`, ссылки, `all-todays`, `.last-diary` и существование элементов diary-цепочки.
 
@@ -37,7 +37,7 @@
 ### Requirement: CHECK-003 — zt-check игнорирует псевдометаданные и ссылки внутри блоков исходного кода
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-check` игнорирует псевдометаданные и ссылки внутри блоков исходного кода.
 
@@ -51,7 +51,7 @@
 ### Requirement: CHECK-004 — изменяющие структуру или данные операции завершаются запуском zt-check
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: изменяющие структуру или данные операции завершаются запуском `zt-check`.
 
@@ -65,7 +65,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-005 — zt-check должен проверять deprecated-семантику, взаимность diary-цепочки и структуру постоянн...
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: `zt-check` должен проверять deprecated-семантику, взаимность diary-цепочки и структуру постоянных индексов, если такие индексы появятся.
 
@@ -81,7 +81,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-006 — zt-scripts-patch исправляет отсутствие завершающего LF
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 `zt-scripts-patch` MUST исправлять только отсутствие завершающего LF у непустого shell-файла, сохраняя файл с существующим LF побайтно. Повторный запуск SHALL быть идемпотентным; форматирование не заменяет функциональную проверку скриптов.
 
@@ -107,7 +107,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-007 — zt-scripts-review может использоваться для автоматического анализа качества скриптов
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-scripts-review` может использоваться для автоматического анализа качества скриптов.
 
@@ -121,7 +121,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-008 — интеграционные тесты выполняются на временном Zettelkasten и не изменяют рабочее хранилище
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: интеграционные тесты выполняются на временном Zettelkasten и не изменяют рабочее хранилище.
 
@@ -135,7 +135,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-009 — нужны интеграционные сценарии Note→Memo, Memo→Topic, обычного/повторного/Full Copy Reduce и R...
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: нужны интеграционные сценарии Note→Memo, Memo→Topic, обычного/повторного/Full Copy Reduce и Reduce с deprecated Note.
 
@@ -151,7 +151,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-010 — каждый постоянный документ, созданный агентом, до завершения задачи проходит минимальный набо...
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: каждый постоянный документ, созданный агентом, до завершения задачи проходит минимальный набор проверок: UUID v1, Asciidoctor-рендеринг, `zt-check` и `git diff --check`.
 
@@ -165,7 +165,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: CHECK-011 — UUID v1 нового постоянного документа проверяется отдельно, поскольку текущий zt-check не пров...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: UUID v1 нового постоянного документа проверяется отдельно, поскольку текущий `zt-check` не проверяет версию UUID.
 
@@ -179,7 +179,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-012 — каждый созданный или изменённый агентом AsciiDoc-документ рендерится Asciidoctor с --failure-...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: каждый созданный или изменённый агентом AsciiDoc-документ рендерится Asciidoctor с `--failure-level WARN`; выход сохраняется во временный каталог и не добавляется в репозиторий.
 
@@ -190,12 +190,12 @@ Development, migration или runtime process MUST соблюдать следу
 - **THEN** указанное process rule SHALL быть выполнено
 - **AND** его обход SHALL считаться нарушением project contract
 
-### Requirement: CHECK-013 — после создания или изменения документов агент запускает .scripts/zt-check.zsh
+### Requirement: CHECK-013 — после создания или изменения документов агент запускает scripts/zt-check.zsh
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
-Development, migration или runtime process MUST соблюдать следующее правило: после создания или изменения документов агент запускает `.scripts/zt-check.zsh`.
+Development, migration или runtime process MUST соблюдать следующее правило: после создания или изменения документов агент запускает `scripts/zt-check.zsh`.
 
 #### Scenario: CHECK-013 contract is verified
 
@@ -207,7 +207,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-014 — после создания или изменения документов агент запускает git diff --check -- <changed-files>
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: после создания или изменения документов агент запускает `git diff --check -- <changed-files>`; полный `git diff --check` может использоваться дополнительно для обнаружения несвязанных проблем.
 
@@ -221,7 +221,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-015 — минимальный набор проверок не заменяет проверку обязательных метаданных, all-todays, требуемы...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: минимальный набор проверок не заменяет проверку обязательных метаданных, `all-todays`, требуемых перекрёстных ссылок, Diary-цепочки, deprecated-семантики и специальных workflow.
 
@@ -235,7 +235,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-016 — zt-check проверяет, что :deprecated
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: `zt-check` проверяет, что `:deprecated:` находится в заголовке и является его последним атрибутом.
 
@@ -251,7 +251,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-017 — zt-check выявляет активные Topic с пустым :key-topic
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: `zt-check` выявляет активные Topic с пустым `:key-topic:` и несогласованными каноническими заголовком, `:description:` и `:doclink:`.
 
@@ -267,7 +267,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-018 — zt-check выявляет новые или активные связи, ошибочно направленные на deprecated Topic
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: `zt-check` выявляет новые или активные связи, ошибочно направленные на deprecated Topic.
 
@@ -283,7 +283,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-019 — интеграционные тесты покрывают следующую редакцию Topic через Reduce, выделение новой тематич...
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: интеграционные тесты покрывают следующую редакцию Topic через Reduce, выделение новой тематической линии, повторный запуск и создание Memo после каждой операции.
 
@@ -299,7 +299,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-020 — интеграционный тест подтверждает, что Memo получает тематический ключ из :key-topic
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: интеграционный тест подтверждает, что Memo получает тематический ключ из `:key-topic:` выбранной Topic, а не из её заголовка или `:description:`.
 
@@ -315,7 +315,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-021 — интеграционный тест подтверждает, что ошибка разбора заголовка не приводит к добавлению :depr...
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: интеграционный тест подтверждает, что ошибка разбора заголовка не приводит к добавлению `:deprecated:` в тело или конец документа.
 
@@ -331,7 +331,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-022 — metadata scanner прекращает разбор header на первой пустой строке после title и не принимает...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: metadata scanner прекращает разбор header на первой пустой строке после title и не принимает атрибутоподобные строки body за обязательные metadata или `:deprecated:`.
 
@@ -345,7 +345,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: CHECK-023 — runtime core проверяется на временном Zettelkasten
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 Repository regression suite MUST на временном `ZK_HOME` проверять canonical constructors Note, Memo, Todo, Diary и Topic, обязательные metadata, UUID filename, успешную проверку валидного Vault и обнаружение broken link через `zt-check`.
 

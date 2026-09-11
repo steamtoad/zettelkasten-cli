@@ -1,0 +1,95 @@
+= Разработка sibling plugins
+:revdate: 2026-09-06
+:toc:
+
+== Владение кодом и данными
+
+[cols="1,2,2",options="header"]
+|===
+|Plugin |Каноническая реализация |Допустимые зависимости
+|Zettelkasten |`scripts/zettelkasten/`: Note/Memo/Topic/Todo |`objects/`, `lib/`, собственный код
+|Diary |`scripts/diary/zt-diary.zsh`, `lib/today.zsh` |`objects/`, `lib/`, собственный код
+|Inbox |`scripts/inbox/{capture,processed}.zsh` |`lib/`, собственный код
+|Workspace |`scripts/workspace/zt-workspace-*.zsh`, `lib/workspace.zsh` |`lib/`, собственный код
+|===
+
+Между sibling plugins нет source dependencies. Neutral `lib/` не зависит от
+objects/plugins; objects используют только neutral `lib/`. Top-level команды
+Diary/Inbox/Workspace являются executable direct `exec` wrappers и передают
+`"$@"`. Managed operational skill mappings остаются привязаны к прежним
+top-level именам. Continue/Reduce/Refine временно используют Zettelkasten
+`today.zsh`; Continue также использует `bindings.zsh` согласно `ARCH-019`.
+
+Все plugins разрабатываются и поставляются в текущем `zettelkasten-cli`.
+Перенос кода не перемещает документы, не переименовывает UUID, не меняет
+`notes/`, `all-todays/`, `.last-diary`, `inbox/{raw,processed}` и `workspaces/`.
+Откат code refactor возвращает прежние source paths и wrappers; обратная
+миграция пользовательских данных не требуется.
+
+== Требования и traceability
+
+Нормативный baseline: `openspec/specs/*/spec.md`.
+Legacy sources с exact-once stable IDs:
+
+* `scripts/docs/requirements.adoc` — общие требования, включая `AGGR-*` и `WORKSPACE-*`.
+* `scripts/zettelkasten/docs/requirements.adoc` — Zettelkasten policy.
+* `scripts/diary/docs/requirements.adoc` — `ZP-DIARY-*` и `DP-*`.
+* `scripts/inbox/docs/requirements.adoc` — `INBOX-*` и `IP-*`.
+* `scripts/workspace/docs/requirements.adoc` — `ZP-WORKSPACE-*` и `WP-*`.
+
+Новые plugin IDs не переименовывают прежние IDs. Статусы ROADMAP сохраняются
+до реализации соответствующего поведения; перенос Inbox не реализует import.
+Общие требования, затронутые несколькими changes, синхронизируются совместно:
+`ARCH-016` должен одновременно учитывать все четыре plugins.
+
+== Проверки
+
+[source,zsh]
+----
+scripts/dev/zt-plugin-boundaries-check.zsh
+tests/zt-plugin-boundaries.zsh
+tests/zt-diary-as-plugin.zsh
+tests/zt-inbox-as-plugin.zsh
+tests/zt-workspace-as-plugin.zsh
+tests/zt-plugin-edge-cases.zsh
+tests/zt-runtime-core.zsh
+scripts/dev/zt-openspec-check.zsh
+tests/zt-all.zsh
+openspec validate --all --strict --no-interactive
+git diff --check
+----
+
+Для изменённых Zsh files отдельно выполняется `zsh -n`. Python 3 используется
+только development tooling и тестами; runtime plugins остаются на Zsh и Unix.
+Наборы проверяют публичные entrypoints на временном `ZK_HOME`, с подставными
+editor/fzf/date/UUID и управляемыми ошибками файловых операций. Они проверяют
+stdout/stderr/exit forwarding, аргументы с пробелами и Unicode, пути с пробелами,
+отмену выбора, сохранение target documents и режимов файлов. `--behavior-only`
+позволяет выполнить тот же observable contract до переноса канонического кода.
+Обычная проверка не обращается к пользовательскому Vault.
+
+Boundary checker учитывает command substitutions и compound statements и анализирует executable `source`, `.`, `exec`, shell-script
+invocations в `.zsh` внутри слоёв; комментарии и документация не являются
+зависимостями. Он разрешает явные directory idioms `${0:A:h}`,
+`${${(%):-%N}:A:h}`, производные directory variables и абсолютные literal paths. Bare relative source
+не доказывает dependency: он зависит от runtime cwd, поэтому отклоняется.
+Неизвестный вычисляемый source path отклоняется и требует явной поддержки
+анализатором. Это статический контроль принятых source idioms, не полный Zsh
+интерпретатор и не security sandbox. Negative fixtures проверяют каждое
+запрещённое направление, включая обратные зависимости engine/objects.
+
+`ZK_SCRIPTS_ROOT` перенаправляет boundary checker на fixture.
+Coverage checker поддерживает `ZK_OPENSPEC_DIR`, `ZK_HOST_REQUIREMENTS`,
+`ZK_PLUGIN_REQUIREMENTS`, `ZK_DIARY_REQUIREMENTS`, `ZK_INBOX_REQUIREMENTS`,
+`ZK_WORKSPACE_REQUIREMENTS` для самодостаточных тестов; отсутствие любого
+указанного source, duplicate ID или несовпадение статуса является ошибкой.
+
+== Ограничения совместимости
+
+Рефакторинг сохраняет существующий порядок side effects. Diary не продвигает
+state после ошибки создания, today или chain; полный rollback всех созданных
+файлов не добавляется. Inbox проверяет editor после создания raw; Workspace
+сохраняет непустой ручной текст и соседние ссылки при удалении выбранных macros.
+Исправления пограничных случаев оформлены отдельным
+`fix-plugin-regression-edge-cases`, сохраняя историю первоначального refactor.
+

@@ -9,7 +9,7 @@
 ### Requirement: MIGR-001 — сначала сохраняется совместимость с текущими документами и workflow
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Миграции`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Миграции`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: сначала сохраняется совместимость с текущими документами и workflow.
 
@@ -23,7 +23,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: MIGR-002 — новый механизм добавляется до удаления старого
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Миграции`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Миграции`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: новый механизм добавляется до удаления старого.
 
@@ -37,7 +37,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: MIGR-003 — после добавления нового механизма выполняется проверяемая миграция данных
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Миграции`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Миграции`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: после добавления нового механизма выполняется проверяемая миграция данных.
 
@@ -51,7 +51,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: MIGR-004 — старый механизм удаляется только после успешной миграции и проверки
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Миграции`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Миграции`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: старый механизм удаляется только после успешной миграции и проверки.
 
@@ -65,7 +65,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: MIGR-005 — массовое переименование UUID, файлов или ссылок запрещено без плана миграции, резервной копии...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Миграции`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Миграции`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: массовое переименование UUID, файлов или ссылок запрещено без плана миграции, резервной копии и проверки ссылочной целостности.
 
@@ -79,7 +79,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: MIGR-006 — перед изменением семантики Topic или Reduce выполняется аудит активных Topic на согласованнос...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Миграции`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Миграции`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: перед изменением семантики Topic или Reduce выполняется аудит активных Topic на согласованность заголовка, `:description:`, `:doclink:` и `:key-topic:`.
 
@@ -93,7 +93,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: MIGR-007 — для каждой Topic, у которой отображаемое название расходится с :key-topic:, явно выбирается о...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Миграции`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Миграции`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: для каждой Topic, у которой отображаемое название расходится с `:key-topic:`, явно выбирается одно из решений: восстановить её как следующую редакцию прежней линии либо выделить новую тематическую линию.
 
@@ -107,7 +107,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: MIGR-008 — миграция в новую тематическую линию явно определяет переносимые документы, сохраняет историче...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Миграции`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Миграции`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: миграция в новую тематическую линию явно определяет переносимые документы, сохраняет исторические ссылки и не создаёт новых связей с deprecated Topic.
 
@@ -121,7 +121,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: MIGR-009 — нормализация расположения :deprecated
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Миграции`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Миграции`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: нормализация расположения `:deprecated:` выполняется отдельной проверяемой миграцией и не смешивается с изменением содержания документов.
 

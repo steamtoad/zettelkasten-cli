@@ -9,7 +9,7 @@
 ### Requirement: LINK-001 — связи между core documents внутри notes/ оформляются относительными AsciiDoc-ссылками вида li...
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связанные документы`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связанные документы`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: связи между core documents внутри `notes/` оформляются относительными AsciiDoc-ссылками вида `link:UUID.adoc[Описание]`; внешние контексты используют правила `PATH-003`–`PATH-005`.
 
@@ -23,7 +23,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: LINK-002 — Topic хранит ссылки на явно связанные с ней Memo и Note
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связанные документы`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связанные документы`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Topic хранит ссылки на явно связанные с ней Memo и Note.
 
@@ -37,7 +37,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: LINK-003 — добавление новых связей не создаёт дублирующиеся заголовки разделов
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связанные документы`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связанные документы`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: добавление новых связей не создаёт дублирующиеся заголовки разделов.
 
@@ -51,7 +51,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: LINK-004 — механизм перекрёстных ссылок идемпотентен
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связанные документы`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связанные документы`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: механизм перекрёстных ссылок идемпотентен.
 
@@ -65,7 +65,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: LINK-005 — идемпотентность связи определяется UUID целевого документа, независимо от текста ссылки
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связанные документы`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связанные документы`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: идемпотентность связи определяется UUID целевого документа, независимо от текста ссылки.
 
@@ -79,7 +79,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: LINK-006 — парсинг AsciiDoc-ссылок совместим с zsh и не использует ошибочные glob-шаблоны вида %%[*
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связанные документы`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связанные документы`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: парсинг AsciiDoc-ссылок совместим с zsh и не использует ошибочные glob-шаблоны вида `%%[*`.
 
@@ -93,7 +93,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: LINK-007 — после операций создания и изменения связей не должно оставаться битых ссылок
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связанные документы`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связанные документы`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: после операций создания и изменения связей не должно оставаться битых ссылок.
 

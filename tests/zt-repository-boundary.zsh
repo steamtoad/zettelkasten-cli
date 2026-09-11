@@ -12,7 +12,7 @@ setopt errexit pipe_fail no_unset
 repo="${0:A:h:h}"
 cd "$repo"
 
-for public_path in AGENTS.MD openspec skills tests .scripts/dev .scripts/docs/marta-agent.md; do
+for public_path in AGENTS.MD openspec dev/skills tests scripts/dev scripts/docs/marta-agent.md; do
   [[ -e "$public_path" ]] || { print -u2 -- "FAIL: public development artifact missing: $public_path"; exit 1; }
   if git check-ignore -q -- "$public_path"; then
     print -u2 -- "FAIL: public development artifact is ignored: $public_path"

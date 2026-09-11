@@ -16,7 +16,7 @@ trap 'rm -rf -- "$fixture"' EXIT HUP INT TERM
 export ZK_HOME="$fixture"
 mkdir -p "$fixture/notes" "$fixture/all-todays" "$fixture/workspaces" "$fixture/.scripts"
 
-source "$repo/.scripts/lib/asciidoc.zsh"
+source "$repo/scripts/lib/asciidoc.zsh"
 
 typeset -a constructors types titles
 constructors=(note memo todo diary topic)
@@ -26,8 +26,8 @@ titles=('Runtime Note' 'Runtime Memo' 'Runtime Todo' 'Runtime Diary' 'Runtime To
 for index in {1..5}; do
   kind="${constructors[$index]}"
   case "$kind" in
-    topic) file="$("$repo/.scripts/objects/topic-create.zsh" "${titles[$index]}" 'runtime-topic')" ;;
-    *) file="$("$repo/.scripts/objects/${kind}-create.zsh" "${titles[$index]}")" ;;
+    topic) file="$("$repo/scripts/objects/topic-create.zsh" "${titles[$index]}" 'runtime-topic')" ;;
+    *) file="$("$repo/scripts/objects/${kind}-create.zsh" "${titles[$index]}")" ;;
   esac
 
   document_path="$fixture/notes/$file"
@@ -42,18 +42,18 @@ for index in {1..5}; do
   fi
 done
 
-"$repo/.scripts/zt-check.zsh" >/dev/null || { print -u2 -- 'FAIL: zt-check rejected valid runtime fixture'; exit 1; }
+"$repo/scripts/zt-check.zsh" >/dev/null || { print -u2 -- 'FAIL: zt-check rejected valid runtime fixture'; exit 1; }
 
 # CHECK-003/CHECK-022: body/code pseudo-metadata and placeholder links are not header metadata.
 typeset -a note_files
 note_files=("${(@f)$(find "$fixture/notes" -type f -name '*.adoc' | sort)}")
 note_file="${note_files[1]}"
 print -r -- $'\n----\n:deprecated:\nlink:missing.adoc[fixture]\n----' >> "$note_file"
-"$repo/.scripts/zt-check.zsh" >/dev/null || { print -u2 -- 'FAIL: zt-check parsed code-block pseudo metadata/link'; exit 1; }
+"$repo/scripts/zt-check.zsh" >/dev/null || { print -u2 -- 'FAIL: zt-check parsed code-block pseudo metadata/link'; exit 1; }
 
 # CHECK-002: a genuinely broken link must fail validation.
 print -r -- $'\nlink:missing.adoc[Broken]' >> "$note_file"
-if "$repo/.scripts/zt-check.zsh" >/dev/null 2>&1; then
+if "$repo/scripts/zt-check.zsh" >/dev/null 2>&1; then
   print -u2 -- 'FAIL: zt-check accepted a broken link'
   exit 1
 fi

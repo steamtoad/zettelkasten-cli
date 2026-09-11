@@ -11,7 +11,7 @@
 ### Requirement: ZP-WORKSPACE-001 — plugin library вычисляет каталог, title, безопасное filename и ссылки Workspace
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/workspace/docs/requirements.adoc` → section `Workspace policy library`.
+**Traceability:** `scripts/workspace/docs/requirements.adoc` → section `Workspace policy library`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: library отдельного Workspace plugin вычисляет каталог, title, безопасное filename и ссылки Workspace.
 
@@ -25,7 +25,7 @@
 ### Requirement: ZP-WORKSPACE-002 — библиотека не владеет top-level Workspace workflow
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/workspace/docs/requirements.adoc` → section `Workspace policy library`.
+**Traceability:** `scripts/workspace/docs/requirements.adoc` → section `Workspace policy library`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: Workspace policy library не является top-level workflow; canonical create/add/open/remove workflows принадлежат executable scripts того же Workspace plugin, а соответствующие top-level host commands являются только compatibility entrypoints.
 

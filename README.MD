@@ -6,7 +6,7 @@
 
 # Русский
 
-Нормативный baseline требований: `openspec/specs/*/spec.md`. Legacy stable-ID traceability: `.scripts/docs/requirements.adoc` и `.scripts/{zettelkasten,diary,inbox,workspace}/docs/requirements.adoc`.
+Нормативный baseline требований: `openspec/specs/*/spec.md`. Legacy stable-ID traceability: `scripts/docs/requirements.adoc` и `scripts/{zettelkasten,diary,inbox,workspace}/docs/requirements.adoc`.
 
 ## Описание
 
@@ -107,14 +107,14 @@ Reduce создаёт новое поколение Topic, сохраняя ис
 ```text
 AGENTS.MD
     ↓
-repo-local skills/zettelkasten-* (Marta)
+repo-local dev/skills/zettelkasten-* (Marta)
     ↓
 OpenSpec baseline + scripts + tests
     ↓
 legacy stable-ID traceability + Feature List
 ```
 
-Семь development skills разделяют implementation, OpenSpec changes, script review, system review, validation, migration и release. Общие operational contracts хранятся в `.scripts/dev/docs/skill-contracts/`; drift skills и coverage OpenSpec проверяются через `.scripts/dev/zt-agent-skills-check.zsh` и `.scripts/dev/zt-openspec-check.zsh`. Интеграционные проверки development agent должны использовать временный `ZK_HOME`, а не пользовательские документы.
+Семь development skills разделяют implementation, OpenSpec changes, script review, system review, validation, migration и release. Общие operational contracts хранятся в `scripts/dev/docs/skill-contracts/`; drift skills и coverage OpenSpec проверяются через `scripts/dev/zt-agent-skills-check.zsh` и `scripts/dev/zt-openspec-check.zsh`. Интеграционные проверки development agent должны использовать временный `ZK_HOME`, а не пользовательские документы.
 
 ## Управляемые runtime-навыки
 
@@ -126,7 +126,7 @@ legacy stable-ID traceability + Feature List
 ```text
 AGENTS.MD
         ↓
-managed operational zettelkasten-* skills
+managed operational zettelkasten-* dev/skills
         ↓
 scripts + requirements
         ↘
@@ -138,7 +138,7 @@ scripts + requirements
 участвует в runtime routing.
 
 Managed skills находятся вне Git-репозитория. Совместимая с текущим checkout
-редакция фиксируется в `.scripts/docs/managed-skills.adoc` и проверяется через
+редакция фиксируется в `scripts/docs/managed-skills.adoc` и проверяется через
 `zt-skills-review.zsh`. Интерактивные creation scripts являются механическим
 reference для agent workflow, но до появления `zcreate --no-edit` не считаются
 unattended deterministic primitives.
@@ -150,7 +150,7 @@ unattended deterministic primitives.
 
 # English
 
-Normative requirements baseline: `openspec/specs/*/spec.md`. Legacy stable-ID traceability remains in `.scripts/docs/requirements.adoc` and `.scripts/{zettelkasten,diary,inbox,workspace}/docs/requirements.adoc`.
+Normative requirements baseline: `openspec/specs/*/spec.md`. Legacy stable-ID traceability remains in `scripts/docs/requirements.adoc` and `scripts/{zettelkasten,diary,inbox,workspace}/docs/requirements.adoc`.
 
 ## Description
 
@@ -227,14 +227,14 @@ Repository development now follows the same specification-driven pattern as Engl
 ```text
 AGENTS.MD
     ↓
-repo-local skills/zettelkasten-* (Marta)
+repo-local dev/skills/zettelkasten-* (Marta)
     ↓
 OpenSpec baseline + scripts + tests
     ↓
 legacy stable-ID traceability + Feature List
 ```
 
-Seven development skills separate implementation, OpenSpec changes, script review, system review, validation, migration, and release. Shared operational contracts live under `.scripts/dev/docs/skill-contracts/`; `.scripts/dev/zt-agent-skills-check.zsh` and `.scripts/dev/zt-openspec-check.zsh` detect skill drift and OpenSpec coverage regressions. Development integration tests use a temporary `ZK_HOME` rather than user knowledge documents.
+Seven development skills separate implementation, OpenSpec changes, script review, system review, validation, migration, and release. Shared operational contracts live under `scripts/dev/docs/skill-contracts/`; `scripts/dev/zt-agent-skills-check.zsh` and `scripts/dev/zt-openspec-check.zsh` detect skill drift and OpenSpec coverage regressions. Development integration tests use a temporary `ZK_HOME` rather than user knowledge documents.
 
 ## Managed Runtime Skills
 
@@ -246,7 +246,7 @@ history:
 ```text
 AGENTS.MD
         ↓
-managed operational zettelkasten-* skills
+managed operational zettelkasten-* dev/skills
         ↓
 scripts + requirements
         ↘
@@ -258,7 +258,7 @@ Every top-level `zt-*.zsh` script has one managed OpenClaw skill. The historical
 part of runtime routing.
 
 Managed skills live outside the Git repository. The revision compatible with
-the current checkout is recorded in `.scripts/docs/managed-skills.adoc` and
+the current checkout is recorded in `scripts/docs/managed-skills.adoc` and
 verified by `zt-skills-review.zsh`. Interactive creation scripts are mechanical
 references for agent workflows, but are not unattended deterministic primitives
 until `zcreate --no-edit` exists.

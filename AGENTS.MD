@@ -14,11 +14,11 @@ openspec/specs/*/spec.md
 Legacy traceability sources:
 
 ```text
-.scripts/docs/requirements.adoc
-.scripts/zettelkasten/docs/requirements.adoc
-.scripts/diary/docs/requirements.adoc
-.scripts/inbox/docs/requirements.adoc
-.scripts/workspace/docs/requirements.adoc
+scripts/docs/requirements.adoc
+scripts/zettelkasten/docs/requirements.adoc
+scripts/diary/docs/requirements.adoc
+scripts/inbox/docs/requirements.adoc
+scripts/workspace/docs/requirements.adoc
 ```
 
 При расхождении implementation сверяется с OpenSpec. Изменение observable
@@ -28,14 +28,14 @@ behavior выполняется через OpenSpec workflow. Stable legacy requ
 Главная архитектурная граница:
 
 ```text
-.scripts/lib/             = domain-neutral primitives
-.scripts/objects/         = canonical persistent object constructors
-.scripts/zettelkasten/    = Note/Memo/Topic/Todo policy/workflow
-.scripts/diary/           = Diary workflow, chain/state, own today helper
-.scripts/inbox/           = capture/processed workflows
-.scripts/workspace/       = create/add/open/remove workflows and own policy
-.scripts/zt-*.zsh         = host CLI + compatibility entrypoints
-skills/zettelkasten-*     = Marta development procedures
+scripts/lib/             = domain-neutral primitives
+scripts/objects/         = canonical persistent object constructors
+scripts/zettelkasten/    = Note/Memo/Topic/Todo policy/workflow
+scripts/diary/           = Diary workflow, chain/state, own today helper
+scripts/inbox/           = capture/processed workflows
+scripts/workspace/       = create/add/open/remove workflows and own policy
+scripts/zt-*.zsh         = host CLI + compatibility entrypoints
+dev/skills/zettelkasten-*     = Marta development procedures
 openspec/specs/           = normative behavior/process baseline
 ```
 
@@ -59,7 +59,7 @@ Marta может:
 knowledge-management workflow от имени пользователя.
 
 Runtime managed skills, которые соответствуют top-level `zt-*.zsh` и живут во
-внешнем OpenClaw state, остаются отдельным operational layer. Repo-local skills
+внешнем OpenClaw state, остаются отдельным operational layer. Repo-local dev/skills
 Marta не заменяют их.
 
 ---
@@ -70,7 +70,7 @@ Development skill разрешает `ZK_DEV_HOME`/repository root в следу
 
 1. explicit configured repository root;
 2. текущий Git root, только если он содержит `AGENTS.MD`, `openspec/config.yaml`
-   и `.scripts/docs/requirements.adoc`;
+   и `scripts/docs/requirements.adoc`;
 3. иначе — `NOT_FOUND`.
 
 Не выводить repository path из `$HOME` и не использовать hard-coded checkout.
@@ -85,7 +85,7 @@ Authority order:
 
 ```text
 OpenSpec baseline     = normative truth
-.scripts/             = executable truth
+scripts/             = executable truth
 Marta development skill = procedural truth
 legacy requirements   = stable-ID / status traceability truth
 Feature List          = descriptive truth
@@ -129,12 +129,12 @@ plugin/  -> sibling plugin
 inbox/ or workspace/ -> objects/
 ```
 
-Переходные host dependencies на `.scripts/zettelkasten/lib/` допускаются только
+Переходные host dependencies на `scripts/zettelkasten/lib/` допускаются только
 там, где они уже зафиксированы baseline requirements. Новые такие зависимости не
 добавлять без архитектурного решения. Continue/Reduce/Refine используют today,
 Continue использует bindings; Workspace использует только собственный plugin.
-Проверка зависимостей: `.scripts/dev/zt-plugin-boundaries-check.zsh`;
-процедура и ограничения анализатора: `.scripts/docs/plugin-development.adoc`.
+Проверка зависимостей: `scripts/dev/zt-plugin-boundaries-check.zsh`;
+процедура и ограничения анализатора: `scripts/docs/plugin-development.adoc`.
 
 ---
 
@@ -330,8 +330,8 @@ zt-workspace-open.zsh            -> zettelkasten-workspace-open
 zt-workspace-remove.zsh          -> zettelkasten-workspace-remove
 ```
 
-Canonical integration manifest: `.scripts/docs/managed-skills.adoc`. Проверка:
-`.scripts/zt-skills-review.zsh`. Detailed Note и Skill Workshop policy остаются
+Canonical integration manifest: `scripts/docs/managed-skills.adoc`. Проверка:
+`scripts/zt-skills-review.zsh`. Detailed Note и Skill Workshop policy остаются
 действующими для этого external runtime layer.
 
 Special operational defaults:
@@ -395,13 +395,13 @@ For OpenSpec changes:
 
 ```text
 openspec validate --all        # when CLI is available
-.scripts/dev/zt-openspec-check.zsh
+scripts/dev/zt-openspec-check.zsh
 ```
 
 For development skills:
 
 ```text
-.scripts/dev/zt-agent-skills-check.zsh
+scripts/dev/zt-agent-skills-check.zsh
 ```
 
 For user-data migration:

@@ -9,7 +9,7 @@
 ### Requirement: ZP-BIND-001 — Memo может быть привязано к активной Topic через fzf
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Memo может быть привязано к активной Topic через `fzf`.
 
@@ -23,7 +23,7 @@
 ### Requirement: ZP-BIND-002 — Note может быть привязана к активному Memo через fzf
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Note может быть привязана к активному Memo через `fzf`.
 
@@ -37,7 +37,7 @@
 ### Requirement: ZP-BIND-003 — Memo наследует обязательный key-topic выбранной Topic и нормализованные keywords
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Memo наследует обязательный `key-topic` выбранной Topic и нормализованные keywords; Note наследует `key-topic`, когда он присутствует у выбранного Memo.
 
@@ -51,7 +51,7 @@
 ### Requirement: ZP-BIND-004 — привязка записывается двусторонними AsciiDoc-ссылками
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: привязка записывается двусторонними AsciiDoc-ссылками.
 
@@ -65,7 +65,7 @@
 ### Requirement: ZP-BIND-005 — выбор ограничен активными документами с соответствующим каноническим type
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: выбор ограничен активными документами с соответствующим каноническим `type`; Topic без header `:key-topic:` не предлагается для привязки Memo.
 
@@ -79,7 +79,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: ZP-BIND-006 — отсутствие fzf диагностируется до создания Note или Memo
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Note и Memo bindings`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: отсутствие `fzf` диагностируется до создания Note или Memo.
 

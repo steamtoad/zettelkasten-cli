@@ -11,7 +11,7 @@
 ### Requirement: ARCH-001 — проект рассматривается как единый продукт zettelkasten-cli
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: проект рассматривается как единый продукт `zettelkasten-cli`.
 
@@ -25,7 +25,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: ARCH-002 — нельзя ломать совместимость с AsciiDoc и существующими ссылками между документами
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: нельзя ломать совместимость с AsciiDoc и существующими ссылками между документами.
 
@@ -39,7 +39,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: ARCH-003 — задача по возможности решается в существующей shell-архитектуре
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: задача по возможности решается в существующей shell-архитектуре; БД, веб-интерфейс и отдельные сервисы требуют отдельного обоснования.
 
@@ -53,7 +53,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: ARCH-004 — Python, Go и Rust допустимы как дополнительный слой, но не должны незаметно заменять shell-wo...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: Python, Go и Rust допустимы как дополнительный слой, но не должны незаметно заменять shell-workflow.
 
@@ -67,7 +67,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: ARCH-005 — создание документов развивается в сторону единого генератора zcreate
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: создание документов развивается в сторону единого генератора `zcreate`.
 
@@ -83,7 +83,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: ARCH-006 — планируемый интерфейс
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: планируемый интерфейс: `zcreate note`, `zcreate memo`, `zcreate todo`, `zcreate diary`, `zcreate topic`; `keytopic` может сохраняться как совместимый alias.
 
@@ -99,7 +99,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: ARCH-007 — тип или режим article должен быть отдельно определён до добавления zcreate article
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: тип или режим `article` должен быть отдельно определён до добавления `zcreate article`.
 
@@ -115,7 +115,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: ARCH-008 — zcreate становится каноническим генератором постоянных документов
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: `zcreate` становится каноническим генератором постоянных документов.
 
@@ -131,7 +131,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: ARCH-009 — существующие команды создания становятся совместимыми CLI-обёртками над zcreate
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: существующие команды создания становятся совместимыми CLI-обёртками над `zcreate`.
 
@@ -147,7 +147,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: ARCH-010 — генерация UUID, метаданных, doclink, docfilename и регистрация в all-todays выполняются через...
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: генерация UUID, метаданных, `doclink`, `docfilename` и регистрация в `all-todays` выполняются через `zcreate`.
 
@@ -163,7 +163,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: ARCH-011 — до реализации zcreate --no-edit интерактивные zt-note, zt-memo и другие creation scripts не с...
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: до реализации `zcreate --no-edit` интерактивные `zt-note`, `zt-memo` и другие creation scripts не считаются unattended deterministic agent primitives; агент использует их поведение как механический reference и запускает их только в подходящем интерактивном контексте.
 
@@ -177,7 +177,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: ARCH-012 — после реализации zcreate --no-edit managed skills используют zcreate как детерминированную гр...
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: после реализации `zcreate --no-edit` managed skills используют `zcreate` как детерминированную границу между семантическими решениями агента и файловой моделью Zettelkasten.
 
@@ -190,12 +190,12 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 - **THEN** target contract SHALL быть сохранён
 - **AND** capability SHALL NOT считаться `IMPLEMENTED` без подтверждения кодом, проверками и traceability
 
-### Requirement: ARCH-013 — .scripts/objects/ содержит нейтральные constructors постоянных типов Note, Memo, Todo, Diary...
+### Requirement: ARCH-013 — scripts/objects/ содержит нейтральные constructors постоянных типов Note, Memo, Todo, Diary...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
-Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `.scripts/objects/` содержит нейтральные constructors постоянных типов Note, Memo, Todo, Diary и Topic; constructors гарантируют UUID-файл, обязательные метаданные, `:type:` и специфический object contract, но не выполняют интерактивный workflow.
+Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `scripts/objects/` содержит нейтральные constructors постоянных типов Note, Memo, Todo, Diary и Topic; constructors гарантируют UUID-файл, обязательные метаданные, `:type:` и специфический object contract, но не выполняют интерактивный workflow.
 
 #### Scenario: ARCH-013 contract is verified
 
@@ -204,12 +204,12 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 - **THEN** наблюдаемое поведение SHALL соответствовать requirement
 - **AND** regression SHALL считаться validation failure
 
-### Requirement: ARCH-014 — .scripts/zettelkasten/ и .scripts/zettelkasten/lib/ содержат Zettelkasten-specific policy
+### Requirement: ARCH-014 — scripts/zettelkasten/ и scripts/zettelkasten/lib/ содержат Zettelkasten-specific policy
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
-Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `.scripts/zettelkasten/` и `.scripts/zettelkasten/lib/` содержат Zettelkasten-specific policy для Note, Memo, Topic и Todo, включая интерактивный ввод, bindings, `all-todays` и другие workflow-правила; Diary workflow и Diary state принадлежат отдельному `.scripts/diary/`.
+Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `scripts/zettelkasten/` и `scripts/zettelkasten/lib/` содержат Zettelkasten-specific policy для Note, Memo, Topic и Todo, включая интерактивный ввод, bindings, `all-todays` и другие workflow-правила; Diary workflow и Diary state принадлежат отдельному `scripts/diary/`.
 
 #### Scenario: ARCH-014 contract is verified
 
@@ -218,12 +218,12 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 - **THEN** наблюдаемое поведение SHALL соответствовать requirement
 - **AND** regression SHALL считаться validation failure
 
-### Requirement: ARCH-015 — .scripts/lib/ содержит только нейтральные примитивы, доступные object layer, Zettelkasten lay...
+### Requirement: ARCH-015 — scripts/lib/ содержит только нейтральные примитивы, доступные object layer, Zettelkasten lay...
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
-Zettelkasten-CLI MUST сохранять следующий инвариант: `.scripts/lib/` содержит только нейтральные примитивы, доступные object layer, Zettelkasten layer и будущим plugin layers.
+Zettelkasten-CLI MUST сохранять следующий инвариант: `scripts/lib/` содержит только нейтральные примитивы, доступные object layer, Zettelkasten layer и будущим plugin layers.
 
 #### Scenario: ARCH-015 contract is verified
 
@@ -235,7 +235,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: ARCH-016 — разрешённые зависимости
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: разрешены зависимости `lib -> lib`, `objects -> lib`, `zettelkasten -> objects/lib/собственный код`, `diary -> objects/lib/собственный код`, `inbox -> lib/собственный код`, `workspace -> lib/собственный код`. Здесь собственный код включает library того же plugin. Зависимости между sibling plugins (`zettelkasten`, `diary`, `inbox`, `workspace`), из `lib` в objects/plugins, из `objects` в plugins и из Inbox/Workspace в objects запрещены.
 
@@ -262,9 +262,9 @@ Boundary checker MUST проверять executable dependencies внутри co
 ### Requirement: ARCH-017 — top-level zt-note.zsh, zt-memo.zsh, zt-keytopic.zsh, zt-todo.zsh и zt-diary.zsh сохранены как...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
-Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: top-level `zt-note.zsh`, `zt-memo.zsh`, `zt-keytopic.zsh` и `zt-todo.zsh` сохранены как compatibility entrypoints и делегируют каноническим workflow в `.scripts/zettelkasten/`; top-level `zt-diary.zsh` сохранён как compatibility entrypoint и делегирует каноническому workflow в `.scripts/diary/`.
+Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: top-level `zt-note.zsh`, `zt-memo.zsh`, `zt-keytopic.zsh` и `zt-todo.zsh` сохранены как compatibility entrypoints и делегируют каноническим workflow в `scripts/zettelkasten/`; top-level `zt-diary.zsh` сохранён как compatibility entrypoint и делегирует каноническому workflow в `scripts/diary/`.
 
 #### Scenario: ARCH-017 contract is verified
 
@@ -276,7 +276,7 @@ Boundary checker MUST проверять executable dependencies внутри co
 ### Requirement: ARCH-018 — Zettelkasten-specific helper получает namespace zt_*
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: Zettelkasten-specific helper получает namespace `zt_*`; нейтральная инфраструктура и object constructors используют `zk_*`.
 
@@ -287,12 +287,12 @@ Development, migration или runtime process MUST соблюдать следу
 - **THEN** указанное process rule SHALL быть выполнено
 - **AND** его обход SHALL считаться нарушением project contract
 
-### Requirement: ARCH-019 — в переходной архитектуре host CLI может напрямую использовать .scripts/zettelkasten/lib/
+### Requirement: ARCH-019 — в переходной архитектуре host CLI может напрямую использовать scripts/zettelkasten/lib/
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Архитектура`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Архитектура`.
 
-Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: в переходной архитектуре host CLI может напрямую использовать `.scripts/zettelkasten/lib/`: Continue, Reduce и Refine используют `today.zsh`, а Continue использует `bindings.zsh`; Workspace-команды являются compatibility entrypoints отдельного `.scripts/workspace/` и не используют `.scripts/zettelkasten/lib/workspace.zsh`.
+Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: в переходной архитектуре host CLI может напрямую использовать `scripts/zettelkasten/lib/`: Continue, Reduce и Refine используют `today.zsh`, а Continue использует `bindings.zsh`; Workspace-команды являются compatibility entrypoints отдельного `scripts/workspace/` и не используют `scripts/zettelkasten/lib/workspace.zsh`.
 
 #### Scenario: ARCH-019 contract is verified
 

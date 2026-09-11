@@ -9,7 +9,7 @@
 ### Requirement: ZP-TOPIC-001 — Topic получает title <key> - ключевая тема, description и непустой key-topic
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Topic и Todo`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Topic и Todo`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Topic получает title `<key> - ключевая тема`, description и непустой `key-topic`.
 
@@ -23,7 +23,7 @@
 ### Requirement: ZP-TODO-001 — Todo получает датированный title и начальную строку задачи согласно constructor contract
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Topic и Todo`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Topic и Todo`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Todo получает датированный title и начальную строку задачи согласно constructor contract.
 

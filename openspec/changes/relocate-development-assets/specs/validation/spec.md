@@ -12,6 +12,13 @@ Development, migration или runtime process MUST соблюдать следу
 - **WHEN** a document-changing workflow completes
 - **THEN** it invokes `scripts/zt-check.zsh`, and the old `.scripts/zt-check.zsh` path is not required
 
+#### Scenario: CHECK-013 contract is verified
+
+- **GIVEN** выполняется изменение, проверка или операция, к которой относится это process requirement
+- **WHEN** workflow достигает соответствующего шага
+- **THEN** указанное process rule SHALL быть выполнено
+- **AND** его обход SHALL считаться нарушением project contract
+
 ### Requirement: CHECK-023 — runtime core проверяется на временном Zettelkasten
 
 **Legacy status:** `IMPLEMENTED`.

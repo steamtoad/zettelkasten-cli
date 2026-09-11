@@ -30,7 +30,7 @@ class Vault:
                         PATH=str(self.bin) + os.pathsep + os.environ["PATH"],
                         FIXTURE=str(root), TMPDIR=str(root), LC_ALL="en_US.UTF-8" if sys.platform == "darwin" else "C.UTF-8")
         self.env.pop("ZETTELKASTEN_ROOT", None)
-        self.scripts = REPO / ".scripts"
+        self.scripts = REPO / "scripts"
         stub = '''#!/usr/bin/env python3
 import json, os, pathlib, sys
 root = pathlib.Path(os.environ['FIXTURE'])
@@ -94,8 +94,8 @@ elif name in ('ln', 'link', 'rm', 'mv'):
                 for p in self.home.rglob("*") if p.is_file()}
 
     def isolate_scripts(self):
-        self.scripts = self.root / "installed" / ".scripts"
-        shutil.copytree(REPO / ".scripts", self.scripts)
+        self.scripts = self.root / "installed" / "scripts"
+        shutil.copytree(REPO / "scripts", self.scripts)
 
 
 def diary(v):
@@ -255,14 +255,14 @@ def workspace(v):
 def structure(v):
     old = {"diary": "zettelkasten/zt-diary.zsh", "workspace": "zettelkasten/lib/workspace.zsh"}
     if GROUP in old:
-        assert not (REPO / ".scripts" / old[GROUP]).exists(), "old canonical path remains"
-    v.isolate_scripts() if v.scripts == REPO / ".scripts" else None
+        assert not (REPO / "scripts" / old[GROUP]).exists(), "old canonical path remains"
+    v.isolate_scripts() if v.scripts == REPO / "scripts" else None
     for public, canonical in MAPPING[GROUP].items():
-        wrapper = REPO / ".scripts" / public
+        wrapper = REPO / "scripts" / public
         source = wrapper.read_text()
         assert f'exec "$script_dir/{canonical}" "$@"' in source
         assert len([s for s in source.splitlines() if s and not s.startswith("#")]) == 2
-        assert os.access(wrapper, os.X_OK) and os.access(REPO / ".scripts" / canonical, os.X_OK)
+        assert os.access(wrapper, os.X_OK) and os.access(REPO / "scripts" / canonical, os.X_OK)
         target = v.scripts / canonical
         target.write_text('#!/bin/zsh\nprint -rl -- "$@"\nprint -ru2 -- "forwarded stderr"\nexit 37\n')
         target.chmod(0o755)

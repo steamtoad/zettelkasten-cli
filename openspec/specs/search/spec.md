@@ -9,7 +9,7 @@
 ### Requirement: FZF-001 — специализированный селектор показывает UUID/имя файла и :description
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Поиск и FZF`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Поиск и FZF`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: специализированный селектор показывает UUID/имя файла и `:description:` в однозначно разбираемом формате.
 
@@ -23,7 +23,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: FZF-002 — поиск и интерактивный выбор используют :description:
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Поиск и FZF`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Поиск и FZF`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: поиск и интерактивный выбор используют `:description:`.
 
@@ -37,7 +37,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: FZF-003 — новые селекторы не используют хрупкое позиционное извлечение через cut -b
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Поиск и FZF`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Поиск и FZF`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: новые селекторы не используют хрупкое позиционное извлечение через `cut -b`.
 
@@ -51,7 +51,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: FZF-004 — учитывается совместимость используемых конструкций grep, rg, awk, sed и fzf на Linux и macOS
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Поиск и FZF`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Поиск и FZF`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: учитывается совместимость используемых конструкций `grep`, `rg`, `awk`, `sed` и `fzf` на Linux и macOS.
 
@@ -65,7 +65,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: FZF-005 — специализированные селекторы фильтруют требуемый :type
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Поиск и FZF`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Поиск и FZF`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: специализированные селекторы фильтруют требуемый `:type:` и deprecated; общие `find`, `read`, `edit` и `getlink` могут включать несколько активных типов.
 
@@ -79,7 +79,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: FZF-006 — формат выбора следует унифицировать после определения совместимого формата для всех команд
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Поиск и FZF`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Поиск и FZF`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: формат выбора следует унифицировать после определения совместимого формата для всех команд.
 

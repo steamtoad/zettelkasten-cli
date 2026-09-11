@@ -23,7 +23,7 @@
 
 - `agent-governance`: заменить нормативные пути executable layer и repo-local skill layer, сохранив mapping и integration contract.
 - `development-agent`: обновить repository resolution, расположение development skills и обязательные проверки.
-- `architecture`: заменить `.scripts/` на `scripts/` во всех layer и compatibility-entrypoint требованиях без изменения направленности зависимостей.
+- `architecture`: заменить `scripts/` на `scripts/` во всех layer и compatibility-entrypoint требованиях без изменения направленности зависимостей.
 - `library-boundaries`: перенести определения neutral/object/plugin libraries под `scripts/`.
 - `validation`: обновить команды и пути development/repository validation checks.
 

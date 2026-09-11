@@ -9,7 +9,7 @@
 ### Requirement: ZP-CREATE-001 — workflow спрашивает непустое название и создаёт объект через соответствующий constructor движка
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Интерактивные workflow`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Интерактивные workflow`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: workflow спрашивает непустое название и создаёт объект через соответствующий constructor движка.
 
@@ -23,7 +23,7 @@
 ### Requirement: ZP-CREATE-002 — созданный документ регистрируется в дневном all-todays
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Интерактивные workflow`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Интерактивные workflow`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: созданный документ регистрируется в дневном `all-todays`.
 
@@ -37,7 +37,7 @@
 ### Requirement: ZP-CREATE-003 — после успешного создания документ открывается в Vim и готовая ссылка печатается в stdout
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Интерактивные workflow`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Интерактивные workflow`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: после успешного создания документ открывается в Vim и готовая ссылка печатается в stdout.
 
@@ -51,7 +51,7 @@
 ### Requirement: ZP-CREATE-004 — отмена обязательного выбора не создаёт непривязанный документ
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Интерактивные workflow`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Интерактивные workflow`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: отмена обязательного выбора не создаёт непривязанный документ.
 
@@ -65,7 +65,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: ZP-CREATE-005 — ошибка constructor или регистрации завершает workflow ненулевым кодом
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Интерактивные workflow`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Интерактивные workflow`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: ошибка constructor или регистрации завершает workflow ненулевым кодом.
 

@@ -43,5 +43,5 @@ Rollback до post-validation выполняется обратным Git-aware 
 - [Breaking] Внешний вызов `.scripts/*` или чтение `skills/*` перестанет работать → явно перечислить compatibility policy в README/release notes и проверить все tracked references; не добавлять silent fallback.
 - [Stale reference] Редкие пути могут остаться в документации или тестах → выполнить repository-wide search, dedicated negative check на `.scripts/` и root `skills/`, затем OpenSpec/agent checks.
 - [Git history] Массовый rename может быть представлен как delete/add → использовать Git-aware rename и проверить `git diff --summary`/статистику, не коммитя автоматически.
-- [Packaging drift] `dev/skills/` может содержать references на старую layout → прогнать `scripts/dev/zt-agent-skills-check.zsh` и проверить каждый canonical reference.
+- [Packaging drift] `dev/skills/` может содержать references на старую layout → прогнать `dev/skills` packaging check и проверить каждый canonical reference.
 - [Overreach] Миграция может случайно затронуть пользовательские каталоги → ограничить список изменяемых путей repository source/docs/tests и добавить preflight guard на `notes/`, `all-todays/`, `workspaces/`, `inbox/`, `.last-diary`, `.state/`.

@@ -9,7 +9,7 @@
 ### Requirement: CHAIN-001 — Memo может иметь не более одной основной линии продолжения
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Memo Chains`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Memo Chains`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: Memo может иметь не более одной основной линии продолжения.
 
@@ -23,7 +23,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: CHAIN-002 — Memo может иметь произвольное число дополнительных веток
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Memo Chains`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Memo Chains`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: Memo может иметь произвольное число дополнительных веток.
 
@@ -37,7 +37,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: CHAIN-003 — первая ссылка продолжения, созданная zt-continue, называется Следующее memo
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Memo Chains`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Memo Chains`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: первая ссылка продолжения, созданная `zt-continue`, называется `Следующее memo`.
 
@@ -51,7 +51,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: CHAIN-004 — дополнительные ссылки продолжения, созданные zt-continue, называются Ветка
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Memo Chains`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Memo Chains`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: дополнительные ссылки продолжения, созданные `zt-continue`, называются `Ветка: <description>`.
 
@@ -65,7 +65,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: CHAIN-005 — каждая Memo, созданная через zt-continue, имеет одну обратную ссылку Предыдущее memo
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Memo Chains`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Memo Chains`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: каждая Memo, созданная через `zt-continue`, имеет одну обратную ссылку `Предыдущее memo`.
 
@@ -79,7 +79,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: CHAIN-006 — zt-check проверяет структуру, цели и взаимность Memo Chain
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Memo Chains`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Memo Chains`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: `zt-check` проверяет структуру, цели и взаимность Memo Chain.
 

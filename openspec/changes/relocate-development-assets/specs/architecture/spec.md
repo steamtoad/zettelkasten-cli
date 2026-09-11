@@ -24,6 +24,13 @@
 - **WHEN** a Zettelkasten or Diary workflow runs
 - **THEN** it resolves its canonical implementation below the corresponding `scripts/<plugin>/` directory
 
+#### Scenario: ARCH-014 contract is verified
+
+- **GIVEN** текущий checkout содержит реализацию этой capability
+- **WHEN** соответствующий workflow выполняется или проверяется
+- **THEN** наблюдаемое поведение SHALL соответствовать requirement
+- **AND** regression SHALL считаться validation failure
+
 ### Requirement: ARCH-016 — разрешённые зависимости сохраняются под scripts/
 
 **Legacy status:** `INVARIANT`.
@@ -47,4 +54,3 @@ Zettelkasten-CLI MUST сохранять разрешённые зависимо
 
 - **WHEN** an existing CLI workflow is invoked through `scripts/zt-*.zsh`
 - **THEN** it produces the same observable result while sourcing only relocated canonical paths
-

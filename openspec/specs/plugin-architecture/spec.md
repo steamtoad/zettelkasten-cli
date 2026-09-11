@@ -11,7 +11,7 @@
 ### Requirement: ZP-ARCH-001 — плагин зависит от ../../lib/, ../../objects/ и собственных lib/
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Граница плагина`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Граница плагина`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: плагин зависит от `../../lib/`, `../../objects/` и собственных `lib/`.
 
@@ -25,7 +25,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: ZP-ARCH-002 — движок не зависит от плагина
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Граница плагина`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Граница плагина`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: движок не зависит от плагина.
 
@@ -39,7 +39,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: ZP-ARCH-003 — канонические workflow
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Граница плагина`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Граница плагина`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: канонические workflow Zettelkasten plugin: Note, Memo, Topic и Todo; Diary является каноническим workflow отдельного Diary plugin.
 
@@ -50,12 +50,12 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 - **THEN** наблюдаемое поведение SHALL соответствовать requirement
 - **AND** regression SHALL считаться validation failure
 
-### Requirement: ZP-ARCH-004 — top-level команды, не делегирующие файлу под .scripts/zettelkasten/, не являются функциями эт...
+### Requirement: ZP-ARCH-004 — top-level команды, не делегирующие файлу под scripts/zettelkasten/, не являются функциями эт...
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Граница плагина`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Граница плагина`.
 
-Zettelkasten-CLI MUST сохранять следующий инвариант: top-level команды, не делегирующие файлу под `.scripts/zettelkasten/`, не являются функциями этого плагина.
+Zettelkasten-CLI MUST сохранять следующий инвариант: top-level команды, не делегирующие файлу под `scripts/zettelkasten/`, не являются функциями этого плагина.
 
 #### Scenario: ZP-ARCH-004 contract is verified
 
@@ -67,7 +67,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: ZP-ARCH-005 — новая функция включается в документацию плагина только после появления реализации в plugin di...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Граница плагина`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Граница плагина`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: новая функция включается в документацию плагина только после появления реализации в plugin directory и проверки.
 

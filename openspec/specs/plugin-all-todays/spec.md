@@ -9,7 +9,7 @@
 ### Requirement: ZP-TODAY-001 — плагин создаёт all-todays/YYYY-MM-DD.adoc при необходимости
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `all-todays`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `all-todays`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: плагин создаёт `all-todays/YYYY-MM-DD.adoc` при необходимости.
 
@@ -23,7 +23,7 @@
 ### Requirement: ZP-TODAY-002 — запись содержит время и ссылку ../notes/UUID.adoc
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `all-todays`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `all-todays`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: запись содержит время и ссылку `../notes/UUID.adoc`.
 
@@ -37,7 +37,7 @@
 ### Requirement: ZP-TODAY-003 — target должен существовать до регистрации
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `all-todays`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `all-todays`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: target должен существовать до регистрации.
 

@@ -175,11 +175,11 @@ def diary_existing_today(v):
 
 
 def boundary_substitution(v):
-    spec = importlib.util.spec_from_file_location("boundary", REPO / ".scripts/dev/plugin_boundaries.py")
+    spec = importlib.util.spec_from_file_location("boundary", REPO / "scripts/dev/plugin_boundaries.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    root = v.root / "boundary/.scripts"
-    shutil.copytree(REPO / ".scripts", root)
+    root = v.root / "boundary/scripts"
+    shutil.copytree(REPO / "scripts", root)
     probe = root / "diary/probe.zsh"
     bad = '"$script_dir/../zettelkasten/lib/today.zsh"'
     cases = [f'value="$(source {bad})"', f'( source {bad} )', f'{{ source {bad}; }}',

@@ -9,7 +9,7 @@
 ### Requirement: SCRIPT-FORMAT-001 — Проверка формата отделена от исправления
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 `zt-scripts-patch --check` MUST работать read-only, выдавать список файлов без LF и ненулевой exit при проблемах. Пустые файлы SHALL диагностироваться отдельно; write failures в fix-режиме SHALL возвращать ошибку.
 

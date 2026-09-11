@@ -9,7 +9,7 @@
 ### Requirement: INDEX-001 — SQLite является необязательным вторичным индексом, а не источником истины
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: SQLite является необязательным вторичным индексом, а не источником истины.
 
@@ -25,7 +25,7 @@
 ### Requirement: INDEX-002 — текущие базовые команды работают напрямую с файлами и не требуют SQLite
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: текущие базовые команды работают напрямую с файлами и не требуют SQLite.
 
@@ -39,7 +39,7 @@
 ### Requirement: INDEX-003 — файл SQLite хранится в .state/
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: файл SQLite хранится в `.state/`.
 
@@ -55,7 +55,7 @@
 ### Requirement: INDEX-004 — поисковые и аналитические команды могут использовать SQLite для ускорения
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: поисковые и аналитические команды могут использовать SQLite для ускорения.
 
@@ -71,7 +71,7 @@
 ### Requirement: INDEX-005 — при отсутствии или удалении SQLite система продолжает работать через файловый backend
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: при отсутствии или удалении SQLite система продолжает работать через файловый backend.
 
@@ -87,7 +87,7 @@
 ### Requirement: INDEX-006 — данные SQLite полностью восстанавливаются из AsciiDoc
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: данные SQLite полностью восстанавливаются из AsciiDoc.
 
@@ -103,7 +103,7 @@
 ### Requirement: INDEX-007 — ID записи SQLite однозначно соответствует имени AsciiDoc-файла
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: ID записи SQLite однозначно соответствует имени AsciiDoc-файла.
 
@@ -119,7 +119,7 @@
 ### Requirement: INDEX-008 — изменение постоянного знания выполняется через AsciiDoc-файлы и CLI, а не прямой записью в SQ...
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: изменение постоянного знания выполняется через AsciiDoc-файлы и CLI, а не прямой записью в SQLite.
 
@@ -135,7 +135,7 @@
 ### Requirement: INDEX-009 — zt-index rebuild полностью восстанавливает индекс
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Индексирование и SQLite`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: `zt-index rebuild` полностью восстанавливает индекс.
 

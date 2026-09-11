@@ -9,7 +9,7 @@
 ### Requirement: PATH-001 — все постоянные UUID-документы типов note, memo, todo, diary и topic находятся непосредственно...
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: все постоянные UUID-документы типов `note`, `memo`, `todo`, `diary` и `topic` находятся непосредственно в `notes/`.
 
@@ -23,7 +23,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: PATH-002 — постоянные документы внутри notes/ ссылаются друг на друга через link:UUID.adoc[...]
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: постоянные документы внутри `notes/` ссылаются друг на друга через `link:UUID.adoc[...]`.
 
@@ -37,7 +37,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: PATH-003 — all-todays ссылается на постоянные документы через link:../notes/UUID.adoc[...]
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: `all-todays` ссылается на постоянные документы через `link:../notes/UUID.adoc[...]`.
 
@@ -51,7 +51,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: PATH-004 — Workspace ссылается на постоянные документы через link:../notes/UUID.adoc[...]
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: Workspace ссылается на постоянные документы через `link:../notes/UUID.adoc[...]`.
 
@@ -65,7 +65,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: PATH-005 — root-level генерируемый индекс ссылается на постоянные документы через link:notes/UUID.adoc[...]
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: root-level генерируемый индекс ссылается на постоянные документы через `link:notes/UUID.adoc[...]`.
 
@@ -79,7 +79,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: PATH-006 — :docfilename
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: `:docfilename:` содержит basename `UUID.adoc`, а `:doclink:` остаётся контекстной ссылкой `link:UUID.adoc[...]`.
 
@@ -93,7 +93,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: PATH-007 — .last-diary содержит basename UUID.adoc без notes/
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: `.last-diary` содержит basename `UUID.adoc` без `notes/`; Diary разрешает его относительно `notes/`.
 
@@ -107,7 +107,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: PATH-008 — repository-level документы, all-todays, Workspace, Inbox, scripts и state не перемещаются авт...
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: repository-level документы, `all-todays`, Workspace, Inbox, scripts и state не перемещаются автоматически в `notes/`.
 
@@ -121,7 +121,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: PATH-009 — генераторы, Reduce/Refine, поиск, навигация, Workspace и zt-check используют единый notes/ na...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: генераторы, Reduce/Refine, поиск, навигация, Workspace и `zt-check` используют единый `notes/` namespace.
 
@@ -135,7 +135,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: PATH-010 — zt-check разрешает ссылки относительно физического расположения исходного документа и отдельн...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-check` разрешает ссылки относительно физического расположения исходного документа и отдельно проверяет `notes`, `all-todays`, Workspace и Diary.
 
@@ -149,7 +149,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: PATH-011 — zt-migrate-notes-dir.zsh по умолчанию выполняет dry-run
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-migrate-notes-dir.zsh` по умолчанию выполняет dry-run; `--apply` требует чистого Git worktree, проверяет коллизии, переносит только известные постоянные типы и обновляет внешние ссылки.
 
@@ -163,7 +163,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: DATA-001 — все постоянные документы являются объектами единой модели Document
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: все постоянные документы являются объектами единой модели Document.
 
@@ -177,7 +177,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: DATA-002 — модель постоянных документов включает Note, Memo, Todo, Diary и Topic
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: модель постоянных документов включает Note, Memo, Todo, Diary и Topic.
 
@@ -191,7 +191,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: DATA-003 — Diary образует двунаправленную хронологическую цепочку
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Diary образует двунаправленную хронологическую цепочку; индексом активности является `all-todays`.
 
@@ -205,7 +205,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: DATA-004 — Topic агрегирует только явно связанные с ней Memo и Note
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Topic агрегирует только явно связанные с ней Memo и Note.
 

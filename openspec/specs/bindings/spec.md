@@ -9,7 +9,7 @@
 ### Requirement: BIND-001 — zt-memo копирует в новую Memo точную строку :key-topic
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-memo` копирует в новую Memo точную строку `:key-topic:` выбранной Topic.
 
@@ -23,7 +23,7 @@
 ### Requirement: BIND-002 — zt-memo использует :description
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-memo` использует `:description:` Topic только для отображения в селекторе и тексте ссылки, а не для вычисления `:key-topic:`.
 
@@ -37,7 +37,7 @@
 ### Requirement: BIND-003 — команды связывания не выводят и не изменяют тематический ключ на основании заголовка или :des...
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: команды связывания не выводят и не изменяют тематический ключ на основании заголовка или `:description:`.
 
@@ -51,7 +51,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: BIND-004 — селектор не предлагает Topic без непустого header :key-topic:, а zt-memo повторно проверяет в...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: селектор не предлагает Topic без непустого header `:key-topic:`, а `zt-memo` повторно проверяет выбранную Topic и отклоняет её до создания Memo.
 
@@ -65,7 +65,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: BIND-005 — при выборе Topic с противоречивыми каноническими метаданными команда предупреждает пользовате...
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: при выборе Topic с противоречивыми каноническими метаданными команда предупреждает пользователя и требует явного решения до создания документа или связи.
 
@@ -81,7 +81,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: BIND-006 — после создания Memo проверяется точное совпадение её :key-topic
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Связывание Memo и Topic`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: после создания Memo проверяется точное совпадение её `:key-topic:` с выбранной Topic и взаимность созданной связи.
 

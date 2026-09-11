@@ -9,7 +9,7 @@
 ### Requirement: ZP-COMPAT-001 — top-level zt-note.zsh, zt-memo.zsh, zt-keytopic.zsh, zt-todo.zsh, zt-diary.zsh остаются тонки...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Совместимость`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Совместимость`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: top-level `zt-note.zsh`, `zt-memo.zsh`, `zt-keytopic.zsh`, `zt-todo.zsh`, `zt-diary.zsh` остаются тонкими `exec`-обёртками.
 
@@ -23,7 +23,7 @@
 ### Requirement: ZP-COMPAT-002 — существующие aliases продолжают работать через compatibility entrypoints
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Совместимость`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Совместимость`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: существующие aliases продолжают работать через compatibility entrypoints.
 
@@ -37,7 +37,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: ZP-COMPAT-003 — формат существующих AsciiDoc-документов и ссылок не меняется при подключении плагина
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/zettelkasten/docs/requirements.adoc` → section `Совместимость`.
+**Traceability:** `scripts/zettelkasten/docs/requirements.adoc` → section `Совместимость`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: формат существующих AsciiDoc-документов и ссылок не меняется при подключении плагина.
 

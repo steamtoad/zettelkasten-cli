@@ -14,7 +14,7 @@ fixture="$(mktemp -d "${TMPDIR:-/tmp}/zt-script-ending.XXXXXX")"
 trap 'chmod u+w "$fixture/.scripts/readonly.zsh" 2>/dev/null || true; rm -rf -- "$fixture"' EXIT HUP INT TERM
 
 mkdir -p "$fixture/.scripts/nested"
-cp "$repo/.scripts/zt-scripts-patch.zsh" "$fixture/.scripts/zt-scripts-patch.zsh"
+cp "$repo/scripts/zt-scripts-patch.zsh" "$fixture/.scripts/zt-scripts-patch.zsh"
 print -rn -- $'#!/bin/zsh\nprint good\n' > "$fixture/.scripts/good.zsh"
 print -rn -- $'#!/bin/zsh\nprint bad' > "$fixture/.scripts/nested/bad.zsh"
 : > "$fixture/.scripts/empty.zsh"

@@ -9,7 +9,7 @@
 ### Requirement: WRITE-SAFE-001 — Существующая цель сохраняется при неуспешной подготовке
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
 
 Файловый writer MUST подготовить и проверить полное новое содержимое до замены существующей цели. Ошибка подготовки SHALL оставлять исходные байты и mode неизменными; ошибка замены SHALL возвращаться вызывающему коду.
 
@@ -28,7 +28,7 @@
 ### Requirement: WRITE-SAFE-002 — Reduce прекращает выполнение при ошибке любой связи
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
 
 Reduce MUST проверять результат каждого добавления ссылки и каждой записи. После ошибки он SHALL завершаться с ненулевым кодом, без `Reduce complete` и без дальнейшего архивирования. Диагностика MUST перечислять уже затронутые файлы до появления общего recovery.
 
@@ -47,7 +47,7 @@ Reduce MUST проверять результат каждого добавле�
 ### Requirement: WRITE-SAFE-003 — Создание не перезаписывает коллизию
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
 
 Constructors, новый successor Reduce/Refine и Workspace create MUST резервировать новое назначение без перезаписи обычного файла или symlink. При коллизии SHALL возвращаться ошибка без удаления чужого назначения.
 
@@ -66,7 +66,7 @@ Constructors, новый successor Reduce/Refine и Workspace create MUST рез
 ### Requirement: WRITE-SAFE-004 — Ошибка записи передаётся через CLI
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
 
 Continue, read, binding и creation entrypoints MUST передавать ненулевой результат обязательного чтения или записи; финальные print и запуск редактора SHALL NOT маскировать ошибку.
 

@@ -9,7 +9,7 @@
 ### Requirement: DEPR-001 — наличие атрибута :deprecated
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Deprecated`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Deprecated`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: наличие атрибута `:deprecated:` помечает архивный документ.
 
@@ -23,7 +23,7 @@
 ### Requirement: DEPR-002 — zt-find, zt-read, zt-edit и zt-getlink исключают deprecated-документы из обычной выдачи
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Deprecated`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Deprecated`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-find`, `zt-read`, `zt-edit` и `zt-getlink` исключают deprecated-документы из обычной выдачи.
 
@@ -37,7 +37,7 @@
 ### Requirement: DEPR-003 — новые индексаторы и селекторы обязаны явно определять политику обработки deprecated-документов
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Deprecated`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Deprecated`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: новые индексаторы и селекторы обязаны явно определять политику обработки deprecated-документов.
 
@@ -51,7 +51,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: DEPR-004 — Reduce архивирует выбранную исходную Topic и активные Memo с точным совпадением :key-topic:
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Deprecated`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Deprecated`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Reduce архивирует выбранную исходную Topic и активные Memo с точным совпадением `:key-topic:`.
 
@@ -65,7 +65,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: DEPR-005 — Reduce никогда автоматически не архивирует Note
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Deprecated`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Deprecated`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: Reduce никогда автоматически не архивирует Note.
 
@@ -79,7 +79,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: DEPR-006 — deprecated Note не перепривязываются к новой Topic при Reduce
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Deprecated`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Deprecated`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: deprecated Note не перепривязываются к новой Topic при Reduce.
 
@@ -93,7 +93,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: DEPR-007 — при последовательном Reduce одной линии предыдущая Topic архивируется, а новая Topic остаётся...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Deprecated`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Deprecated`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: при последовательном Reduce одной линии предыдущая Topic архивируется, а новая Topic остаётся активной.
 
@@ -107,7 +107,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: DEPR-008 — Reduce не обязан и не должен неявно обеспечивать глобальную уникальность активной Topic по зн...
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Deprecated`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Deprecated`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: Reduce не обязан и не должен неявно обеспечивать глобальную уникальность активной Topic по значению `:key-topic:`.
 
@@ -121,7 +121,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: DEPR-009 — при добавлении :deprecated
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Deprecated`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Deprecated`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: при добавлении `:deprecated:` атрибут записывается последним атрибутом заголовка документа, непосредственно перед первой пустой строкой.
 
@@ -135,7 +135,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: DEPR-010 — операция архивирования изменяет только заголовок AsciiDoc и никогда не добавляет :deprecated
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Deprecated`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Deprecated`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: операция архивирования изменяет только заголовок AsciiDoc и никогда не добавляет `:deprecated:` в тело документа или в конец файла.
 
@@ -149,7 +149,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: DEPR-011 — если границы заголовка нельзя определить однозначно, операция архивирования завершается ошибк...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Deprecated`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Deprecated`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: если границы заголовка нельзя определить однозначно, операция архивирования завершается ошибкой без изменения документа.
 

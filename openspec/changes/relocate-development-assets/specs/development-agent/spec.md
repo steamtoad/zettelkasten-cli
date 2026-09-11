@@ -43,7 +43,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 - **WHEN** a check compares documentation, procedures and implementation
 - **THEN** it uses `scripts/` and `dev/skills/` as canonical repository paths
 
-### Requirement: DEVAGENT-011 — scripts/dev/zt-agent-skills-check.zsh проверяет packaging development skills
+### Requirement: DEVAGENT-011 — scripts/dev/zt-agent-skills-check.zsh проверяет packaging development dev/skills
 
 **Legacy status:** `PROCESS`.
 **Traceability:** `scripts/docs/requirements.adoc` → section `Агент разработки и repo-local development skills`.
@@ -53,4 +53,4 @@ Development process MUST use `scripts/dev/zt-agent-skills-check.zsh` to verify p
 #### Scenario: Skill packaging check uses relocated tree
 
 - **WHEN** the agent skills check runs
-- **THEN** it checks `dev/skills/` and fails on stale repository references to `.scripts/` or root `skills/`
+- **THEN** it checks `dev/skills/` and fails on stale repository references to `scripts/` or root `dev/skills/`

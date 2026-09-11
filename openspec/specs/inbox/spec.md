@@ -11,7 +11,7 @@
 ### Requirement: INBOX-001 — источник захвата не является источником истины
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: источник захвата не является источником истины.
 
@@ -25,7 +25,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: INBOX-002 — источником истины после будущего импорта остаются постоянные AsciiDoc-документы
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: источником истины после будущего импорта остаются постоянные AsciiDoc-документы; raw/processed являются staging layer.
 
@@ -39,7 +39,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: INBOX-003 — импорт является идемпотентным
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: импорт является идемпотентным.
 
@@ -55,7 +55,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: INBOX-004 — raw capture содержит :captured-at
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: raw capture содержит `:captured-at:` и `:source:` в заголовке AsciiDoc.
 
@@ -69,7 +69,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: INBOX-005 — захват в inbox/raw и перевод в inbox/processed являются разными явными операциями
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: захват в `inbox/raw` и перевод в `inbox/processed` являются разными явными операциями.
 
@@ -83,7 +83,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: INBOX-006 — Inbox Layer расширяется для новых источников без изменения канонической модели документов
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: Inbox Layer расширяется для новых источников без изменения канонической модели документов.
 
@@ -99,7 +99,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: INBOX-007 — zt-inbox.zsh создаёт raw-элемент с однострочным непустым заголовком и защищает существующие ф...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Capture SHALL создавать raw-элемент с однострочным непустым заголовком в пути с пробелами и Unicode; timestamp collisions, включая dangling symlink, MUST выбирать новый suffix без перезаписи существующего entry. Ошибка любой записи metadata MUST завершать capture ошибкой, удалять созданный неполный raw и не запускать editor.
 
@@ -130,7 +130,7 @@ Capture SHALL создавать raw-элемент с однострочным 
 ### Requirement: INBOX-008 — zt-inbox.zsh открывает созданный элемент через непустой существующий $EDITOR, включая editor...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Capture SHALL запускать существующий непустой EDITOR, сохраняя lexical quoting пути и аргументов, включая пустой quoted argument; разбор MUST NOT выполнять eval, command substitution или shell operators из значения EDITOR. Проверка editor остаётся после создания raw.
 
@@ -149,7 +149,7 @@ Capture SHALL запускать существующий непустой EDITO
 ### Requirement: INBOX-009 — zt-processed.zsh обрабатывает только непосредственный обычный файл inbox/raw и отклоняет внеш...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Processed MUST принимать только непосредственный обычный файл inbox/raw; symlink leaf MUST отклоняться до разрешения target, в том числе если он указывает на соседний raw. Внешние и вложенные physical paths MUST отклоняться.
 
@@ -168,7 +168,7 @@ Processed MUST принимать только непосредственный 
 ### Requirement: INBOX-010 — перевод в processed не перезаписывает существующее назначение и атомарно резервирует destinat...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Processed MUST атомарно резервировать точное имя назначения hard link операцией без перезаписи и без directory-operand semantics. Любой существующий entry назначения, включая каталог, symlink и dangling symlink, MUST сохраняться, а raw MUST оставаться на месте при отказе. Создание directory destination между preflight и резервированием MUST NOT приводить к записи внутрь него.
 
@@ -193,7 +193,7 @@ Processed MUST атомарно резервировать точное имя �
 ### Requirement: INBOX-011 — оба Inbox-скрипта используют ZK_HOME
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: оба Inbox-скрипта используют `ZK_HOME`; `ZETTELKASTEN_ROOT` поддерживается как совместимый fallback.
 
@@ -207,7 +207,7 @@ Processed MUST атомарно резервировать точное имя �
 ### Requirement: INBOX-012 — raw и processed сохраняют исходное имя и содержимое
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
+**Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: raw и processed сохраняют исходное имя и содержимое; операция processed не создаёт постоянную Note/Memo и не регистрирует элемент в `all-todays`.
 

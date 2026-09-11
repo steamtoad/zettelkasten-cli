@@ -9,7 +9,7 @@
 ### Requirement: ROADMAP-001 — новые механизмы проектируются так, чтобы позднее их можно было встроить в zcreate
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Развитие проекта`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Развитие проекта`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: новые механизмы проектируются так, чтобы позднее их можно было встроить в `zcreate`.
 
@@ -25,7 +25,7 @@
 ### Requirement: ROADMAP-002 — каждое изменение оценивается по пользе сейчас, совместимости с текущим workflow и пользе для...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Развитие проекта`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Развитие проекта`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: каждое изменение оценивается по пользе сейчас, совместимости с текущим workflow и пользе для будущей архитектуры.
 
@@ -39,7 +39,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: ROADMAP-003 — новые типы документов и команды сначала получают формальное описание модели данных и поведения
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Развитие проекта`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Развитие проекта`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: новые типы документов и команды сначала получают формальное описание модели данных и поведения.
 
@@ -53,7 +53,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: ROADMAP-004 — отдельные функции Inbox, SQLite и zcreate получают статус IMPLEMENTED только после подтвержде...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Развитие проекта`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Развитие проекта`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: отдельные функции Inbox, SQLite и `zcreate` получают статус `IMPLEMENTED` только после подтверждения кода, тестов и обновления Feature List; наличие raw/processed staging не означает реализацию импорта Inbox в постоянные документы.
 

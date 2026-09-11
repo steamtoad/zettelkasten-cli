@@ -11,7 +11,7 @@
 ### Requirement: AGGR-001 — агрегаторы не являются постоянным знанием
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: агрегаторы не являются постоянным знанием.
 
@@ -25,7 +25,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: AGGR-002 — агрегаторы могут не содержать стандартных атрибутов постоянного документа
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: агрегаторы могут не содержать стандартных атрибутов постоянного документа.
 
@@ -39,7 +39,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: AGGR-003 — агрегаторы состоят преимущественно из ссылок на постоянные документы
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: агрегаторы состоят преимущественно из ссылок на постоянные документы.
 
@@ -53,7 +53,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: AGGR-004 — Workspace является разновидностью агрегатора
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Workspace является разновидностью агрегатора.
 
@@ -67,7 +67,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-001 — Workspace является рабочим набором документов
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Workspace является рабочим набором документов.
 
@@ -81,7 +81,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-002 — Workspace не является постоянным знанием
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: Workspace не является постоянным знанием.
 
@@ -95,7 +95,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-003 — Workspace состоит преимущественно из ссылок на постоянные документы
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: Workspace состоит преимущественно из ссылок на постоянные документы.
 
@@ -109,7 +109,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-004 — Workspace может не содержать стандартных атрибутов постоянного документа
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Workspace может не содержать стандартных атрибутов постоянного документа.
 
@@ -123,7 +123,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-005 — файлы Workspace располагаются в workspaces/
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: файлы Workspace располагаются в `workspaces/`.
 
@@ -137,7 +137,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-006 — именем файла Workspace является его безопасное смысловое название с расширением .adoc
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: именем файла Workspace является его безопасное смысловое название с расширением `.adoc`.
 
@@ -151,7 +151,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-007 — Workspace допускает ручное редактирование
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: Workspace допускает ручное редактирование.
 
@@ -165,7 +165,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-008 — специализированные CLI-команды работают с Workspace как с отдельной сущностью
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: специализированные CLI-команды работают с Workspace как с отдельной сущностью.
 
@@ -179,7 +179,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-009 — zt-workspace-create.zsh создаёт Workspace с разделом Документы, отклоняет пустые, скрытые и с...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-workspace-create.zsh` создаёт Workspace с разделом `Документы`, отклоняет пустые, скрытые и содержащие разделители пути названия и не перезаписывает существующий файл.
 
@@ -193,7 +193,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-010 — zt-workspace-add.zsh добавляет выбранные активные постоянные документы идемпотентными относит...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-workspace-add.zsh` добавляет выбранные активные постоянные документы идемпотентными относительными ссылками `link:../notes/UUID.adoc[...]`.
 
@@ -207,7 +207,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-011 — zt-workspace-open.zsh выводит выбранный Workspace в stdout без изменения файла
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-workspace-open.zsh` выводит выбранный Workspace в stdout без изменения файла.
 
@@ -221,7 +221,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: WORKSPACE-012 — zt-workspace-remove.zsh через один fzf --multi выбирает и одним атомарным переписыванием удал...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Workspace remove SHALL через один fzf --multi выбирать active/deprecated/broken targets ../notes/UUID.adoc и одним atomic rewrite удалять только выбранные link macros за пределами supported code blocks. Не выбранные ссылки и окружающий ручной текст MUST сохраняться; bullet line удаляется целиком только если после удаления macro содержит лишь bullet marker и whitespace.
 
@@ -246,7 +246,7 @@ Workspace remove SHALL через один fzf --multi выбирать active/d
 ### Requirement: WORKSPACE-013 — удаление ссылки из Workspace игнорирует поддерживаемые блоки кода, выполняется через временны...
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Workspace remove MUST игнорировать supported code blocks, создавать temporary file в том же каталоге и filesystem, что и Workspace, сохранять исходный file mode и заменять файл только после успешной подготовки. Ошибка подготовки или замены MUST оставлять исходный Workspace неизменным и удалять созданный temporary file.
 
@@ -271,7 +271,7 @@ Workspace remove MUST игнорировать supported code blocks, созда
 ### Requirement: WORKSPACE-014 — операции Workspace не изменяют документы, на которые ссылается Workspace
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Агрегаторы и Workspace`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: операции Workspace не изменяют документы, на которые ссылается Workspace.
 

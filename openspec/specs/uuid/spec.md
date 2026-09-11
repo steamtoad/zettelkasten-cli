@@ -9,7 +9,7 @@
 ### Requirement: UUID-001 — система использует UUID v1 / time-based UUID
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `UUID`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `UUID`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: система использует UUID v1 / time-based UUID. Хронологическая сортировка допустима как полезное свойство, но строгая монотонность UUID не гарантируется.
 
@@ -23,7 +23,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: UUID-002 — на Linux UUID генерируется командой uuidgen -t
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `UUID`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `UUID`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: на Linux UUID генерируется командой `uuidgen -t`.
 
@@ -37,7 +37,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: UUID-003 — на macOS UUID генерируется командой uuid, а не неподдерживаемым вариантом uuidgen -t
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `UUID`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `UUID`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: на macOS UUID генерируется командой `uuid`, а не неподдерживаемым вариантом `uuidgen -t`.
 
@@ -51,7 +51,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: UUID-004 — механизм генерации UUID нельзя заменять вариантом без поддержки UUID v1 без отдельной миграции
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `UUID`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `UUID`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: механизм генерации UUID нельзя заменять вариантом без поддержки UUID v1 без отдельной миграции.
 
@@ -65,7 +65,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: UUID-005 — UUID одновременно является идентификатором документа, именем файла и целью внутренних ссылок
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `UUID`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `UUID`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: UUID одновременно является идентификатором документа, именем файла и целью внутренних ссылок.
 
@@ -79,7 +79,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: UUID-006 — существующие UUID и ссылки нельзя переименовывать без процедуры миграции
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `UUID`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `UUID`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: существующие UUID и ссылки нельзя переименовывать без процедуры миграции.
 

@@ -9,7 +9,7 @@
 ### Requirement: FLOW-001 — основной интерактивный workflow строится вокруг zsh, grep/rg, awk, sed, fzf, Vim и cat
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Workflow`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Workflow`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: основной интерактивный workflow строится вокруг zsh, grep/rg, awk, sed, fzf, Vim и cat.
 
@@ -23,7 +23,7 @@
 ### Requirement: FLOW-002 — команды создания постоянных документов регистрируют созданный документ в all-todays
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Workflow`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Workflow`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: команды создания постоянных документов регистрируют созданный документ в `all-todays`.
 
@@ -37,7 +37,7 @@
 ### Requirement: FLOW-003 — команды создания постоянных документов автоматически открывают документ в Vim
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Workflow`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Workflow`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: команды создания постоянных документов автоматически открывают документ в Vim.
 
@@ -51,7 +51,7 @@
 ### Requirement: FLOW-004 — после создания постоянного документа выводится готовая AsciiDoc-ссылка
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Workflow`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Workflow`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: после создания постоянного документа выводится готовая AsciiDoc-ссылка.
 
@@ -65,7 +65,7 @@
 ### Requirement: FLOW-005 — новые Note наследуют тематические и связующие ключевые слова источника
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Workflow`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Workflow`.
 
 Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: новые Note наследуют тематические и связующие ключевые слова источника.
 
@@ -79,7 +79,7 @@
 ### Requirement: FLOW-006 — служебные теги типа исходного документа, например memo или topic, не наследуются Note
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Workflow`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Workflow`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: служебные теги типа исходного документа, например `memo` или `topic`, не наследуются Note.
 
@@ -93,7 +93,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: FLOW-007 — ручное создание документов вне CLI не обязано автоматически выполнять правила all-todays, Vim...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Workflow`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Workflow`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: ручное создание документов вне CLI не обязано автоматически выполнять правила `all-todays`, Vim и вывода ссылки.
 
@@ -107,7 +107,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: FLOW-008 — агент, создающий постоянный документ вручную вместо интерактивного CLI, воспроизводит обязате...
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Workflow`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Workflow`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: агент, создающий постоянный документ вручную вместо интерактивного CLI, воспроизводит обязательные побочные эффекты соответствующего скрипта и добавляет требуемые агенту метаданные.
 

@@ -33,15 +33,15 @@
 
 | Источник | Что установлено |
 |---|---|
-| `zettelkasten-cli.zip` | 39 baseline capabilities; 24 top-level `.scripts/zt-*.zsh`; семь `skills/zettelkasten-*/SKILL.md`; каталога `Agents` нет |
+| `zettelkasten-cli.zip` | 39 baseline capabilities; 24 top-level `scripts/zt-*.zsh`; семь `dev/skills/zettelkasten-*/SKILL.md`; каталога `Agents` нет |
 | `Archive.zip` | 34 файла `SKILL.md`; исходный operational/domain/governance слой Марты |
-| `.scripts/docs/managed-skills.adoc` | 33 строки manifest: 24 `operational` и девять `meta`; внешний runtime state является текущей точкой интеграции |
+| `scripts/docs/managed-skills.adoc` | 33 строки manifest: 24 `operational` и девять `meta`; внешний runtime state является текущей точкой интеграции |
 | `AGENTS.MD`, `openspec/config.yaml` | Марта определена как development agent; обычная разработка не разрешает изменения пользовательского Vault |
 | `openspec/specs/agent-governance/spec.md` | Привязка CLI → skill; Skill Workshop; Detailed Note; SHA-256; специальные OpenClaw binding rules |
 | `openspec/specs/development-agent/spec.md` | Семь скиллов разработки, source/data boundary, авторизация и проверки |
-| `.scripts/dev/docs/skill-contracts/` | Уже существуют общие development, authorization, migration и release contracts |
-| `.scripts/dev/zt-openspec-check.zsh` | Выполнен: `PASS`, 336 legacy requirements покрыты ровно один раз |
-| `.scripts/dev/zt-agent-skills-check.zsh` | Выполнен: `PASS`, семь development skills |
+| `scripts/dev/docs/skill-contracts/` | Уже существуют общие development, authorization, migration и release contracts |
+| `scripts/dev/zt-openspec-check.zsh` | Выполнен: `PASS`, 336 legacy requirements покрыты ровно один раз |
+| `scripts/dev/zt-agent-skills-check.zsh` | Выполнен: `PASS`, семь development skills |
 
 SHA-256 исходных архивов:
 
@@ -75,8 +75,8 @@ Archive.zip
 - `zettelkasten-requirements` называет legacy `requirements.adoc` канонической спецификацией; действующий repository baseline уже устанавливает нормативный приоритет OpenSpec.
 - `weekly-new` и `weekly-new-memo` расходятся по частным правилам, включая fallback Topic и формирование metadata.
 - Root-файл называется `AGENTS.MD`, тогда как стандартная bootstrap-точка OpenClaw — `AGENTS.md`.
-- `zt-agent-skills-check.zsh`, публикация и тесты ссылаются на существующий каталог `skills/`; перенос требует их согласованного изменения.
-- `.scripts/lib/paths.zsh` вычисляет `zk_scripts_dir()` из `ZK_HOME/.scripts`. Введение отдельного корня CLI нельзя осуществить одним добавлением переменной в prompt.
+- `zt-agent-skills-check.zsh`, публикация и тесты ссылаются на существующий каталог `dev/skills/`; перенос требует их согласованного изменения.
+- `scripts/lib/paths.zsh` вычисляет `zk_scripts_dir()` из `ZK_HOME/.scripts`. Введение отдельного корня CLI нельзя осуществить одним добавлением переменной в prompt.
 - Исходные скиллы используют `:author: marta`, личные пути и конкретные Topic UUID; это требует разделения общих процедур и локальной конфигурации.
 
 ## 3. Источники истины и принятие изменений
@@ -86,7 +86,7 @@ Archive.zip
 | Действующий `openspec/specs/` | Нормативное поведение и процесс текущей версии |
 | Активный `openspec/changes/<change-id>/` | Предлагаемая дельта для конкретного scope; не заменяет текущий baseline |
 | Эта мастер-спецификация | Целевая архитектура, декомпозиция, зависимости и реестр зарезервированных `ASYS-*` |
-| `.scripts/`, тесты и проверенное поведение | Исполнимые факты и доказательства реализации |
+| `scripts/`, тесты и проверенное поведение | Исполнимые факты и доказательства реализации |
 | `Agents/skills/`, общие contracts | Процедуры выбранной версии; не могут менять нормативные инварианты |
 | `Agents/manifest.json` | Состав, зависимости, профили, пути и контроль версий агентного пакета |
 | Legacy requirements | Стабильные ID и синхронные статусы требований |
@@ -103,7 +103,7 @@ Archive.zip
 
 | Слой | Содержание | Чего он не определяет |
 |---|---|---|
-| L0 — repository contracts | OpenSpec, `.scripts/`, document model, legacy traceability | Предметное содержание пользовательской заметки |
+| L0 — repository contracts | OpenSpec, `scripts/`, document model, legacy traceability | Предметное содержание пользовательской заметки |
 | L1 — primitive operations | Memo, Note, Topic, Todo, Diary, поиск, чтение, workspace, inbox | Приоритет competing domain workflows |
 | L2 — lifecycle | Continue, Reduce, Refine, миграции | Новые правила Topic по предположению модели |
 | L3 — knowledge orchestration | Capture, relationships, weekly synthesis, inbox promotion | Собственный формат UUID, metadata или backlinks |
@@ -138,11 +138,11 @@ Archive.zip
 | `Agents/adapters/openclaw/README.md` | Поддерживаемые версии, установка, effective discovery и обновление сессии |
 | `Agents/migrations/` | Импортный отчёт, сопоставление старых и новых путей, принятых редакций |
 | `tests/zt-agent-*.zsh` | Проверки каталога, профилей, routing, установки и поведений |
-| `.scripts/dev/` | Детерминированные средства проверки/развёртывания; точные новые CLI определяет соответствующая дельта |
+| `scripts/dev/` | Детерминированные средства проверки/развёртывания; точные новые CLI определяет соответствующая дельта |
 
-Существующие `.scripts/dev/docs/skill-contracts/` остаются каноническими development references. Новые runtime contracts не копируют их целиком. Их возможный последующий перенос выполняется отдельно, с проверкой всех ссылок.
+Существующие `scripts/dev/docs/skill-contracts/` остаются каноническими development references. Новые runtime contracts не копируют их целиком. Их возможный последующий перенос выполняется отдельно, с проверкой всех ссылок.
 
-В первой дельте семь development skills перемещаются из `skills/` в `Agents/skills/`. Все repo-local consumers изменяются в том же scope. Старый каталог удаляется только после проверки отсутствия действующих ссылок; две независимо редактируемые копии не сохраняются. Если нужен переходный compatibility export, он помечается generated, имеет срок удаления и не становится источником для авторинга.
+В первой дельте семь development skills перемещаются из `dev/skills/` в `Agents/skills/`. Все repo-local consumers изменяются в том же scope. Старый каталог удаляется только после проверки отсутствия действующих ссылок; две независимо редактируемые копии не сохраняются. Если нужен переходный compatibility export, он помечается generated, имеет срок удаления и не становится источником для авторинга.
 
 Root `AGENTS.MD` приводится к `AGENTS.md` через переименование одного файла. На case-insensitive файловой системе используется промежуточное имя; файлы, различающиеся только регистром расширения, одновременно не создаются. Repository markers, README, tests, publisher и references обновляются согласованно. Root-файл содержит общие инварианты и переход к нужному профилю.
 
@@ -203,7 +203,7 @@ Topic UUID и точные ключи для OpenClaw, RED, утренних м�
 Проектное решение по умолчанию — **проверенная копия выбранного профиля в отдельный workspace библиотекаря**:
 
 1. Выбрать source revision и profile; проверить hashes, contracts, dependencies и permissions.
-2. Подготовить staging bundle: выбранные `skills/<name>/SKILL.md`, supporting files, используемые `Agents/contracts`, профиль и bootstrap.
+2. Подготовить staging bundle: выбранные `Agents/skills/<name>/SKILL.md`, supporting files, используемые `Agents/contracts`, профиль и bootstrap.
 3. Проверить все references в условиях целевого executor. В sandbox передать разрешённые копии и реальные mounted roots; путь на host не считается автоматически доступным.
 4. Сравнить текущую установку с предыдущим deployment receipt. Не перезаписывать неизвестные или локально изменённые файлы.
 5. Применить подготовленное обновление, сохранить прежнюю версию для отката и записать receipt: source revision, profile, package digest, пути, версия OpenClaw, результат проверок.
@@ -295,7 +295,7 @@ Manifest хранит минимум следующие поля:
 
 Digest общего пакета учитывает stable relative paths, bytes и требуемые executable modes. Производные checksum-поля и deployment timestamps исключаются из собственного hash input. Изменение shared contract делает зависимые bundles устаревшими, даже если сам `SKILL.md` не менялся.
 
-В первой дельте `Agents/manifest.json` становится источником integration data. `.scripts/docs/managed-skills.adoc` сохраняется как производное человекочитаемое представление с указанием source, пока действующие consumers не мигрированы. Ручное независимое редактирование двух manifest запрещено.
+В первой дельте `Agents/manifest.json` становится источником integration data. `scripts/docs/managed-skills.adoc` сохраняется как производное человекочитаемое представление с указанием source, пока действующие consumers не мигрированы. Ручное независимое редактирование двух manifest запрещено.
 
 ### 7.2. Форма operation plan/result
 
@@ -328,7 +328,7 @@ Digest общего пакета учитывает stable relative paths, bytes
 - **GIVEN** получен checkout принятой версии, внешний OpenClaw state отсутствует
 - **WHEN** developer загружает repository instructions
 - **THEN** он находит каталог и все 41 исходных скилла
-- **AND** старый каталог `skills/` не содержит второй редактируемой версии.
+- **AND** старый каталог `dev/skills/` не содержит второй редактируемой версии.
 
 ### Requirement: ASYS-002 — Проверяемое происхождение импорта
 
@@ -382,7 +382,7 @@ Developer и librarian MUST иметь разные профили. Обычна
 - **GIVEN** при Memo workflow выявлено противоречие CLI и baseline
 - **WHEN** библиотекарь формирует результат
 - **THEN** он сообщает `SPEC_CONFLICT` и воспроизводимый запрос на исправление
-- **AND** не патчит `.scripts/` и не расширяет права своего профиля.
+- **AND** не патчит `scripts/` и не расширяет права своего профиля.
 
 ### Requirement: ASYS-007 — Конфигурируемая идентичность
 
@@ -674,7 +674,7 @@ Skill Workshop, если применяется в конкретной уста
 
 - **GIVEN** подготовлена новая CLI поставка
 - **WHEN** выполняется dry-run и проверка полученного дерева
-- **THEN** `Agents`, его manifest и references доступны, старые `skills/` references устранены
+- **THEN** `Agents`, его manifest и references доступны, старые `dev/skills/` references устранены
 - **AND** credentials, sessions, memory и пользовательский Vault не включены в distribution.
 
 ## 9. Нормативная матрица маршрутизации
@@ -744,11 +744,11 @@ Skill Workshop, если применяется в конкретной уста
 | `DEVAGENT-003`, `004`, `011` | Новый repository entrypoint, contracts и проверки нового packaging |
 | `DEVAGENT-005`–`010`, `012` | Сохранить изменение через specs, data boundary, Git safety, migration/release authorization и ID/status checks |
 | `spec-governance`: `SPEC-001`–`007` | Сохранить baseline authority, stable IDs и доказуемое `IMPLEMENTED` |
-| `publication`, architecture и legacy publication IDs | Уточнить состав export, исключения и references после `skills/` → `Agents/skills/`; конкретные ID выбрать из актуального baseline в дельте |
+| `publication`, architecture и legacy publication IDs | Уточнить состав export, исключения и references после `dev/skills/` → `Agents/skills/`; конкретные ID выбрать из актуального baseline в дельте |
 
 Тексты `MODIFIED Requirements` берутся целиком из актуального baseline и заменяются полной новой редакцией со scenarios. Существующие заголовки идентифицируются точно; stable IDs не переименовываются ради нового дизайна.
 
-Новые ASYS IDs при переносе в baseline получают ровно одну запись в `.scripts/docs/requirements.adoc` с тем же status. Это необходимо текущему checker: он проверяет соответствие **в обе стороны**, а не только наличие старых требований. Резервирование ID в proposed change не требует преждевременного объявления реализации в legacy/Feature List.
+Новые ASYS IDs при переносе в baseline получают ровно одну запись в `scripts/docs/requirements.adoc` с тем же status. Это необходимо текущему checker: он проверяет соответствие **в обе стороны**, а не только наличие старых требований. Резервирование ID в proposed change не требует преждевременного объявления реализации в legacy/Feature List.
 
 ## 11. План дельта-спецификаций
 

@@ -11,12 +11,12 @@
 ### Requirement: WP-ARCH-001 — Workspace является отдельным plugin layer
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/workspace/docs/requirements.adoc` → section `Архитектура и совместимость`.
-Zettelkasten-CLI SHALL размещать канонические create/add/open/remove workflow, Workspace policy library и plugin-specific документацию в sibling plugin `.scripts/workspace/`; Workspace workflow и policy MUST оставаться вне ownership `.scripts/zettelkasten/` и top-level host scripts.
+**Traceability:** `scripts/workspace/docs/requirements.adoc` → section `Архитектура и совместимость`.
+Zettelkasten-CLI SHALL размещать канонические create/add/open/remove workflow, Workspace policy library и plugin-specific документацию в sibling plugin `scripts/workspace/`; Workspace workflow и policy MUST оставаться вне ownership `scripts/zettelkasten/` и top-level host scripts.
 
 #### Scenario: Каноническое владение Workspace
 - **WHEN** определяется каноническая реализация Workspace workflow или policy
-- **THEN** она находится под `.scripts/workspace/`, а не в `.scripts/zettelkasten/` или в теле top-level compatibility entrypoint
+- **THEN** она находится под `scripts/workspace/`, а не в `scripts/zettelkasten/` или в теле top-level compatibility entrypoint
 
 #### Scenario: Разработка остаётся в текущем репозитории
 - **WHEN** изменяется поведение или документация Workspace plugin
@@ -25,21 +25,21 @@ Zettelkasten-CLI SHALL размещать канонические create/add/op
 ### Requirement: WP-ARCH-002 — Workspace plugin не создаёт обратных зависимостей
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/workspace/docs/requirements.adoc` → section `Архитектура и совместимость`.
-Workspace plugin MUST depend only on its own plugin-specific code и domain-neutral primitives under `.scripts/lib/`. Workspace plugin MUST NOT depend on `.scripts/zettelkasten/`; `.scripts/lib/`, `.scripts/objects/`, `.scripts/zettelkasten/` и другие sibling plugins MUST NOT depend on `.scripts/workspace/`.
+**Traceability:** `scripts/workspace/docs/requirements.adoc` → section `Архитектура и совместимость`.
+Workspace plugin MUST depend only on its own plugin-specific code и domain-neutral primitives under `scripts/lib/`. Workspace plugin MUST NOT depend on `scripts/zettelkasten/`; `scripts/lib/`, `scripts/objects/`, `scripts/zettelkasten/` и другие sibling plugins MUST NOT depend on `scripts/workspace/`.
 
 #### Scenario: Проверка направления зависимостей
 - **WHEN** repository boundary check анализирует executable source references между слоями
-- **THEN** зависимости Workspace plugin ограничены разрешёнными слоями, а ссылки `.scripts/workspace/` → `.scripts/zettelkasten/` и обратные ссылки существующих слоёв → `.scripts/workspace/` отсутствуют
+- **THEN** зависимости Workspace plugin ограничены разрешёнными слоями, а ссылки `scripts/workspace/` → `scripts/zettelkasten/` и обратные ссылки существующих слоёв → `scripts/workspace/` отсутствуют
 
 ### Requirement: WP-COMPAT-001 — Top-level Workspace entrypoints сохраняют совместимость
 
 **Legacy status:** `IMPLEMENTED`.
-**Traceability:** `.scripts/workspace/docs/requirements.adoc` → section `Архитектура и совместимость`.
-`.scripts/zt-workspace-create.zsh`, `.scripts/zt-workspace-add.zsh`, `.scripts/zt-workspace-open.zsh` и `.scripts/zt-workspace-remove.zsh` SHALL оставаться публичными compatibility entrypoints, делегировать соответствующим canonical workflows Workspace plugin и сохранять CLI arguments, prompts, selection behavior, stdout/stderr, exit status и managed skill mappings.
+**Traceability:** `scripts/workspace/docs/requirements.adoc` → section `Архитектура и совместимость`.
+`scripts/zt-workspace-create.zsh`, `scripts/zt-workspace-add.zsh`, `scripts/zt-workspace-open.zsh` и `scripts/zt-workspace-remove.zsh` SHALL оставаться публичными compatibility entrypoints, делегировать соответствующим canonical workflows Workspace plugin и сохранять CLI arguments, prompts, selection behavior, stdout/stderr, exit status и managed skill mappings.
 
 #### Scenario: Workspace commands делегируют plugin
-- **WHEN** пользователь запускает любую поддерживаемую `.scripts/zt-workspace-*.zsh` команду
+- **WHEN** пользователь запускает любую поддерживаемую `scripts/zt-workspace-*.zsh` команду
 - **THEN** entrypoint делегирует соответствующий Workspace plugin workflow, а observable behavior соответствует `WORKSPACE-008`–`WORKSPACE-014`
 
 #### Scenario: Managed skill mappings остаются стабильными
@@ -49,7 +49,7 @@ Workspace plugin MUST depend only on its own plugin-specific code и domain-neut
 ### Requirement: WP-DATA-001 — Выделение plugin сохраняет Workspace data semantics
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/workspace/docs/requirements.adoc` → section `Архитектура и совместимость`.
+**Traceability:** `scripts/workspace/docs/requirements.adoc` → section `Архитектура и совместимость`.
 Выделение Workspace plugin MUST preserve `ZK_HOME/workspaces/`, безопасные `.adoc` filenames, ручную редактируемость, раздел `Документы`, ссылки `link:../notes/UUID.adoc[...]`, selection/cancel behavior, idempotent add, read-only open и atomic multi-remove с сохранением file mode. Оно MUST NOT перемещать, переписывать или переиндексировать существующие Workspace самим архитектурным переходом.
 
 #### Scenario: Существующий Workspace остаётся совместимым
@@ -67,7 +67,7 @@ Workspace plugin MUST depend only on its own plugin-specific code и domain-neut
 ### Requirement: WP-DEV-001 — Workspace plugin проверяется на временном Vault
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/workspace/docs/requirements.adoc` → section `Архитектура и совместимость`.
+**Traceability:** `scripts/workspace/docs/requirements.adoc` → section `Архитектура и совместимость`.
 Изменения Workspace plugin MUST сопровождаться regression verification через top-level compatibility entrypoints с временным `ZK_HOME`; ordinary development и validation MUST NOT mutate пользовательские `workspaces/` или referenced documents.
 
 #### Scenario: Regression test изолирует Workspace workflows

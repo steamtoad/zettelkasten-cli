@@ -10,18 +10,18 @@ emulate -L zsh
 setopt errexit pipe_fail no_unset
 
 repo="${0:A:h:h}"
-checker="$repo/.scripts/dev/zt-openspec-check.zsh"
+checker="$repo/scripts/dev/zt-openspec-check.zsh"
 fixture="$(mktemp -d "${TMPDIR:-/tmp}/zt-openspec-test.XXXXXX")"
 trap 'rm -rf -- "$fixture"' EXIT HUP INT TERM
 
 reset_fixture() {
   rm -rf -- "$fixture/openspec" "$fixture/host.adoc" "$fixture/plugin.adoc"
   cp -R "$repo/openspec/specs" "$fixture/openspec"
-  cp "$repo/.scripts/docs/requirements.adoc" "$fixture/host.adoc"
-  cp "$repo/.scripts/zettelkasten/docs/requirements.adoc" "$fixture/plugin.adoc"
+  cp "$repo/scripts/docs/requirements.adoc" "$fixture/host.adoc"
+  cp "$repo/scripts/zettelkasten/docs/requirements.adoc" "$fixture/plugin.adoc"
   local plugin
   for plugin in diary inbox workspace; do
-    cp "$repo/.scripts/$plugin/docs/requirements.adoc" "$fixture/$plugin.adoc"
+    cp "$repo/scripts/$plugin/docs/requirements.adoc" "$fixture/$plugin.adoc"
   done
 }
 

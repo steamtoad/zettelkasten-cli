@@ -9,7 +9,7 @@
 ### Requirement: SAFE-001 — изменяющая данные операция выполняет доступные предварительные проверки до первой записи
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность изменений`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность изменений`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: изменяющая данные операция выполняет доступные предварительные проверки до первой записи.
 
@@ -23,7 +23,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: SAFE-002 — прерванная операция не должна оставлять частично созданные документы, связи или deprecated-метки
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность изменений`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность изменений`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: прерванная операция не должна оставлять частично созданные документы, связи или deprecated-метки; для сложных операций требуется rollback или описанная процедура восстановления.
 
@@ -39,7 +39,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: SAFE-003 — разрушительные и массовые операции должны поддерживать предварительный просмотр или явное под...
 
 **Legacy status:** `ROADMAP`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность изменений`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность изменений`.
 
 Целевая архитектура или поведение MUST сохранять следующий target contract: разрушительные и массовые операции должны поддерживать предварительный просмотр или явное подтверждение.
 
@@ -55,7 +55,7 @@ Development, migration или runtime process MUST соблюдать следу
 ### Requirement: SAFE-004 — операция не изменяет документы, не входящие в явно выбранную область действия
 
 **Legacy status:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность изменений`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность изменений`.
 
 Zettelkasten-CLI MUST сохранять следующий инвариант: операция не изменяет документы, не входящие в явно выбранную область действия.
 
@@ -69,7 +69,7 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 ### Requirement: SAFE-005 — локальный совместимый патч предпочтительнее большого рефакторинга без миграционного обоснования
 
 **Legacy status:** `PROCESS`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность изменений`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность изменений`.
 
 Development, migration или runtime process MUST соблюдать следующее правило: локальный совместимый патч предпочтительнее большого рефакторинга без миграционного обоснования.
 
