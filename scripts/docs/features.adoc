@@ -152,6 +152,12 @@ feature list и прежние стабильные ID.
 * `MEMO-CHAIN-006` — продолжение наследует ключевые слова и `:key-topic:` исходной Memo.
 * `MEMO-CHAIN-007` — новая Memo-продолжение регистрируется в `all-todays` и открывается в Vim.
 
+== Принадлежность Topic
+
+* `TOPIC-MEMBER-001` — checker диагностирует несколько активных Topic одного точного `:key-topic:`, а Reduce показывает siblings в preview.
+* `TOPIC-MEMBER-002` — historical Topic provenance сохраняется; новый binding к deprecated Topic отклоняется, а сомнительная старая связь получает warning.
+* `TOPIC-MEMBER-003` — Refine отдельно показывает все переносимые и архивируемые candidates, включая Note при archive-source.
+
 == Reduce
 
 * `REDUCE-001` — выполнение Reduce для выбранной активной Topic.

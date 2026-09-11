@@ -72,6 +72,28 @@ zt_select_keytopic_file() {
   zt_select_file_by_type "topic" "topic> "
 }
 
+zt_validate_active_topic_binding() {
+  local topic_fname="$1"
+  local topic_file="$(zk_note_path "$topic_fname")"
+
+  [[ -f "$topic_file" ]] || {
+    print -ru2 -- "ERROR topic target not found: $topic_fname"
+    return 1
+  }
+  [[ "$(zk_attr_value "$topic_file" "type")" == "topic" ]] || {
+    print -ru2 -- "ERROR topic target has unexpected type: $topic_fname"
+    return 1
+  }
+  ! zk_is_deprecated "$topic_file" || {
+    print -ru2 -- "ERROR DEPRECATED_TOPIC_TARGET: $topic_fname"
+    return 1
+  }
+  [[ -n "$(zk_attr_value "$topic_file" "key-topic")" ]] || {
+    print -ru2 -- "ERROR selected topic has no header :key-topic:: $topic_fname"
+    return 1
+  }
+}
+
 zt_selected_filename() {
   zk_selection_identity "$1"
 }
@@ -207,6 +229,7 @@ zt_bind_memo_to_topic() {
     print -ru2 -- "ERROR topic target not found: $topic_file"
     return 1
   }
+  zt_validate_active_topic_binding "$topic_fname" || return 1
 
   topic_description="$(zk_link_description "$topic_file")"
   memo_description="$(zk_link_description "$memo_file")"

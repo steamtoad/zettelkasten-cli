@@ -107,6 +107,20 @@ extract_diary_chain_links() {
   zk_extract_labeled_links "$1" "$2"
 }
 
+is_historical_topic_link() {
+  local file="$1"
+  local target="$2"
+  local label
+  local links
+
+  for label in 'Основано на' 'Развитие' 'Выделено из' 'Выделенная тема'; do
+    links="$(zk_extract_labeled_links "$file" "$label")" || return 1
+    [[ "${(f)links}" == *"$target"* ]] && return 0
+  done
+
+  return 1
+}
+
 diary_error() {
   err "$1 $2"
 }
@@ -207,6 +221,39 @@ for file in "${note_files[@]}"; do
 done
 
 (( errors == note_links_errors_before )) && ok "Note links: $note_links_count"
+
+print -r -- ""
+print -r -- "== Topic membership"
+
+typeset -A active_topics_by_key
+active_topics_by_key=()
+
+for file in "${note_files[@]}"; do
+  [[ "$(attr_value "$file" type)" == topic ]] || continue
+  has_attr "$file" deprecated && continue
+  key_topic="$(attr_value "$file" key-topic)"
+  [[ -n "$key_topic" ]] || continue
+  active_topics_by_key[$key_topic]+="${file:t}"$'\n'
+done
+
+for key_topic in "${(@k)active_topics_by_key}"; do
+  topic_members=("${(@f)${active_topics_by_key[$key_topic]}}")
+  (( ${#topic_members[@]} > 1 )) || continue
+  warn "AMBIGUOUS_TOPIC_LINE :key-topic: $key_topic -> ${(j:, :)topic_members}"
+done
+
+for file in "${note_files[@]}"; do
+  link_output="$(extract_links "$file")" || continue
+  while IFS= read -r target; do
+    [[ -n "$target" && "$target" != */* ]] || continue
+    target_file="$notes_dir/${target#link:}"
+    [[ -f "$target_file" ]] || continue
+    [[ "$(attr_value "$target_file" type)" == topic ]] || continue
+    has_attr "$target_file" deprecated || continue
+    is_historical_topic_link "$file" "${target_file:t}" && continue
+    warn "DEPRECATED_TOPIC_LINK notes/${file:t} -> ${target_file:t} has no provenance label"
+  done <<< "$link_output"
+done
 
 print -r -- ""
 print -r -- "== all-todays links"

@@ -1,6 +1,6 @@
 = Требования и инварианты zettelkasten-cli
 :revdate: 2026-09-11
-:revnumber: 16
+:revnumber: 17
 :toc:
 
 == Назначение документа
@@ -79,7 +79,7 @@
 * `DATA-001 [INVARIANT]` — все постоянные документы являются объектами единой модели Document.
 * `DATA-002 [IMPLEMENTED]` — модель постоянных документов включает Note, Memo, Todo, Diary и Topic.
 * `DATA-003 [IMPLEMENTED]` — Diary образует двунаправленную хронологическую цепочку; индексом активности является `all-todays`.
-* `DATA-004 [IMPLEMENTED]` — Topic агрегирует только явно связанные с ней Memo и Note.
+* `DATA-004 [IMPLEMENTED]` — Topic агрегирует только явно связанные с ней Memo и Note; Reduce отдельно выбирает Memo и Note по точному header `:key-topic:`.
 
 == Проверка цепочек
 
@@ -94,6 +94,12 @@
 * `TOPIC-003 [IMPLEMENTED]` — standalone и sourced object constructor Topic до первой записи отклоняет пустой обязательный `:key-topic:`; допустимый непустой ключ сохраняется буквально и остаётся согласован с каноническими метаданными.
 * `TOPIC-004 [PROCESS]` — существующие Topic с неканоническим заголовком, `:description:`, `:doclink:` или противоречивым `:key-topic:` изменяются только через явную миграцию.
 * `TOPIC-005 [INVARIANT]` — изменение названия тематической линии и создание следующей редакции той же тематической линии являются разными операциями.
+
+== Принадлежность Topic
+
+* `TOPIC-MEMBER-001 [IMPLEMENTED]` — checker предупреждает `AMBIGUOUS_TOPIC_LINE` для нескольких активных Topic точного `:key-topic:`, а Reduce показывает выбранную Topic и siblings без нормализации.
+* `TOPIC-MEMBER-002 [IMPLEMENTED]` — provenance links к deprecated Topic сохраняются; новый binding к deprecated Topic отклоняется, а неоднозначная старая связь диагностируется предупреждением без удаления.
+* `TOPIC-MEMBER-003 [IMPLEMENTED]` — Refine до подтверждения показывает переносимые и архивируемые candidates; при archive-source он архивирует невыбранную Note своей линии и использует header `:key-topic:`, а не display title.
 
 == Агрегаторы и Workspace
 

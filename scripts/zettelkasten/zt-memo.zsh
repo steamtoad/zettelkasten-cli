@@ -59,6 +59,7 @@ if [[ "$binding" == "Да" ]]; then
     topic_file="$(zt_selected_filename "$selected")"
     topic_fingerprint="$(zt_selected_fingerprint "$selected")"
     zk_selection_validate_note "$topic_file" topic "$topic_fingerprint" || exit 1
+    zt_validate_active_topic_binding "$topic_file" || exit 1
     topic_path="$(zk_note_path "$topic_file")"
     topic_key_line="$(zk_attr_line "$topic_path" "key-topic")"
     topic_keywords="$(zk_attr_value "$topic_path" "keywords")"
@@ -81,6 +82,7 @@ extra_attrs=()
 
 if [[ -n "$topic_file" ]]; then
   zk_selection_validate_note "$topic_file" topic "$topic_fingerprint" || exit 1
+  zt_validate_active_topic_binding "$topic_file" || exit 1
 fi
 
 fname="$(zk_memo_create "$title" "$memo_keywords" "$title" "${extra_attrs[@]}")" || exit 1

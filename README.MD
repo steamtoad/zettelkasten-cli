@@ -96,7 +96,7 @@ Reduce создаёт новое поколение Topic, сохраняя ис
 Основано на:
 ```
 
-После повторных Reduce в предметной области остаётся одна активная Topic, а вся история сохраняется внутри хранилища.
+Несколько активных Topic могут иметь один `:key-topic:`: checker и preview Reduce показывают эту неоднозначность, но не нормализуют данные автоматически. При этом Reduce выбирает Memo и Note по точному `:key-topic:`, а навигационное содержимое самой Topic включает только явно связанные документы.
 
 ---
 
@@ -227,7 +227,7 @@ Instead of endlessly rewriting them, the system provides the **Reduce** operatio
 
 Reduce creates a successor Topic while preserving the complete history of the domain.
 
-Old Topics and related Memo become deprecated, Notes remain active, and active Notes are automatically linked to the new Topic.
+Old Topics and related Memo become deprecated, Notes remain active, and active Notes are automatically linked to the new Topic. Multiple active Topics may share one `:key-topic:`; checker and Reduce preview report this ambiguity without automatically normalizing it.
 
 This allows the knowledge base to evolve without losing its past.
 

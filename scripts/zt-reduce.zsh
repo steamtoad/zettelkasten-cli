@@ -300,6 +300,12 @@ print_reduce_plan() {
   print -r -- "Old Topic: $old_topic"
   print -r -- "New Topic: $new_fname"
   print -r -- "Key Topic: $key_topic"
+  print -r -- "Sibling Topic: ${#active_sibling_topic_files}"
+
+  for file in "${active_sibling_topic_files[@]}"; do
+    print -r -- "  sibling: $file"
+  done
+
   print -r -- "Deprecated Memo: ${#active_memo_files}"
 
   for file in "${active_memo_files[@]}"; do
@@ -364,10 +370,12 @@ canonical_title="${key_topic} - ключевая тема"
 
 typeset -a active_memo_files
 typeset -a active_note_files
+typeset -a active_sibling_topic_files
 typeset -A active_file_fingerprints
 
 active_memo_files=()
 active_note_files=()
+active_sibling_topic_files=()
 active_file_fingerprints=()
 
 for file in *.adoc; do
@@ -375,6 +383,11 @@ for file in *.adoc; do
   is_header_deprecated "$file" && continue
 
   case "$(header_attr_value "$file" "type")" in
+    topic)
+      if [[ "$file" != "$old_topic" ]] && same_key_topic "$file" "$key_topic"; then
+        active_sibling_topic_files+=("$file")
+      fi
+      ;;
     memo)
       if same_key_topic "$file" "$key_topic"; then
         active_memo_files+=("$file")

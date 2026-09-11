@@ -207,7 +207,19 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 **Legacy status:** `IMPLEMENTED`.
 **Traceability:** `scripts/docs/requirements.adoc` → section `Физическое пространство документов`.
 
-Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: Topic агрегирует только явно связанные с ней Memo и Note.
+Topic MUST агрегировать в своём навигационном содержимом только явно связанные с ней Memo и Note. Принадлежность тематической линии SHALL определяться отдельно точным header `:key-topic:`; Reduce MUST сохранять выборку REDUCE-003/006 по этому ключу независимо от наличия прямой ссылки. Несколько активных Topic одного ключа SHALL NOT автоматически объединяться или архивироваться.
+
+#### Scenario: Memo без прямой ссылки
+
+- **GIVEN** Memo имеет тот же `:key-topic:`, но не включена в явные links Topic
+- **WHEN** готовится Reduce выбранной Topic
+- **THEN** Memo включена в preview архивации; отсутствие прямой ссылки не меняет REDUCE-003
+
+#### Scenario: Siblings сохраняются
+
+- **GIVEN** две активные Topic имеют один ключ
+- **WHEN** Reduce выполнен для одной Topic
+- **THEN** другая Topic остаётся активной; глобальная уникальность не навязана
 
 #### Scenario: DATA-004 contract is verified
 
