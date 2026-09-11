@@ -41,7 +41,7 @@
 ## Impact
 
 - Уровень предполагаемой реализации: L1, приоритет P1; единый scope — исправление пяти дефектов атомарной записи.
-- Основные файлы: `.scripts/lib/asciidoc.zsh`, `.scripts/zt-refine.zsh`, `.scripts/zt-reduce.zsh`, `.scripts/objects/topic-create.zsh`; проверяются вызывающие creation/binding entrypoints и общий test runner.
+- Основные файлы: `scripts/lib/asciidoc.zsh`, `scripts/zt-refine.zsh`, `scripts/zt-reduce.zsh`, `scripts/objects/topic-create.zsh`; проверяются вызывающие creation/binding entrypoints и общий test runner.
 - Baseline traceability: пять изменяемых IDs выше; связанные неизменяемые `SAFE-001`, `SAFE-002`, `DOC-002`, `TOPIC-002`, `REFINE-010`, `SPEC-001`, `SPEC-002`, `SPEC-006`.
 - Польза сейчас: исключение подтверждённого удаления данных, ложного успеха и потери ACL; восстановление входной валидации и диагностики.
 - Совместимость: сохраняются UUID v1, существующие имена/links, пять типов, Topic key semantics, AsciiDoc, Vim и Zsh CLI. Неподдерживаемая ACL/ownership policy даёт явный отказ вместо скрытой потери свойств.

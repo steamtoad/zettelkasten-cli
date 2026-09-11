@@ -148,11 +148,15 @@ create_full_copy_topic() {
   local new_fname="$3"
   local title="$4"
   local key_topic_line="$5"
+  local key_topic="$6"
   local new_doclink
+  local prepared
 
   new_doclink="$(zk_link "$new_fname" "$title")"
 
-  awk \
+  prepared="$(mktemp "${dst:h}/.${dst:t}.full-copy.XXXXXX")" || return 1
+
+  if ! awk \
     -v new_fname="$new_fname" \
     -v new_doclink="$new_doclink" \
     -v title="$title" \
@@ -197,7 +201,22 @@ create_full_copy_topic() {
       {
         print
       }
-    ' "$src" | zk_create_exclusive_from_stdin "$dst"
+    ' "$src" > "$prepared"; then
+    rm -f -- "$prepared"
+    return 1
+  fi
+
+  if ! validate_topic_metadata "$prepared" "$key_topic" "$new_fname"; then
+    rm -f -- "$prepared"
+    print -ru2 -- "ERROR Full Copy producer created invalid Topic content"
+    return 1
+  fi
+
+  if ! zk_create_exclusive_from_file "$prepared" "$dst"; then
+    rm -f -- "$prepared"
+    return 1
+  fi
+  rm -f -- "$prepared"
 }
 
 create_clean_topic() {
@@ -205,24 +224,31 @@ create_clean_topic() {
   local new_fname="$2"
   local title="$3"
   local key_topic="$4"
+  local prepared
 
-  {
-    zk_metadata "$new_fname" "$title" "topic" "topic" "$title"
-    print -r -- ":key-topic: $key_topic"
-    print -r -- ""
-    print -r -- ""
-  } | zk_create_exclusive_from_stdin "$dst"
+  prepared="$(mktemp "${dst:h}/.${dst:t}.clean.XXXXXX")" || return 1
+  if ! zk_topic_render "$new_fname" "$title" "$key_topic" "topic" "$title" > "$prepared"; then
+    rm -f -- "$prepared"
+    return 1
+  fi
+
+  if ! zk_create_exclusive_from_file "$prepared" "$dst"; then
+    rm -f -- "$prepared"
+    return 1
+  fi
+  rm -f -- "$prepared"
 }
 
 validate_topic_metadata() {
   local file="$1"
   local key_topic="$2"
+  local expected_fname="${3:-${file:t}}"
   local expected_title="${key_topic} - ключевая тема"
   local expected_doclink
   local actual
   local invalid=0
 
-  expected_doclink="$(zk_link "$file" "$expected_title")"
+  expected_doclink="$(zk_link "$expected_fname" "$expected_title")"
 
   actual="$(zk_file_title "$file")"
   if [[ "$actual" != "$expected_title" ]]; then
@@ -246,8 +272,20 @@ validate_topic_metadata() {
   fi
 
   actual="$(header_attr_value "$file" "docfilename")"
-  if [[ "$actual" != "$file" ]]; then
-    print -ru2 -- "ERROR Topic :docfilename: does not match '$file'"
+  if [[ "$actual" != "$expected_fname" ]]; then
+    print -ru2 -- "ERROR Topic :docfilename: does not match '$expected_fname'"
+    invalid=1
+  fi
+
+  actual="$(header_attr_value "$file" "type")"
+  if [[ "$actual" != "topic" ]]; then
+    print -ru2 -- "ERROR Topic :type: is not topic"
+    invalid=1
+  fi
+
+  actual="$(header_attr_value "$file" "key-topic")"
+  if [[ "$actual" != "$key_topic" ]]; then
+    print -ru2 -- "ERROR Topic :key-topic: does not match '$key_topic'"
     invalid=1
   fi
 
@@ -320,7 +358,7 @@ confirm_reduce() {
   [[ "$answer" == [yY] ]]
 }
 
-zk_ensure_notes_dir
+zk_ensure_notes_dir || reduce_write_failed
 zk_cd_notes || exit 1
 
 selected="$(select_topic_file)"
@@ -377,35 +415,14 @@ done
 print_reduce_plan "$old_topic" "$new_fname" "$mode" "$key_topic"
 confirm_reduce || exit 0
 
-zk_ensure_notes_dir
-zt_ensure_today || exit 1
-
-case "$mode" in
-  "Full Copy")
-    create_full_copy_topic \
-      "$old_topic" \
-      "$new_fname" \
-      "$new_fname" \
-      "$canonical_title" \
-      "$key_topic_line" || exit 1
-    ;;
-
-  "Clean Successor")
-    create_clean_topic \
-      "$new_fname" \
-      "$new_fname" \
-      "$canonical_title" \
-      "$key_topic" || exit 1
-    ;;
-
-  *)
-    print -ru2 -- "ERROR unknown Reduce mode: $mode"
-    exit 1
-    ;;
-esac
-
 typeset -a changed_files
-changed_files=("$new_fname")
+changed_files=()
+
+record_changed_file() {
+  local changed="$1"
+
+  (( ${changed_files[(Ie)$changed]} )) || changed_files+=("$changed")
+}
 
 reduce_write_failed() {
   print -ru2 -- "ERROR Reduce write failed"
@@ -415,6 +432,42 @@ reduce_write_failed() {
   exit 1
 }
 
+zk_ensure_notes_dir
+today_file="$(zt_today_file)" || exit 1
+today_existed=0
+[[ -f "$today_file" ]] && today_existed=1
+zt_ensure_today || reduce_write_failed
+if (( ! today_existed )) && [[ -f "$today_file" ]]; then
+  record_changed_file "$today_file"
+fi
+
+case "$mode" in
+  "Full Copy")
+    create_full_copy_topic \
+      "$old_topic" \
+      "$new_fname" \
+      "$new_fname" \
+      "$canonical_title" \
+      "$key_topic_line" \
+      "$key_topic" || reduce_write_failed
+    ;;
+
+  "Clean Successor")
+    create_clean_topic \
+      "$new_fname" \
+      "$new_fname" \
+      "$canonical_title" \
+      "$key_topic" || reduce_write_failed
+    ;;
+
+  *)
+    print -ru2 -- "ERROR unknown Reduce mode: $mode"
+    reduce_write_failed
+    ;;
+esac
+
+record_changed_file "$new_fname"
+
 new_description="$(zk_link_description "$new_fname")" || reduce_write_failed
 old_description="$(zk_link_description "$old_topic")" || reduce_write_failed
 
@@ -422,20 +475,21 @@ new_link="$(zk_link "$new_fname" "$new_description")" || reduce_write_failed
 old_link="$(zk_link "$old_topic" "$old_description")" || reduce_write_failed
 
 zt_today_append "$new_fname" "$new_description" || reduce_write_failed
+record_changed_file "$today_file"
 
 zk_append_related_link "$old_topic" "== Связанные Topic" "Развитие" "$new_link" || reduce_write_failed
-changed_files+=("$old_topic")
+record_changed_file "$old_topic"
 zk_append_related_link "$new_fname" "== Связанные Topic" "Основано на" "$old_link" || reduce_write_failed
 
 # Notes are durable knowledge units.
 # Reduce links active Notes to the new Topic, but never deprecates Notes.
 for note_file in "${active_note_files[@]}"; do
-  note_description="$(zk_link_description "$note_file")"
-  note_link="$(zk_link "$note_file" "$note_description")"
+  note_description="$(zk_link_description "$note_file")" || reduce_write_failed
+  note_link="$(zk_link "$note_file" "$note_description")" || reduce_write_failed
 
   zk_append_related_link "$new_fname" "== Связанные note" "" "$note_link" || reduce_write_failed
   zk_append_related_link "$note_file" "== Связи" "Topic" "$new_link" || reduce_write_failed
-  changed_files+=("$note_file")
+  record_changed_file "$note_file"
 done
 
 # Reduce deprecates only the old Topic and active Memo with the same :key-topic:.
@@ -443,7 +497,7 @@ mark_deprecated "$old_topic" || reduce_write_failed
 
 for memo_file in "${active_memo_files[@]}"; do
   mark_deprecated "$memo_file" || reduce_write_failed
-  changed_files+=("$memo_file")
+  record_changed_file "$memo_file"
 done
 
 vim "$new_fname" || exit $?

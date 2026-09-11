@@ -292,15 +292,32 @@ confirm_refine() {
 
 rollback_apply() {
   local file
+  local current_identity
 
   for file in "${existing_apply_files[@]}"; do
     cp "$backup_dir/${file:t}" "$file" || true
   done
 
-  rm -f "$new_fname"
+  if (( new_target_owned )); then
+    if [[ -e "$new_fname" || -L "$new_fname" ]]; then
+      current_identity="$(zk_file_identity "$new_fname")" || current_identity=""
+      if [[ -n "$new_target_identity" && "$current_identity" == "$new_target_identity" ]]; then
+        rm -f -- "$new_fname" || true
+      else
+        print -ru2 -- "ERROR Refine rollback preserved changed destination identity: $new_fname"
+      fi
+    fi
+  fi
 
-  if [[ -n "$today_file" && ! -f "$backup_dir/${today_file:t}" ]]; then
-    rm -f "$today_file"
+  if (( today_target_owned )) && [[ -n "$today_file" ]]; then
+    if [[ -e "$today_file" || -L "$today_file" ]]; then
+      current_identity="$(zk_file_identity "$today_file")" || current_identity=""
+      if [[ -n "$today_target_identity" && "$current_identity" == "$today_target_identity" ]]; then
+        rm -f -- "$today_file" || true
+      else
+        print -ru2 -- "ERROR Refine rollback preserved changed all-todays identity: $today_file"
+      fi
+    fi
   fi
 }
 
@@ -507,23 +524,38 @@ if [[ -f "$today_file" ]]; then
 fi
 
 apply_failed=0
+new_target_owned=0
+new_target_identity=""
+today_target_owned=0
+today_target_identity=""
 
 trap 'rollback_apply; print -ru2 -- "ERROR Refine interrupted; changes rolled back"; exit 1' INT TERM HUP
 
-for file in "$source_topic" "${selected_files[@]}" "${unselected_files[@]}" "$new_fname"; do
+if zk_create_exclusive_from_file "$stage_dir/$new_fname" "$new_fname"; then
+  new_target_owned=1
+  new_target_identity="$(zk_file_identity "$new_fname")" || apply_failed=1
+else
+  apply_failed=1
+fi
+
+for file in "$source_topic" "${selected_files[@]}" "${unselected_files[@]}"; do
+  (( apply_failed )) && break
   [[ -f "$stage_dir/$file" ]] || continue
-  if [[ "$file" == "$new_fname" ]]; then
-    cat -- "$stage_dir/$file" | zk_create_exclusive_from_stdin "$file" || apply_failed=1
-  else
-    zk_replace_from_file_atomic "$file" "$stage_dir/$file" || apply_failed=1
-  fi
+  zk_replace_from_file_atomic "$file" "$stage_dir/$file" || apply_failed=1
 done
 
-mkdir -p "${today_file:h}" || apply_failed=1
-if [[ -f "$today_file" ]]; then
-  zk_replace_from_file_atomic "$today_file" "$stage_dir/all-todays/${today_file:t}" || apply_failed=1
-else
-  cat -- "$stage_dir/all-todays/${today_file:t}" | zk_create_exclusive_from_stdin "$today_file" || apply_failed=1
+if (( ! apply_failed )); then
+  mkdir -p "${today_file:h}" || apply_failed=1
+fi
+if (( ! apply_failed )); then
+  if [[ -f "$today_file" ]]; then
+    zk_replace_from_file_atomic "$today_file" "$stage_dir/all-todays/${today_file:t}" || apply_failed=1
+  elif zk_create_exclusive_from_file "$stage_dir/all-todays/${today_file:t}" "$today_file"; then
+    today_target_owned=1
+    today_target_identity="$(zk_file_identity "$today_file")" || apply_failed=1
+  else
+    apply_failed=1
+  fi
 fi
 
 if (( apply_failed )); then

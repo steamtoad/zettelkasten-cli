@@ -213,12 +213,65 @@ zk_file_mode() {
   fi
 }
 
+zk_file_owner_group() {
+  local file="$1"
+
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    stat -f '%u:%g' "$file"
+  else
+    stat -c '%u:%g' -- "$file"
+  fi
+}
+
+zk_file_identity() {
+  local file="$1"
+
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    stat -f '%d:%i' "$file"
+  else
+    stat -c '%d:%i' -- "$file"
+  fi
+}
+
+zk_file_acl_state() {
+  emulate -L zsh
+
+  local file="$1"
+  local listing
+  local permissions
+
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    listing="$(ls -lde "$file" 2>/dev/null)" || {
+      print -ru2 -- "ERROR cannot determine ACL state: $file"
+      return 1
+    }
+  else
+    listing="$(ls -ld -- "$file" 2>/dev/null)" || {
+      print -ru2 -- "ERROR cannot determine ACL state: $file"
+      return 1
+    }
+  fi
+
+  permissions="${listing%%[[:space:]]*}"
+  if [[ "$(uname -s)" == "Darwin" && "$listing" == *$'\n'* ]]; then
+    print -r -- "present"
+  elif [[ "$permissions" == *+* ]]; then
+    print -r -- "present"
+  else
+    print -r -- "none"
+  fi
+}
+
 zk_replace_with_prepared_file() {
   emulate -L zsh
 
   local file="$1"
   local prepared="$2"
   local mode
+  local owner_group
+  local prepared_owner_group
+  local acl_state
+  local prepared_acl_state
 
   [[ -f "$file" && ! -L "$file" ]] || {
     print -ru2 -- "ERROR replacement target is not a regular file: $file"
@@ -230,8 +283,51 @@ zk_replace_with_prepared_file() {
     return 1
   }
 
-  mode="$(zk_file_mode "$file")" || return 1
+  mode="$(zk_file_mode "$file")" || {
+    print -ru2 -- "ERROR cannot determine file mode: $file"
+    return 1
+  }
+  owner_group="$(zk_file_owner_group "$file")" || {
+    print -ru2 -- "ERROR cannot determine owner/group: $file"
+    return 1
+  }
+  prepared_owner_group="$(zk_file_owner_group "$prepared")" || {
+    print -ru2 -- "ERROR cannot determine owner/group: $prepared"
+    return 1
+  }
+  acl_state="$(zk_file_acl_state "$file")" || return 1
+  prepared_acl_state="$(zk_file_acl_state "$prepared")" || return 1
+
+  if [[ "$acl_state" != "none" ]]; then
+    print -ru2 -- "ERROR atomic replacement of ACL-bearing files is unsupported: $file"
+    return 1
+  fi
+
+  if [[ "$prepared_acl_state" != "none" ]]; then
+    print -ru2 -- "ERROR prepared replacement has an unexpected ACL: $prepared"
+    return 1
+  fi
+
+  if [[ "$owner_group" != "$prepared_owner_group" ]]; then
+    print -ru2 -- "ERROR atomic replacement cannot preserve owner/group: $file"
+    return 1
+  fi
+
   chmod "$mode" "$prepared" || return 1
+
+  [[ "$(zk_file_mode "$prepared")" == "$mode" ]] || {
+    print -ru2 -- "ERROR prepared replacement mode verification failed: $prepared"
+    return 1
+  }
+  [[ "$(zk_file_owner_group "$prepared")" == "$owner_group" ]] || {
+    print -ru2 -- "ERROR prepared replacement owner/group verification failed: $prepared"
+    return 1
+  }
+  [[ "$(zk_file_acl_state "$prepared")" == "none" ]] || {
+    print -ru2 -- "ERROR prepared replacement ACL verification failed: $prepared"
+    return 1
+  }
+
   mv -f -- "$prepared" "$file"
 }
 
@@ -305,6 +401,20 @@ zk_create_exclusive_from_stdin() {
 
     exec {create_fd}>&-
   )
+}
+
+zk_create_exclusive_from_file() {
+  emulate -L zsh
+
+  local source="$1"
+  local target="$2"
+
+  [[ -f "$source" && ! -L "$source" ]] || {
+    print -ru2 -- "ERROR exclusive-create source is not a regular file: $source"
+    return 1
+  }
+
+  zk_create_exclusive_from_stdin "$target" < "$source"
 }
 
 zk_append_text_atomic() {

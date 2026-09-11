@@ -34,7 +34,7 @@ Full Copy сначала завершает проверяемую подгот�
 
 ## Compatibility and Architecture
 
-Neutral primitives остаются в `.scripts/lib/`; input preflight Topic — в object layer; Refine/Reduce sequencing и changed-files принадлежат host workflows. UUID/link targets, :type:, :key-topic:, :deprecated: и activity format не меняются. Valid input сохраняет существующее поведение. L1 fixes не требуют перестройки plugins.
+Neutral primitives остаются в `scripts/lib/`; input preflight Topic — в object layer; Refine/Reduce sequencing и changed-files принадлежат host workflows. UUID/link targets, :type:, :key-topic:, :deprecated: и activity format не меняются. Valid input сохраняет существующее поведение. L1 fixes не требуют перестройки plugins.
 
 ## Failure and Git Safety
 

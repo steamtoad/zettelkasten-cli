@@ -2,12 +2,10 @@
 
 ### Requirement: WRITE-SAFE-001 — Существующая цель сохраняется при неуспешной подготовке
 
-**Baseline legacy status до дельты:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
+**Legacy status:** `INVARIANT`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
 
 Файловый writer MUST подготовить и проверить полное новое содержимое до замены существующей цели. Ошибка подготовки SHALL оставлять исходные байты и mode неизменными; ошибка замены SHALL возвращаться вызывающему коду.
-
-**Статус изменения:** `PROPOSED`, не подтверждение реализации.
 
 До replace writer MUST определить поддержанность ACL и owner/group цели. Поддержанные ACL/owner/group SHALL сохраняться и проверяться на подготовленном файле; неподдержанная политика или ошибка её определения/воспроизведения SHALL давать явный ненулевой результат до replace. При отказе исходные bytes, mode, ACL и owner/group MUST оставаться неизменными. Отсутствие инструмента определения ACL SHALL NOT трактоваться как отсутствие ACL.
 
@@ -44,12 +42,10 @@
 
 ### Requirement: WRITE-SAFE-002 — Reduce прекращает выполнение при ошибке любой связи
 
-**Baseline legacy status до дельты:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
+**Legacy status:** `IMPLEMENTED`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
 
 Reduce MUST проверять результат каждого добавления ссылки и каждой записи. После ошибки он SHALL завершаться с ненулевым кодом, без `Reduce complete` и без дальнейшего архивирования. Диагностика MUST перечислять уже затронутые файлы до появления общего recovery.
-
-**Статус изменения:** `PROPOSED`, не подтверждение реализации.
 
 Reduce MUST проверять producer и consumer обязательной подготовки successor, включая Full Copy. Отказ чтения/подготовки SHALL прекращать workflow до публикации невалидного successor и до последующих links, deprecation, editor и success output.
 
@@ -95,12 +91,10 @@ Reduce MUST проверять producer и consumer обязательной п�
 
 ### Requirement: WRITE-SAFE-003 — Создание не перезаписывает коллизию
 
-**Baseline legacy status до дельты:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
+**Legacy status:** `INVARIANT`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
 
 Constructors, новый successor Reduce/Refine и Workspace create MUST резервировать новое назначение без перезаписи обычного файла или symlink. При коллизии SHALL возвращаться ошибка без удаления чужого назначения.
-
-**Статус изменения:** `PROPOSED`, не подтверждение реализации.
 
 Гарантия сохранности чужого назначения MUST действовать и в вызывающем workflow, включая cleanup/rollback. Refine SHALL удалять destination только если он создан этой попыткой и по-прежнему имеет её подтверждённую identity; неуспешная reservation не даёт права удаления. Если identity изменилась, cleanup MUST сохранить текущее назначение и диагностировать конфликт.
 
@@ -148,12 +142,10 @@ Constructors, новый successor Reduce/Refine и Workspace create MUST рез
 
 ### Requirement: WRITE-SAFE-004 — Ошибка записи передаётся через CLI
 
-**Baseline legacy status до дельты:** `INVARIANT`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
+**Legacy status:** `INVARIANT`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Безопасность файловой записи`.
 
 Continue, read, binding и creation entrypoints MUST передавать ненулевой результат обязательного чтения или записи; финальные print и запуск редактора SHALL NOT маскировать ошибку.
-
-**Статус изменения:** `PROPOSED`, не подтверждение реализации.
 
 Creation entrypoints MUST проверять ошибки generator/producer, даже если consumer получил EOF и завершился успешно, а также ошибки preflight обязательных полей. Последующие print внутри command group SHALL NOT скрывать отказ producer; CLI и sourced constructor SHALL возвращать ошибку без итогового filename/success-link.
 

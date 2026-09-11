@@ -10,6 +10,35 @@ source "${${(%):-%N}:A:h}/../lib/paths.zsh"
 source "${${(%):-%N}:A:h}/../lib/uuid.zsh"
 source "${${(%):-%N}:A:h}/../lib/asciidoc.zsh"
 
+zk_topic_validate_required_fields() {
+  local title="$1"
+  local key_topic="$2"
+
+  [[ -n "$title" ]] || {
+    print -ru2 -- "ERROR topic title is empty"
+    return 1
+  }
+
+  [[ -n "$key_topic" ]] || {
+    print -ru2 -- "ERROR :key-topic: is empty"
+    return 1
+  }
+}
+
+zk_topic_render() {
+  local fname="$1"
+  local title="$2"
+  local key_topic="$3"
+  local keywords="${4:-topic}"
+  local description="${5:-$title}"
+
+  zk_topic_validate_required_fields "$title" "$key_topic" || return 1
+  zk_metadata "$fname" "$title" "$keywords" "topic" "$description" || return 1
+  print -r -- ":key-topic: $key_topic" || return 1
+  print -r -- "" || return 1
+  print -r -- ""
+}
+
 zk_topic_write() {
   emulate -L zsh
 
@@ -19,6 +48,7 @@ zk_topic_write() {
   local key_topic="$4"
   local keywords="${5:-topic}"
   local description="${6:-$title}"
+  local prepared
 
   [[ -n "$output_file" ]] || {
     print -ru2 -- "ERROR topic output file is empty"
@@ -30,22 +60,26 @@ zk_topic_write() {
     return 1
   }
 
-  [[ -n "$title" ]] || {
-    print -ru2 -- "ERROR topic title is empty"
-    return 1
-  }
+  zk_topic_validate_required_fields "$title" "$key_topic" || return 1
 
-  [[ -n "$key_topic" ]] || {
-    print -ru2 -- "ERROR :key-topic: is empty"
+  prepared="$(mktemp "${output_file:h}/.${output_file:t}.topic.XXXXXX")" || return 1
+  if ! zk_topic_render "$fname" "$title" "$key_topic" "$keywords" "$description" > "$prepared"; then
+    rm -f -- "$prepared"
     return 1
-  }
+  fi
 
-  {
-    zk_metadata "$fname" "$title" "$keywords" "topic" "$description"
-    print -r -- ":key-topic: $key_topic"
-    print -r -- ""
-    print -r -- ""
-  } > "$output_file"
+  if [[ -e "$output_file" || -L "$output_file" ]]; then
+    if ! zk_replace_with_prepared_file "$output_file" "$prepared"; then
+      print -ru2 -- "ERROR prepared Topic retained for recovery: $prepared"
+      return 1
+    fi
+  else
+    if ! zk_create_exclusive_from_file "$prepared" "$output_file"; then
+      rm -f -- "$prepared"
+      return 1
+    fi
+    rm -f -- "$prepared"
+  fi
 }
 
 zk_topic_create() {
@@ -57,17 +91,25 @@ zk_topic_create() {
   local description="${4:-$title}"
   local fname
   local target_path
+  local prepared
+
+  zk_topic_validate_required_fields "$title" "$key_topic" || return 1
 
   zk_ensure_notes_dir || return 1
   fname="$(zk_new_adoc_filename)" || return 1
   target_path="$(zk_note_path "$fname")"
+  prepared="$(mktemp "${target_path:h}/.${target_path:t}.topic.XXXXXX")" || return 1
 
-  {
-    zk_metadata "$fname" "$title" "$keywords" "topic" "$description"
-    print -r -- ":key-topic: $key_topic"
-    print -r -- ""
-    print -r -- ""
-  } | zk_create_exclusive_from_stdin "$target_path" || return 1
+  if ! zk_topic_render "$fname" "$title" "$key_topic" "$keywords" "$description" > "$prepared"; then
+    rm -f -- "$prepared"
+    return 1
+  fi
+
+  if ! zk_create_exclusive_from_file "$prepared" "$target_path"; then
+    rm -f -- "$prepared"
+    return 1
+  fi
+  rm -f -- "$prepared"
 
   print -r -- "$fname"
 }

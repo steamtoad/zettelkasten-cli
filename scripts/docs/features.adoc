@@ -239,7 +239,7 @@ feature list и прежние стабильные ID.
 * `CORE-003` — локализованные русские приглашения, сообщения и заголовки.
 * `CORE-004` — использование zsh как языка CLI-скриптов.
 * `CORE-005` — общая библиотека Workspace для безопасного именования, проверки наличия и выбора рабочей области.
-* `WRITE-SAFE-001`–`WRITE-SAFE-004` — атомарная одиночная замена, exclusive create и передача ошибок записи через вызывающий CLI.
+* `WRITE-SAFE-001`–`WRITE-SAFE-004` — атомарная одиночная замена с проверкой mode/owner/group/ACL policy, exclusive create с identity-aware Refine rollback, проверка producer/consumer и полный recovery-list Reduce, включая `all-todays`.
 
 == Публикация
 
@@ -363,6 +363,7 @@ ztscripts
 * Корневой каталог назначения публикации должен существовать до запуска `zt-develop-publish-version.zsh`.
 * Публикация пока не запускает `zt-check`, не проверяет зависимости и состояние Git репозитория назначения.
 * `zt-processed.zsh` использует hard link для атомарной защиты назначения, поэтому `inbox/raw` и `inbox/processed` должны находиться на одной файловой системе.
+* Atomic replacement поддерживает обычные файлы без ACL, когда owner/group подготовленного файла совпадает с целью. ACL-bearing и требующие изменения owner/group цели явно отклоняются до replace; произвольные xattrs/flags и privileged `chown` не обещаются.
 * Inbox Layer пока не преобразует raw-элементы в постоянные UUID-документы и не регистрирует их в `all-todays`.
 * `zt-migrate-notes-dir.zsh --apply` требует чистый Git worktree; dry-run доступен без изменения данных.
 

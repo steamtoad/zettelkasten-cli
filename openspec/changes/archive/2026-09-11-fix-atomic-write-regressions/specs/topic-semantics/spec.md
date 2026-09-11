@@ -2,12 +2,10 @@
 
 ### Requirement: TOPIC-003 — канонический генератор Topic не создаёт активную Topic с пустым :key-topic
 
-**Baseline legacy status до дельты:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Topic и тематический ключ`.
+**Legacy status:** `IMPLEMENTED`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Topic и тематический ключ`.
 
-Канонический workflow MUST сохранять следующее поведение: канонический генератор Topic не создаёт активную Topic с пустым `:key-topic:` или с метаданными, противоречащими выбранному тематическому ключу.
-
-**Статус изменения:** `PROPOSED`, не подтверждение реализации.
+Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: канонический генератор Topic не создаёт активную Topic с пустым `:key-topic:` или с метаданными, противоречащими выбранному тематическому ключу.
 
 Object constructor Topic MUST отклонять пустую строку key-topic и отсутствующий обязательный key-topic до создания destination или изменения существующих файлов, как при standalone CLI, так и при sourced вызове. Ошибка SHALL давать ненулевой статус с диагностикой поля без итогового filename; допустимый непустой ключ SHALL сохраняться буквально. Вызывающий workflow SHALL NOT добавлять activity, связи или запускать editor после отказа constructor.
 
@@ -17,7 +15,6 @@ Object constructor Topic MUST отклонять пустую строку key-t
 - **WHEN** соответствующий workflow выполняется или проверяется
 - **THEN** наблюдаемое поведение SHALL соответствовать requirement
 - **AND** regression SHALL считаться validation failure
-
 
 #### Scenario: Пустой либо отсутствующий ключ при прямом создании
 

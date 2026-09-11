@@ -55,7 +55,9 @@ fname="$(zk_note_create \
 
 `zk_topic_write OUTPUT_FILE FILENAME TITLE KEY_TOPIC KEYWORDS DESCRIPTION`
 позволяет host workflow сформировать Topic в staging area. UUID filename должен
-быть заранее получен через `zk_new_adoc_filename`.
+быть заранее получен через `zk_new_adoc_filename`. `zk_topic_write` и
+`zk_topic_create` используют общий preflight обязательных `TITLE` и `KEY_TOPIC`,
+проверяют статус metadata producer и не публикуют частичный Topic при ошибке.
 
 == Граница с плагином
 
