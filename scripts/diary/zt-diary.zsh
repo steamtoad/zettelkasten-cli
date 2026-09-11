@@ -14,9 +14,12 @@ scripts_dir="${script_dir:h}"
 
 source "$scripts_dir/lib/paths.zsh"
 source "$scripts_dir/lib/asciidoc.zsh"
+source "$scripts_dir/lib/selection.zsh"
 source "$scripts_dir/lib/uuid.zsh"
 source "$scripts_dir/objects/diary-create.zsh"
 source "$script_dir/lib/today.zsh"
+
+zk_require_command vim || exit 1
 
 zt_diary_state_file() {
   print -r -- "$(zk_home)/.last-diary"

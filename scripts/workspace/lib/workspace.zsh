@@ -6,6 +6,11 @@
 # Назначение: Workspace policy для выбора и именования Workspace
 #------------------------------------------------------------------------------
 
+workspace_lib_dir="${${(%):-%N}:A:h}"
+workspace_dir="${workspace_lib_dir:h}"
+scripts_dir="${workspace_dir:h}"
+source "$scripts_dir/lib/selection.zsh"
+
 zt_workspaces_dir() {
   print -r -- "$(zk_home)/workspaces"
 }
@@ -71,6 +76,7 @@ zt_select_workspace() {
   local workspaces_dir
   local file
   local title
+  local fingerprint
 
   workspaces_dir="$(zt_workspaces_dir)"
 
@@ -78,10 +84,10 @@ zt_select_workspace() {
     [[ -f "$file" ]] || continue
 
     title="$(zt_workspace_title "$file")"
-    print -r -- "${title} - workspaces/${file:t}${sep}${file}"
+    fingerprint="$(zk_selection_fingerprint "$file")"
+    print -r -- "${file:t} - ${title}${sep}${file}${sep}${fingerprint}"
   done |
-    fzf \
-      --delimiter="$sep" \
-      --with-nth=1 \
-      --prompt="$prompt"
+    zk_selector_fzf "$prompt"
+  local selector_status=$?
+  zk_selector_result_status "$selector_status"
 }

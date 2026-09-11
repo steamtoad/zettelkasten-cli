@@ -14,6 +14,7 @@ script_dir="${0:A:h}"
 source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/uuid.zsh"
 source "$script_dir/lib/asciidoc.zsh"
+source "$script_dir/lib/selection.zsh"
 source "$script_dir/objects/topic-create.zsh"
 source "$script_dir/zettelkasten/lib/today.zsh"
 
@@ -49,42 +50,45 @@ validate_topic_metadata() {
 select_topic_file() {
   local file
   local description
+  local fingerprint
 
   for file in *.adoc; do
     is_header_deprecated "$file" && continue
     [[ "$(header_attr_value "$file" "type")" == "topic" ]] || continue
 
     description="$(zk_link_description "$file")"
-    print -r -- "${file} - ${description}${sep}${file}"
+    fingerprint="$(zk_selection_fingerprint "$file")"
+    print -r -- "${file} - ${description}${sep}${file}${sep}${fingerprint}"
   done |
-    fzf \
-      --delimiter="$sep" \
-      --with-nth=1 \
-      --prompt='refine source topic> '
+    zk_selector_fzf 'refine source topic> '
+  local selector_status=$?
+  zk_selector_result_status "$selector_status"
 }
 
 select_documents() {
   local file
   local description
   local type
+  local fingerprint
 
   for file in "${candidate_files[@]}"; do
     type="$(header_attr_value "$file" "type")"
     description="$(zk_link_description "$file")"
-    print -r -- "${type} - ${file} - ${description}${sep}${file}"
+    fingerprint="$(zk_selection_fingerprint "$file")"
+    print -r -- "${file} - ${description} (${type})${sep}${file}${sep}${fingerprint}"
   done |
-    fzf \
-      --multi \
-      --delimiter="$sep" \
-      --with-nth=1 \
-      --prompt='refine documents> '
+    zk_selector_fzf 'refine documents> ' --multi
+  local selector_status=$?
+  zk_selector_result_status "$selector_status"
 }
 
 select_archive_source() {
   {
     print -r -- "Нет"
     print -r -- "Да"
-  } | fzf --prompt='Архивировать исходную Topic? '
+  } | zk_selector_fzf 'Архивировать исходную Topic? '
+  local selector_status=$?
+  zk_selector_result_status "$selector_status"
 }
 
 replace_header_key_topic() {
@@ -237,14 +241,19 @@ rollback_apply() {
   fi
 }
 
+zk_require_fzf || exit 1
+zk_require_command vim || exit 1
 zk_ensure_notes_dir
 zk_cd_notes || exit 1
 
 selected="$(select_topic_file)"
-[[ -n "$selected" ]] || exit 0
+selection_status=$?
+case "$selection_status" in 0) ;; 1) exit 1 ;; 130) exit 0 ;; *) exit "$selection_status" ;; esac
+[[ -n "$selected" ]] || exit 1
 
-selected="${selected%%$'\n'*}"
-source_topic="${selected##*$sep}"
+source_topic="$(zk_selection_identity "$selected")"
+source_topic_fingerprint="$(zk_selection_fingerprint_field "$selected")"
+zk_selection_validate_note "$source_topic" topic "$source_topic_fingerprint" || exit 1
 source_key="$(header_attr_value "$source_topic" "key-topic")"
 
 if [[ -z "$source_key" ]]; then
@@ -280,11 +289,17 @@ typeset -a candidate_files
 typeset -a selected_files
 typeset -a unselected_files
 typeset -A selected_file_set
+typeset -A selected_file_fingerprints
+typeset -A candidate_file_fingerprints
+typeset -A candidate_file_types
 
 candidate_files=()
 selected_files=()
 unselected_files=()
 selected_file_set=()
+selected_file_fingerprints=()
+candidate_file_fingerprints=()
+candidate_file_types=()
 
 for file in *.adoc; do
   [[ "$file" == "$source_topic" ]] && continue
@@ -292,7 +307,11 @@ for file in *.adoc; do
   [[ "$(header_attr_value "$file" "key-topic")" == "$source_key" ]] || continue
 
   case "$(header_attr_value "$file" "type")" in
-    memo|note|todo|diary) candidate_files+=("$file") ;;
+    memo|note|todo|diary)
+      candidate_files+=("$file")
+      candidate_file_types[$file]="$(header_attr_value "$file" "type")"
+      candidate_file_fingerprints[$file]="$(zk_selection_fingerprint "$file")"
+      ;;
   esac
 done
 
@@ -302,11 +321,15 @@ done
 }
 
 selected="$(select_documents)"
-[[ -n "$selected" ]] || exit 0
+selection_status=$?
+case "$selection_status" in 0) ;; 1) exit 1 ;; 130) exit 0 ;; *) exit "$selection_status" ;; esac
+[[ -n "$selected" ]] || exit 1
 
 while IFS= read -r line; do
   [[ -n "$line" ]] || continue
-  selected_files+=("${line##*$sep}")
+  file="$(zk_selection_identity "$line")"
+  selected_files+=("$file")
+  selected_file_fingerprints[$file]="$(zk_selection_fingerprint_field "$line")"
 done <<< "$selected"
 
 (( ${#selected_files} > 0 )) || exit 0
@@ -321,7 +344,9 @@ for file in "${candidate_files[@]}"; do
 done
 
 archive_source="$(select_archive_source)"
-[[ -n "$archive_source" ]] || exit 0
+selection_status=$?
+case "$selection_status" in 0) ;; 1) exit 1 ;; 130) exit 0 ;; *) exit "$selection_status" ;; esac
+[[ -n "$archive_source" ]] || exit 1
 
 if [[ "$archive_source" != "Да" && "$archive_source" != "Нет" ]]; then
   print -ru2 -- "ERROR unknown archive choice: $archive_source"
@@ -351,6 +376,16 @@ source_link="$(zk_link "$source_topic" "$(zk_link_description "$source_topic")")
 
 print_plan
 confirm_refine || exit 0
+
+zk_selection_validate_note "$source_topic" topic "$source_topic_fingerprint" || exit 1
+for file in "${selected_files[@]}"; do
+  zk_selection_validate_note "$file" "${candidate_file_types[$file]}" "${selected_file_fingerprints[$file]}" || exit 1
+done
+if [[ "$archive_source" == "Да" ]]; then
+  for file in "${unselected_files[@]}"; do
+    zk_selection_validate_note "$file" "${candidate_file_types[$file]}" "${candidate_file_fingerprints[$file]}" || exit 1
+  done
+fi
 
 stage_dir="$(mktemp -d "${TMPDIR:-/tmp}/zk-refine-stage.XXXXXX")" || exit 1
 backup_dir="$(mktemp -d "${TMPDIR:-/tmp}/zk-refine-backup.XXXXXX")" || {

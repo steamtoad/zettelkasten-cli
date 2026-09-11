@@ -66,6 +66,18 @@ processed_dir="${PROCESSED_DIR:A}"
 filename="${source_file:t}"
 destination="${processed_dir}/${filename}"
 
+# Повтор после interruption между link и rm завершает только уже доказанный
+# перенос: обе записи должны быть hard links одного обычного файла.
+if [[ -e "$destination" || -L "$destination" ]]; then
+    [[ -f "$destination" && "$source_file" -ef "$destination" ]] ||
+        die "destination collision: $destination"
+
+    rm "$source_file" ||
+        die "cannot remove source after processing: $source_file"
+    print -r -- "$destination"
+    exit 0
+fi
+
 # hard link создаётся атомарно и не перезаписывает существующее назначение.
 # raw и processed находятся внутри одного Inbox и должны быть на одном FS.
 # POSIX link использует точное имя, а не directory operand как ln. Это также

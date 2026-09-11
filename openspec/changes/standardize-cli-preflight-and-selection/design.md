@@ -2,7 +2,7 @@
 
 ## Context
 
-Отсутствующий fzf маскируется под cancel, цели после выбора не проверяются, Inbox имеет иной root fallback, editor проверяется поздно. Основание: `audit/2026-09-05/7b3fcec8-a907-11f1-8a46-53bdf0fb80b5.adoc` (G04, G05, G07, G11). Это целевой контракт, а не заявление об устранённом дефекте.
+До реализации отсутствующий fzf маскировался под cancel, а цели после выбора не проверялись. Inbox editor preflight согласован зависимым Change `preflight-inbox-editor-before-capture`; здесь он проверяется совместно с root и selector contract. Основание: `audit/2026-09-05/7b3fcec8-a907-11f1-8a46-53bdf0fb80b5.adoc` (G04, G05, G07, G11). Это целевой контракт, а не заявление об устранённом дефекте.
 
 ## Goals / Non-Goals
 
@@ -31,6 +31,7 @@ Inbox processed сохраняет no-clobber hard-link policy. Если interru
 
 - `fix-atomic-document-writes`.
 - `unify-asciidoc-metadata-and-links`.
+- `preflight-inbox-editor-before-capture`.
 
 Новые требования принадлежат только этому Change. Полные MODIFIED blocks используют точное baseline имя и stable ID. Перед интеграцией сверяются current baseline и связанные changes; при изменении одного ID выполняется явное объединение, не last-writer-wins.
 Существующие `refactor-diary-as-plugin`, `refactor-inbox-as-plugin`, `refactor-workspace-as-plugin`, `add-knowledge-plugin` и `add-openspec-archive-contract` сохраняют своих владельцев. Разделение plugin directories не является предпосылкой локального исправления безопасности; после relocation применяются те же поведенческие контракты.

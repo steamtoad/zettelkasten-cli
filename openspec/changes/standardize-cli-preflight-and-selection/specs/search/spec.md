@@ -3,7 +3,7 @@
 ### Requirement: FZF-002 — поиск и интерактивный выбор используют :description:
 
 **Baseline legacy status до дельты:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Поиск и FZF`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Поиск и FZF`.
 
 **Статус изменения:** `PROPOSED`, не подтверждение реализации.
 

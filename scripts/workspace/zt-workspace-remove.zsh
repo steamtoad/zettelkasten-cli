@@ -16,6 +16,8 @@ source "$script_dir/lib/workspace.zsh"
 
 sep=$'\x1f'
 
+zk_require_fzf || exit 1
+
 select_workspace_documents() {
   local file="$1"
   local target
@@ -24,6 +26,9 @@ select_workspace_documents() {
   local type
   local description
   local state
+  local fingerprint
+
+  fingerprint="$(zk_selection_fingerprint "$file")"
 
   while IFS= read -r target; do
     [[ -n "$target" ]] || continue
@@ -49,13 +54,11 @@ select_workspace_documents() {
       state="broken"
     fi
 
-    print -r -- "${state} - ${normalized_target} - ${description}${sep}${target}${sep}${description}"
+    print -r -- "${normalized_target} - ${description}${sep}${target}${sep}${fingerprint}${sep}${description}"
   done < <(zk_extract_links "$file") |
-    fzf \
-      --multi \
-      --delimiter="$sep" \
-      --with-nth=1 \
-      --prompt='remove documents> '
+    zk_selector_fzf 'remove documents> ' --multi
+  local selector_status=$?
+  zk_selector_result_status "$selector_status"
 }
 
 remove_workspace_links() {
@@ -75,13 +78,20 @@ zk_cd || exit 1
 zt_require_workspaces || exit 1
 
 selected_workspace="$(zt_select_workspace 'workspace> ')"
-[[ -n "$selected_workspace" ]] || exit 0
+selection_status=$?
+case "$selection_status" in 0) ;; 1) exit 1 ;; 130) exit 0 ;; *) exit "$selection_status" ;; esac
+[[ -n "$selected_workspace" ]] || exit 1
 
-selected_workspace="${selected_workspace%%$'\n'*}"
-workspace_file="${selected_workspace##*$sep}"
+workspace_file="$(zk_selection_identity "$selected_workspace")"
+workspace_fingerprint="$(zk_selection_fingerprint_field "$selected_workspace")"
+zk_selection_validate_file "$workspace_file" "$workspace_fingerprint" || exit 1
 
 selected_documents="$(select_workspace_documents "$workspace_file")"
-[[ -n "$selected_documents" ]] || exit 0
+selection_status=$?
+case "$selection_status" in 0) ;; 1) exit 1 ;; 130) exit 0 ;; *) exit "$selection_status" ;; esac
+[[ -n "$selected_documents" ]] || exit 1
+
+zk_selection_validate_file "$workspace_file" "$workspace_fingerprint" || exit 1
 
 typeset -a selected_targets
 typeset -a selected_descriptions
@@ -91,8 +101,8 @@ selected_descriptions=()
 
 while IFS= read -r selected_document; do
   [[ -n "$selected_document" ]] || continue
-  target="${${selected_document#*$sep}%%$sep*}"
-  description="${selected_document##*$sep}"
+  target="$(zk_selection_identity "$selected_document")"
+  description="$(zk_selection_description_field "$selected_document")"
 
   selected_targets+=("$target")
   selected_descriptions+=("$description")

@@ -1,6 +1,6 @@
 = Требования и инварианты zettelkasten-cli
-:revdate: 2026-08-30
-:revnumber: 14
+:revdate: 2026-09-11
+:revnumber: 15
 :toc:
 
 == Назначение документа
@@ -271,11 +271,18 @@
 == Поиск и FZF
 
 * `FZF-001 [PROCESS]` — специализированный селектор показывает UUID/имя файла и `:description:` в однозначно разбираемом формате.
-* `FZF-002 [IMPLEMENTED]` — поиск и интерактивный выбор используют `:description:`.
+* `FZF-002 [IMPLEMENTED]` — `zt-edit`, `zt-getlink` и специализированные selectors ищут и показывают `:description:`; `zt-find` и `zt-read` сохраняют регистронезависимый literal-поиск по всему активному документу, включая body, и используют `:description:` как текст ссылки.
 * `FZF-003 [PROCESS]` — новые селекторы не используют хрупкое позиционное извлечение через `cut -b`.
 * `FZF-004 [PROCESS]` — учитывается совместимость используемых конструкций `grep`, `rg`, `awk`, `sed` и `fzf` на Linux и macOS.
 * `FZF-005 [IMPLEMENTED]` — специализированные селекторы фильтруют требуемый `:type:` и deprecated; общие `find`, `read`, `edit` и `getlink` могут включать несколько активных типов.
 * `FZF-006 [ROADMAP]` — формат выбора следует унифицировать после определения совместимого формата для всех команд.
+
+== CLI preflight и выбор
+
+* `CLI-PREFLIGHT-001 [IMPLEMENTED]` — необходимые executable dependencies и разобранный editor command проверяются до создания объекта или state; отсутствие зависимости завершается ошибкой с её именем, а не cancel или успехом.
+* `CLI-PREFLIGHT-002 [IMPLEMENTED]` — selectors различают cancel, отсутствие результата и operational error; выбранная цель до mutation повторно проверяется по существованию, type, active status и fingerprint с диагностикой `TARGET_NOT_FOUND` или `STATE_CONFLICT`.
+* `CLI-PREFLIGHT-003 [IMPLEMENTED]` — `ZK_HOME` сохраняет приоритет над совместимыми fallback, а selector display отделён от machine identity и поддерживает пробелы/Unicode без `cut -b`.
+* `CLI-PREFLIGHT-004 [IMPLEMENTED]` — повтор `zt-processed` удаляет raw только если raw и processed являются hard links одного inode; коллизия разных inode сохраняет оба файла и завершается ошибкой.
 
 == Библиотеки и зависимости
 

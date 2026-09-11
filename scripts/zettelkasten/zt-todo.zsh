@@ -13,11 +13,14 @@ scripts_dir="${script_dir:h}"
 
 source "$scripts_dir/lib/paths.zsh"
 source "$scripts_dir/lib/asciidoc.zsh"
+source "$scripts_dir/lib/selection.zsh"
 source "$scripts_dir/objects/todo-create.zsh"
 source "$script_dir/lib/today.zsh"
 
 read -r "?Введите название для нового списка дел Todo: " key
 [[ -n "$key" ]] || exit 1
+
+zk_require_command vim || exit 1
 
 title="TODO - $key от $(date +"%d-%m-%Y")"
 fname="$(zk_todo_create "$title" "todo" "$title")" || exit 1

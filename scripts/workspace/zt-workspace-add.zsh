@@ -12,14 +12,18 @@ setopt null_glob
 script_dir="${0:A:h}"
 source "$script_dir/../lib/paths.zsh"
 source "$script_dir/../lib/asciidoc.zsh"
+source "$script_dir/../lib/selection.zsh"
 source "$script_dir/lib/workspace.zsh"
 
 sep=$'\x1f'
+
+zk_require_fzf || exit 1
 
 select_documents() {
   local file
   local type
   local description
+  local fingerprint
 
   for file in "$(zk_notes_dir)"/*.adoc; do
     [[ -f "$file" ]] || continue
@@ -33,13 +37,12 @@ select_documents() {
     esac
 
     description="$(zk_link_description "$file")"
-    print -r -- "${type} - ${file:t} - ${description}${sep}${file:t}${sep}${description}"
+    fingerprint="$(zk_selection_fingerprint "$file")"
+    print -r -- "${file:t} - ${description}${sep}${file:t}${sep}${fingerprint}"
   done |
-    fzf \
-      --multi \
-      --delimiter="$sep" \
-      --with-nth=1 \
-      --prompt='add documents> '
+    zk_selector_fzf 'add documents> ' --multi
+  local selector_status=$?
+  zk_selector_result_status "$selector_status"
 }
 
 zk_cd || exit 1
@@ -47,19 +50,28 @@ zk_cd || exit 1
 zt_require_workspaces || exit 1
 
 selected_workspace="$(zt_select_workspace 'workspace> ')"
-[[ -n "$selected_workspace" ]] || exit 0
+selection_status=$?
+case "$selection_status" in 0) ;; 1) exit 1 ;; 130) exit 0 ;; *) exit "$selection_status" ;; esac
+[[ -n "$selected_workspace" ]] || exit 1
 
-selected_workspace="${selected_workspace%%$'\n'*}"
-workspace_file="${selected_workspace##*$sep}"
+workspace_file="$(zk_selection_identity "$selected_workspace")"
+workspace_fingerprint="$(zk_selection_fingerprint_field "$selected_workspace")"
+zk_selection_validate_file "$workspace_file" "$workspace_fingerprint" || exit 1
 
 selected_documents="$(select_documents)"
-[[ -n "$selected_documents" ]] || exit 0
+selection_status=$?
+case "$selection_status" in 0) ;; 1) exit 1 ;; 130) exit 0 ;; *) exit "$selection_status" ;; esac
+[[ -n "$selected_documents" ]] || exit 1
+
+zk_selection_validate_file "$workspace_file" "$workspace_fingerprint" || exit 1
 
 while IFS= read -r selected_document; do
   [[ -n "$selected_document" ]] || continue
 
-  doc_file="${${selected_document#*$sep}%%$sep*}"
-  description="${selected_document##*$sep}"
+  doc_file="$(zk_selection_identity "$selected_document")"
+  fingerprint="$(zk_selection_fingerprint_field "$selected_document")"
+  zk_selection_validate_note "$doc_file" any "$fingerprint" || exit 1
+  description="$(zk_link_description "$(zk_note_path "$doc_file")")"
   relative_target="../notes/${doc_file}"
   link="$(zt_workspace_link "$doc_file" "$description")"
 

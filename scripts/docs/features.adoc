@@ -91,6 +91,7 @@ feature list и прежние стабильные ID.
 * `INBOX-008` — `zt-processed.zsh` отклоняет каталоги, вложенные пути, symlink-выходы и любые файлы вне `inbox/raw/`.
 * `INBOX-009` — `ZK_HOME` задаёт корень хранилища; `ZETTELKASTEN_ROOT` сохранён как совместимый fallback.
 * `INBOX-010` — raw capture и перевод в processed являются разными явными операциями; автоматического импорта в постоянные Note/Memo нет.
+* `INBOX-011` — повтор processed после прерывания между hard-link и удалением raw завершает перенос только для одного inode; одноимённые разные файлы сохраняются как диагностируемая коллизия.
 
 == Workspace
 
@@ -114,11 +115,12 @@ feature list и прежние стабильные ID.
 * `SEARCH-003` — объединение полного содержимого найденных документов через `zt-read.zsh`.
 * `SEARCH-004` — возможность перенаправить stdout `zt-find.zsh` и `zt-read.zsh` в файл.
 * `SEARCH-005` — интерактивный выбор документов через `fzf` в навигации и специализированных селекторах.
-* `SEARCH-006` — отображение документов в интерактивном выборе по `:description:`.
+* `SEARCH-006` — интерактивные selectors отображают `UUID.adoc - description`, но используют отдельные machine fields identity/fingerprint; заголовки с ` - `, пробелами и Unicode не разбираются из display-текста.
 * `SEARCH-007` — открытие выбранного документа в Vim через `zt-edit.zsh`.
 * `SEARCH-008` — генерация ссылки на выбранный документ через `zt-getlink.zsh`.
 * `SEARCH-009` — исключение deprecated-документов из поиска, навигации и специализированных селекторов.
 * `SEARCH-010` — фильтрация специализированных селекторов по требуемому `:type:`.
+* `SEARCH-011` — `zt-find` и `zt-read` выполняют регистронезависимый literal-поиск по всему документу, включая body; `zt-edit`, `zt-getlink` и специализированные selectors ищут по `:description:`.
 
 == Связи между документами
 
@@ -250,6 +252,7 @@ feature list и прежние стабильные ID.
 * `CORE-003` — локализованные русские приглашения, сообщения и заголовки.
 * `CORE-004` — использование zsh как языка CLI-скриптов.
 * `CORE-005` — общая библиотека Workspace для безопасного именования, проверки наличия и выбора рабочей области.
+* `CORE-006` — общая нейтральная selector library проверяет `fzf`/editor dependencies до записи, различает cancel/no-result/error и повторно проверяет identity, type, active status и fingerprint выбранной цели.
 * `WRITE-SAFE-001`–`WRITE-SAFE-004` — атомарная одиночная замена с проверкой mode/owner/group/ACL policy, exclusive create с identity-aware Refine rollback, проверка producer/consumer и полный recovery-list Reduce, включая `all-todays`.
 
 == Публикация

@@ -21,19 +21,36 @@ read -r "?Введите название для нового Memo: " key
 [[ -n "$key" ]] || exit 1
 
 zt_require_fzf || exit 1
+zk_require_command vim || exit 1
 
 topic_file=""
 topic_key_line=""
 memo_keywords="memo"
 
-binding="$(zt_select_topic_binding)" || exit 0
+binding="$(zt_select_topic_binding)"
+selection_status=$?
+case "$selection_status" in
+  0) ;;
+  1) exit 1 ;;
+  130) exit 0 ;;
+  *) exit "$selection_status" ;;
+esac
 
 if [[ "$binding" == "Да" ]]; then
-  selected="$(zt_select_keytopic_file)" || exit 0
-  [[ -n "$selected" ]] || exit 0
+  selected="$(zt_select_keytopic_file)"
+  selection_status=$?
+  case "$selection_status" in
+    0) ;;
+    1) exit 1 ;;
+    130) exit 0 ;;
+    *) exit "$selection_status" ;;
+  esac
+  [[ -n "$selected" ]] || exit 1
 
   if [[ -n "$selected" ]]; then
     topic_file="$(zt_selected_filename "$selected")"
+    topic_fingerprint="$(zt_selected_fingerprint "$selected")"
+    zk_selection_validate_note "$topic_file" topic "$topic_fingerprint" || exit 1
     topic_path="$(zk_note_path "$topic_file")"
     topic_key_line="$(zk_attr_line "$topic_path" "key-topic")"
     topic_keywords="$(zk_attr_value "$topic_path" "keywords")"
@@ -53,6 +70,10 @@ title="Memo - $key от $(date +"%d-%m-%Y")"
 typeset -a extra_attrs
 extra_attrs=()
 [[ -n "$topic_key_line" ]] && extra_attrs+=("$topic_key_line")
+
+if [[ -n "$topic_file" ]]; then
+  zk_selection_validate_note "$topic_file" topic "$topic_fingerprint" || exit 1
+fi
 
 fname="$(zk_memo_create "$title" "$memo_keywords" "$title" "${extra_attrs[@]}")" || exit 1
 link="$(zk_link "$fname" "$title")"

@@ -250,8 +250,8 @@ def workspace(v):
             assert not any("example.adoc" in r for r in call["rows"])
         if "--prompt=add documents> " in call["args"]:
             assert "--multi" in call["args"] and len(call["rows"]) == 5
-    assert any(any(r.startswith("deprecated - ") for r in call["rows"]) for call in rows)
-    assert any(any(r.startswith("broken - ") for r in call["rows"]) for call in rows)
+    assert any(any(r.startswith("notes/archived.adoc - ") for r in call["rows"]) for call in rows)
+    assert any(any(r.startswith("notes/missing.adoc - ") for r in call["rows"]) for call in rows)
     assert all(p.read_bytes() == data for p, data in hashes.items())
 
 

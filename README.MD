@@ -100,6 +100,14 @@ Reduce создаёт новое поколение Topic, сохраняя ис
 
 ---
 
+## Поиск и интерактивный выбор
+
+`zt-find.zsh` и `zt-read.zsh` выполняют регистронезависимый поиск буквальной строки по всему активному документу, включая body. `zt-edit.zsh`, `zt-getlink.zsh` и специализированные selectors показывают `UUID.adoc - description` и ищут по `:description:`; точный basename и fingerprint передаются отдельно от отображаемого текста.
+
+Отмена `fzf` не изменяет Vault. Отсутствующая зависимость, ошибка selector или изменение выбранной цели после показа завершают команду диагностикой до mutation. Во всех workflow `ZK_HOME` имеет приоритет; для Inbox `ZETTELKASTEN_ROOT` остаётся совместимым fallback.
+
+---
+
 ## Агентная система разработки
 
 Разработка repository теперь использует ту же specification-driven схему, что и English Reading Lab:
@@ -220,6 +228,14 @@ Reduce creates a successor Topic while preserving the complete history of the do
 Old Topics and related Memo become deprecated, Notes remain active, and active Notes are automatically linked to the new Topic.
 
 This allows the knowledge base to evolve without losing its past.
+
+---
+
+## Search and interactive selection
+
+`zt-find.zsh` and `zt-read.zsh` perform case-insensitive literal full-content search, including document bodies. `zt-edit.zsh`, `zt-getlink.zsh`, and specialized selectors display `UUID.adoc - description` and search descriptions; the exact basename and fingerprint are carried separately from display text.
+
+Cancelling `fzf` leaves the Vault unchanged. A missing dependency, selector failure, or target changed after display stops the command before mutation. `ZK_HOME` takes precedence throughout; Inbox retains `ZETTELKASTEN_ROOT` as a compatibility fallback.
 
 ---
 

@@ -6,7 +6,7 @@
 
 ## Current Behavior
 
-Отсутствующий fzf маскируется под cancel, цели после выбора не проверяются, Inbox имеет иной root fallback, editor проверяется поздно. Реализация сверяется с baseline; вывод аудита не заменяет действующий contract при расхождении.
+До этого Change отсутствующий fzf маскировался под cancel, а цели после выбора не проверялись. Inbox editor preflight уже согласован отдельным зависимым Change; root fallback сохраняется и унифицируется по приоритету `ZK_HOME`. Реализация сверяется с baseline; вывод аудита не заменяет действующий contract при расхождении.
 
 ## Desired Behavior
 
@@ -51,6 +51,7 @@
 
 - `fix-atomic-document-writes`.
 - `unify-asciidoc-metadata-and-links`.
+- `preflight-inbox-editor-before-capture`.
 
 ## Verification
 

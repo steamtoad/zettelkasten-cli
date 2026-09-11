@@ -28,15 +28,24 @@ extract_memo_chain_links() {
   zk_extract_labeled_links "$1" "$2"
 }
 
-zk_ensure_notes_dir || exit 1
-zt_ensure_today || exit 1
-zk_cd_notes || exit 1
 zt_require_fzf || exit 1
+zk_require_command vim || exit 1
+zk_ensure_notes_dir || exit 1
+zk_cd_notes || exit 1
 
-selected="$(zt_select_file_by_type "memo" "continue memo> ")" || exit 0
-[[ -n "$selected" ]] || exit 0
+selected="$(zt_select_file_by_type "memo" "continue memo> ")"
+selection_status=$?
+case "$selection_status" in
+  0) ;;
+  1) exit 1 ;;
+  130) exit 0 ;;
+  *) exit "$selection_status" ;;
+esac
+[[ -n "$selected" ]] || exit 1
 
 source_file="$(zt_selected_filename "$selected")"
+source_fingerprint="$(zt_selected_fingerprint "$selected")"
+zk_selection_validate_note "$source_file" memo "$source_fingerprint" || exit 1
 
 existing_next_links=("${(@f)$(extract_memo_chain_links "$source_file" "Следующее memo")}")
 existing_next_links=("${(@)existing_next_links:#}")
@@ -67,6 +76,9 @@ previous_link="$(zk_link "$source_file" "Предыдущее memo")"
 typeset -a extra_attrs
 extra_attrs=()
 [[ -n "$source_key_topic_line" ]] && extra_attrs+=("$source_key_topic_line")
+
+zk_selection_validate_note "$source_file" memo "$source_fingerprint" || exit 1
+zt_ensure_today || exit 1
 
 new_fname="$(zk_memo_create "$title" "$source_keywords" "$new_description" "${extra_attrs[@]}")" || exit 1
 new_link="$(zk_link "$new_fname" "$new_description")"

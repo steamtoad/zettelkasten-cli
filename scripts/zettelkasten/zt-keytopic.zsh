@@ -13,11 +13,14 @@ scripts_dir="${script_dir:h}"
 
 source "$scripts_dir/lib/paths.zsh"
 source "$scripts_dir/lib/asciidoc.zsh"
+source "$scripts_dir/lib/selection.zsh"
 source "$scripts_dir/objects/topic-create.zsh"
 source "$script_dir/lib/today.zsh"
 
 read -r "?Введите название для новой ключевой темы: " key
 [[ -n "$key" ]] || exit 1
+
+zk_require_command vim || exit 1
 
 title="$key - ключевая тема"
 fname="$(zk_topic_create "$title" "$key" "topic" "$title")" || exit 1

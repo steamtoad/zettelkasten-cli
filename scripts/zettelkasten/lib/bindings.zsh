@@ -6,11 +6,13 @@
 # Назначение: Topic→Memo и Memo→Note binding policy
 #------------------------------------------------------------------------------
 
+bindings_dir="${${(%):-%N}:A:h}"
+zettelkasten_dir="${bindings_dir:h}"
+scripts_dir="${zettelkasten_dir:h}"
+source "$scripts_dir/lib/selection.zsh"
+
 zt_require_fzf() {
-  command -v fzf >/dev/null 2>&1 || {
-    print -ru2 -- "ERROR required command not found: fzf"
-    return 1
-  }
+  zk_require_fzf
 }
 
 zt_select_yes_no() {
@@ -20,6 +22,8 @@ zt_select_yes_no() {
     print -r -- "Нет"
     print -r -- "Да"
   } | fzf --prompt="$prompt"
+  local selector_status=$?
+  zk_selector_result_status "$selector_status"
 }
 
 zt_select_file_by_type() {
@@ -32,6 +36,7 @@ zt_select_file_by_type() {
   local candidate_path
   local file
   local description
+  local fingerprint
 
   for candidate_path in "$(zk_notes_dir)"/*.adoc; do
     [[ -f "$candidate_path" ]] || continue
@@ -43,12 +48,12 @@ zt_select_file_by_type() {
 
     file="${candidate_path:t}"
     description="$(zk_link_description "$candidate_path")"
-    print -r -- "${file} - ${description}${sep}${file}"
+    fingerprint="$(zk_selection_fingerprint "$candidate_path")"
+    print -r -- "${file} - ${description}${sep}${file}${sep}${fingerprint}"
   done |
-    fzf \
-      --delimiter="$sep" \
-      --with-nth=1 \
-      --prompt="$prompt"
+    zk_selector_fzf "$prompt"
+  local selector_status=$?
+  zk_selector_result_status "$selector_status"
 }
 
 zt_select_memo_binding() {
@@ -68,11 +73,11 @@ zt_select_keytopic_file() {
 }
 
 zt_selected_filename() {
-  local selected="$1"
-  local sep=$'\x1f'
+  zk_selection_identity "$1"
+}
 
-  selected="${selected%%$'\n'*}"
-  print -r -- "${selected##*$sep}"
+zt_selected_fingerprint() {
+  zk_selection_fingerprint_field "$1"
 }
 
 zt_keywords_for_note_from_memo() {

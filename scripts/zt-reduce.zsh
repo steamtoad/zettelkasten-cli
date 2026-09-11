@@ -15,6 +15,7 @@ script_dir="${0:A:h}"
 source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/uuid.zsh"
 source "$script_dir/lib/asciidoc.zsh"
+source "$script_dir/lib/selection.zsh"
 source "$script_dir/objects/topic-create.zsh"
 source "$script_dir/zettelkasten/lib/today.zsh"
 
@@ -35,26 +36,29 @@ is_header_deprecated() {
 select_topic_file() {
   local file
   local description
+  local fingerprint
 
   for file in *.adoc; do
     is_header_deprecated "$file" && continue
     [[ "$(header_attr_value "$file" "type")" == "topic" ]] || continue
 
     description="$(zk_link_description "$file")"
+    fingerprint="$(zk_selection_fingerprint "$file")"
 
-    print -r -- "${file} - ${description}${sep}${file}"
+    print -r -- "${file} - ${description}${sep}${file}${sep}${fingerprint}"
   done |
-    fzf \
-      --delimiter="$sep" \
-      --with-nth=1 \
-      --prompt='reduce topic> '
+    zk_selector_fzf 'reduce topic> '
+  local selector_status=$?
+  zk_selector_result_status "$selector_status"
 }
 
 select_reduce_mode() {
   {
     print -r -- "Full Copy"
     print -r -- "Clean Successor"
-  } | fzf --prompt='Режим следующей редакции Topic> '
+  } | zk_selector_fzf 'Режим следующей редакции Topic> '
+  local selector_status=$?
+  zk_selector_result_status "$selector_status"
 }
 
 mark_deprecated() {
@@ -315,14 +319,19 @@ confirm_reduce() {
   [[ "$answer" == [yY] ]]
 }
 
+zk_require_fzf || exit 1
+zk_require_command vim || exit 1
 zk_ensure_notes_dir || reduce_write_failed
 zk_cd_notes || exit 1
 
 selected="$(select_topic_file)"
-[[ -n "$selected" ]] || exit 0
+selection_status=$?
+case "$selection_status" in 0) ;; 1) exit 1 ;; 130) exit 0 ;; *) exit "$selection_status" ;; esac
+[[ -n "$selected" ]] || exit 1
 
-selected="${selected%%$'\n'*}"
-old_topic="${selected##*$sep}"
+old_topic="$(zk_selection_identity "$selected")"
+old_topic_fingerprint="$(zk_selection_fingerprint_field "$selected")"
+zk_selection_validate_note "$old_topic" topic "$old_topic_fingerprint" || exit 1
 
 key_topic_line="$(header_attr_line "$old_topic" "key-topic")"
 key_topic="$(header_attr_value "$old_topic" "key-topic")"
@@ -338,16 +347,20 @@ validate_topic_metadata "$old_topic" "$key_topic" || {
 }
 
 mode="$(select_reduce_mode)"
-[[ -n "$mode" ]] || exit 0
+selection_status=$?
+case "$selection_status" in 0) ;; 1) exit 1 ;; 130) exit 0 ;; *) exit "$selection_status" ;; esac
+[[ -n "$mode" ]] || exit 1
 
 new_fname="$(zk_new_adoc_filename)" || exit 1
 canonical_title="${key_topic} - ключевая тема"
 
 typeset -a active_memo_files
 typeset -a active_note_files
+typeset -A active_file_fingerprints
 
 active_memo_files=()
 active_note_files=()
+active_file_fingerprints=()
 
 for file in *.adoc; do
   [[ -f "$file" ]] || continue
@@ -355,10 +368,16 @@ for file in *.adoc; do
 
   case "$(header_attr_value "$file" "type")" in
     memo)
-      same_key_topic "$file" "$key_topic" && active_memo_files+=("$file")
+      if same_key_topic "$file" "$key_topic"; then
+        active_memo_files+=("$file")
+        active_file_fingerprints[$file]="$(zk_selection_fingerprint "$file")"
+      fi
       ;;
     note)
-      same_key_topic "$file" "$key_topic" && active_note_files+=("$file")
+      if same_key_topic "$file" "$key_topic"; then
+        active_note_files+=("$file")
+        active_file_fingerprints[$file]="$(zk_selection_fingerprint "$file")"
+      fi
       ;;
   esac
 done
@@ -371,6 +390,14 @@ done
 
 print_reduce_plan "$old_topic" "$new_fname" "$mode" "$key_topic"
 confirm_reduce || exit 0
+
+zk_selection_validate_note "$old_topic" topic "$old_topic_fingerprint" || exit 1
+for memo_file in "${active_memo_files[@]}"; do
+  zk_selection_validate_note "$memo_file" memo "${active_file_fingerprints[$memo_file]}" || exit 1
+done
+for note_file in "${active_note_files[@]}"; do
+  zk_selection_validate_note "$note_file" note "${active_file_fingerprints[$note_file]}" || exit 1
+done
 
 typeset -a changed_files
 changed_files=()
