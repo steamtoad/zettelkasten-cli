@@ -1,6 +1,6 @@
 = Managed Zettelkasten skills manifest
-:revdate: 2026-08-26
-:revnumber: 1
+:revdate: 2026-09-11
+:revnumber: 2
 :toc:
 
 == Назначение
@@ -13,6 +13,10 @@ checkout Zettelkasten и внешним OpenClaw skill state. Он не копи
 `operational` означает one-to-one mapping на `scripts/zt-*.zsh` и обязательную
 активную Detailed Note. `meta` означает domain, routing или inspection workflow
 без собственного top-level CLI operation; Detailed Note для него необязательна.
+Значение `Script` является basename и разрешается относительно `scripts/`
+текущего checkout. Detailed Note разрешается read-only относительно
+`${ZK_HOME:-$HOME/zettelkasten}/notes`; внешний managed skill state разрешается
+через `${ZK_SKILLS_HOME:-$HOME/.openclaw/workspace/skills}`.
 
 == Manifest
 
@@ -23,6 +27,7 @@ checkout Zettelkasten и внешним OpenClaw skill state. Он не копи
 |zettelkasten-capture-channel-topic |meta |- |- |11a3195ecb242856c3c84eedc56146b9aa066ade3d43d444a611a1a481353c43
 |zettelkasten-check |operational |zt-check.zsh |f9ce19e8-a0f6-11f1-b679-0b3a133cc561.adoc |74d127f2037a0d587fcecdfe042f648f10cb68380e42c48b119a397704592b1f
 |zettelkasten-continue-memo |operational |zt-continue.zsh |4a3fa38c-a0c6-11f1-a087-cbe3683c07ab.adoc |942cb1c467f26a4a726c5134fc9aa06f2aad26c479a1a0a2c6117cc241d6d2c2
+|zettelkasten-delta-spec |meta |- |- |16f4e966d8c1c26efd5d41730c5f9d1c68fbd364b04885011a957193db525c76
 |zettelkasten-diary |operational |zt-diary.zsh |8404bf38-a0c8-11f1-a213-eb4e7ed49b2c.adoc |aba68b783a6ef7c72cd02bb1f3e6f5b9a48b9b93c8fcd2ffa2e69a7327311451
 |zettelkasten-edit |operational |zt-edit.zsh |84052a54-a0c8-11f1-9bf9-7b57a74a4e70.adoc |d71454f59863f299f6550d6b21856b9319081a5d2c25d1096f798021c4c8288a
 |zettelkasten-features |meta |- |- |bb4ef9615514a2212688a2467857f6a3e0ee64046e429638fcebb35b19d76b59
@@ -37,7 +42,7 @@ checkout Zettelkasten и внешним OpenClaw skill state. Он не копи
 |zettelkasten-note |operational |zt-note.zsh |4a3ed218-a0c6-11f1-8a62-9300ba1e2f41.adoc |84e562b0cf41a12af659e8498090af9a8dd8de9e6ae8934a0e74713c36e64d25
 |zettelkasten-publish-cli-version |operational |zt-develop-publish-version.zsh |4a4140b6-a0c6-11f1-8f48-0bc5de6e398f.adoc |9bcb6fc10503a8f498ea0d82d6698586e3e7cb4c975f6083d9b9d95d30f03fc9
 |zettelkasten-read |operational |zt-read.zsh |8406dcc8-a0c8-11f1-ac90-7b35407f036c.adoc |a0a62baa4cd1bb898f34c63cfec34139343b9c085d28f5f4717dbcfab1c77106
-|zettelkasten-red-trigger-chain |meta |- |- |713c42322956d6a7b5c2211b12dd6dc5b8031f46920b0d0ae79536f2b783996e
+|zettelkasten-red-trigger-chain |meta |- |- |e17fa133df054ec292182e30f591f34a69a6df4af2bedb603355cfd0f5b5d20c
 |zettelkasten-reduce |operational |zt-reduce.zsh |16a8604e-673d-11f1-bdee-bf66a33fc06b.adoc |38119a351c0bb050e267ee7e0b228c6e4b1522a52edcfa0e614006e5f08a26e4
 |zettelkasten-refine |operational |zt-refine.zsh |33bd2ad2-9fcf-11f1-b52c-7b91862f4ed4.adoc |4e49c7830f55df776b6bf6530c863b6bbac24eaf8d8c16f7293eafafb9e3f3ca
 |zettelkasten-requirements |meta |- |- |c283132848bdb48b4f624a242fa7a15357534931971024c20e15824b7692dcdb
@@ -47,7 +52,7 @@ checkout Zettelkasten и внешним OpenClaw skill state. Он не копи
 |zettelkasten-theme-capture |meta |- |- |663912eef8ecb878f0a1c13efe56c14c3afe1fc46384061fee21b0b326ae19e9
 |zettelkasten-todo |operational |zt-todo.zsh |84074208-a0c8-11f1-afb9-3308f69004ac.adoc |eb21cdda8e245694f1eea7bf9643b2783c05a5f640de28760afa911056d1e179
 |zettelkasten-weekly-new-memo |meta |- |- |d8cc7317a90f4e44935f3817f99cbd9e2eb21bf009543cf3f83eb459a85e4923
-|zettelkasten-weekly-new |meta |- |- |9dd52a8c60f0529e78480eb930753f716e39cc824eafe7a38d6885413ce0b3c9
+|zettelkasten-weekly-new |meta |- |- |dc31369875b27be35e245b6e09ac9a0d981b06c052247eeab5434ca1cffdea4f
 |zettelkasten-workspace-add |operational |zt-workspace-add.zsh |8407ad42-a0c8-11f1-8ac5-b3894660bac6.adoc |32a7af30bcc25ae6e8fbbbb824d20abd7d589e8bc73dc0db7c90f67c02925f5f
 |zettelkasten-workspace-create |operational |zt-workspace-create.zsh |4ccc2d38-6759-11f1-9540-9f2f4694fb3d.adoc |20716fcb76bd9d2bbe9020ff50384208fcc816d4cbe4a3036c08a9e58923bf98
 |zettelkasten-workspace-open |operational |zt-workspace-open.zsh |4cccee12-6759-11f1-8781-67f2f996162c.adoc |df5d329302f365651ce37bac9bbf32fc46d22feea91041d0bb843b5d90d7773f

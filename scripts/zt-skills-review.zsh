@@ -14,6 +14,9 @@ repo="${script_dir:h}"
 skills_dir="${ZK_SKILLS_HOME:-$HOME/.openclaw/workspace/skills}"
 manifest="${ZK_SKILLS_MANIFEST:-$script_dir/docs/managed-skills.adoc}"
 
+source "$script_dir/lib/paths.zsh"
+notes_dir="$(zk_notes_dir)" || exit 1
+
 fail() {
   print -ru2 -- "ERROR $1"
   exit 1
@@ -101,15 +104,15 @@ for f in "${skill_files[@]}"; do
 
     [[ "$detail" == *.adoc && "$detail" != "-" ]] ||
       fail "operational skill has no Detailed Note: $name"
-    [[ -f "$repo/notes/$detail" ]] || fail "Detailed Note not found: $name -> $detail"
-    header_is_deprecated "$repo/notes/$detail" &&
+    [[ -f "$notes_dir/$detail" ]] || fail "Detailed Note not found: $name -> $detail"
+    header_is_deprecated "$notes_dir/$detail" &&
       fail "Detailed Note is deprecated: $name -> $detail"
     grep -Fq -- "$detail" "$f" ||
       fail "SKILL.md does not reference manifest Detailed Note: $name"
   else
     [[ "$script" == "-" ]] || fail "meta skill must not map a top-level script: $name"
     if [[ "$detail" != "-" ]]; then
-      [[ -f "$repo/notes/$detail" ]] || fail "optional Detailed Note not found: $name -> $detail"
+      [[ -f "$notes_dir/$detail" ]] || fail "optional Detailed Note not found: $name -> $detail"
     fi
   fi
 done

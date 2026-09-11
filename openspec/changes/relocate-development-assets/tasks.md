@@ -8,7 +8,7 @@
 - [x] 2.1 Переименовать `.scripts/` в `scripts/` с сохранением содержимого, executable permissions и внутренней структуры; проверить отсутствие старого каталога и наличие `scripts/zt-*.zsh`, `scripts/lib/`, `scripts/objects/`, plugins и `scripts/dev/`.
 - [x] 2.2 Перенести `skills/` в `dev/skills/`, сохранив все development skill names, references и LF/permissions; проверить, что каждый ожидаемый `dev/skills/zettelkasten-*` существует и root `skills/` удалён.
 - [x] 2.3 Обновить shell source paths, repository resolver, host entrypoints, dev tooling, tests, README/AGENTS и OpenSpec context/traceability на canonical `scripts/` и `dev/skills/`; проверить repository-wide search на непреднамеренные старые пути.
-- [ ] 2.4 Обновить `scripts/docs/managed-skills.adoc` и связанные script mappings без изменения внешнего runtime state; проверить `scripts/zt-skills-review.zsh` на согласованность manifest и Detailed Notes.
+- [x] 2.4 Обновить `scripts/docs/managed-skills.adoc` и связанные script mappings без изменения внешнего runtime state; проверить `scripts/zt-skills-review.zsh` на согласованность manifest и Detailed Notes.
 
 ## 3. Compatibility и validation
 

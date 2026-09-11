@@ -232,7 +232,7 @@ feature list и прежние стабильные ID.
 * `SCRIPT-FORMAT-001` — read-only режим `zt-scripts-patch.zsh --check`, отдельная диагностика пустых файлов и достоверные ошибки исправления.
 * `MAINT-002` — вывод всех CLI-скриптов и библиотек для ревью через `zt-scripts-review.zsh`.
 * `MAINT-003` — проверка и вывод всех управляемых OpenClaw-навыков `zettelkasten-*/SKILL.md` через integration-команду `zt-skills-review.zsh`.
-* `MAINT-004` — `zt-skills-review.zsh` использует `ZK_SKILLS_HOME` или `$HOME/.openclaw/workspace/skills`, сверяет runtime skills с `scripts/docs/managed-skills.adoc`, SHA-256, script mapping и обязательными Detailed Note, затем выводит read-only секции; отсутствие или несовпадение managed skills является ошибкой.
+* `MAINT-004` — `zt-skills-review.zsh` использует `ZK_SKILLS_HOME` или `$HOME/.openclaw/workspace/skills`, сверяет runtime skills с `scripts/docs/managed-skills.adoc`, SHA-256, script mapping и обязательными Detailed Note из `${ZK_HOME:-$HOME/zettelkasten}/notes`, затем выводит read-only секции; отсутствие или несовпадение managed skills является ошибкой.
 * `MAINT-005` — Git-версионируемый manifest `managed-skills.adoc` фиксирует совместимую с checkout логическую редакцию внешнего OpenClaw skill state без копирования живых `SKILL.md` в репозиторий.
 * `CORE-001` — общие библиотеки для путей, UUID и AsciiDoc.
 * `CORE-002` — поддержка `ZK_HOME` большинством скриптов.
