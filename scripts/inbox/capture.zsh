@@ -20,8 +20,6 @@ ZK_ROOT="${ZK_HOME:-${ZETTELKASTEN_ROOT:-${SCRIPT_DIR:h:h}}}"
 INBOX_DIR="${ZK_ROOT}/inbox"
 RAW_DIR="${INBOX_DIR}/raw"
 
-EDITOR_CMD="${EDITOR:-vim}"
-
 usage() {
     print -u2 "Usage: zt-inbox.zsh \"Title\""
 }
@@ -41,6 +39,18 @@ title="$*"
 [[ -n "${title//[[:space:]]/}" ]] || die "title must not be empty"
 [[ "$title" != *$'\n'* && "$title" != *$'\r'* ]] ||
     die "title must be a single line"
+
+if [[ -n "${EDITOR+x}" ]]; then
+    EDITOR_CMD="$EDITOR"
+else
+    EDITOR_CMD="vim"
+fi
+
+[[ -n "$EDITOR_CMD" ]] || die "EDITOR must not be empty"
+editor_words=("${(@Q)${(z)EDITOR_CMD}}")
+[[ -n "${editor_words[1]:-}" ]] || die "EDITOR must not be empty"
+command -v "${editor_words[1]}" >/dev/null 2>&1 ||
+    die "editor not found: ${editor_words[1]}"
 
 mkdir -p "$RAW_DIR" || die "cannot create directory: $RAW_DIR"
 
@@ -91,11 +101,6 @@ while true; do
 done
 
 [[ -f "$filepath" ]] || die "cannot create file: $filepath"
-
-editor_words=("${(@Q)${(z)EDITOR_CMD}}")
-(( ${#editor_words[@]} > 0 )) || die "EDITOR must not be empty"
-command -v "${editor_words[1]}" >/dev/null 2>&1 ||
-    die "editor not found: ${editor_words[1]}"
 
 print -r -- "$filepath"
 

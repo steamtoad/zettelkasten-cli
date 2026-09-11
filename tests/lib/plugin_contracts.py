@@ -161,8 +161,11 @@ def inbox(v):
     second = Path(v.run("zt-inbox.zsh", "Еще").stdout.strip())
     assert second.name == "2026-09-05-101500-1.adoc"
     original = raw.read_bytes()
-    v.run("zt-inbox.zsh", "Нет редактора", EDITOR="nonexistent-editor-fixture", code=None)
-    assert (raw.parent / "2026-09-05-101500-2.adoc").exists()
+    before_missing_editor = v.snapshot()
+    missing_editor = v.run("zt-inbox.zsh", "Нет редактора", EDITOR="nonexistent-editor-fixture", code=None)
+    assert missing_editor.stdout == ""
+    assert missing_editor.stderr == "Error: editor not found: nonexistent-editor-fixture\n"
+    assert v.snapshot() == before_missing_editor
     assert v.run("zt-processed.zsh", code=None).stderr == "Usage: zt-processed.zsh FILE\n"
     for args in ((), (raw, second)):
         v.run("zt-processed.zsh", *args, code=None)

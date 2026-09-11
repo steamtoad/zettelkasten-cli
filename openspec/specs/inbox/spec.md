@@ -132,7 +132,7 @@ Capture SHALL создавать raw-элемент с однострочным 
 **Legacy status:** `IMPLEMENTED`.
 **Traceability:** `scripts/inbox/docs/requirements.adoc` → section `Inbox Layer`.
 
-Capture SHALL запускать существующий непустой EDITOR, сохраняя lexical quoting пути и аргументов, включая пустой quoted argument; разбор MUST NOT выполнять eval, command substitution или shell operators из значения EDITOR. Проверка editor остаётся после создания raw.
+Capture MUST до создания Inbox directories, raw-файла или иного state разобрать editor command и проверить, что он непустой, а его executable существует. Если `EDITOR` не задан, SHALL сохраняться совместимый default `vim`; явно пустой `EDITOR` MUST считаться ошибкой. Разбор MUST сохранять lexical quoting пути и аргументов, включая пустой quoted argument, и MUST NOT выполнять `eval`, command substitution или shell operators из значения `EDITOR`. После успешного preflight Capture SHALL создать raw и запустить проверенный editor с точными разобранными аргументами и путём raw-файла.
 
 #### Scenario: INBOX-008 contract is verified
 
@@ -145,6 +145,23 @@ Capture SHALL запускать существующий непустой EDITO
 
 - **WHEN** EDITOR содержит путь с пробелами в кавычках и quoted arguments
 - **THEN** вызывается указанный executable с точными аргументами без выполнения содержащегося в них shell code
+
+#### Scenario: EDITOR не задан
+
+- **WHEN** EDITOR отсутствует в environment и доступен совместимый default `vim`
+- **THEN** preflight SHALL выбрать `vim`, после чего capture создаёт raw и запускает editor по обычному success path
+
+#### Scenario: EDITOR явно пуст
+
+- **WHEN** EDITOR присутствует в environment с пустым значением
+- **THEN** capture SHALL завершиться ненулевым exit с диагностикой `EDITOR must not be empty`
+- **AND** Inbox directories и raw-файлы MUST NOT создаваться
+
+#### Scenario: Editor executable отсутствует
+
+- **WHEN** разобранный EDITOR указывает на отсутствующий executable
+- **THEN** capture SHALL завершиться ненулевым exit с именем отсутствующего executable
+- **AND** Inbox directories и raw-файлы MUST NOT создаваться
 
 ### Requirement: INBOX-009 — zt-processed.zsh обрабатывает только непосредственный обычный файл inbox/raw и отклоняет внеш...
 

@@ -4,7 +4,7 @@
 
 == Реализованные возможности
 
-* Capture: `scripts/inbox/capture.zsh` создаёт непустой однострочный raw AsciiDoc в путях с Unicode и пробелами с `:captured-at:` и `:source: manual`, защищает concurrent timestamp collisions и dangling symlink entries, удаляет неполный raw при ошибке записи и запускает `$EDITOR` с quoted путём и аргументами без eval.
+* Capture: `scripts/inbox/capture.zsh` до любых Inbox filesystem changes проверяет непустой `$EDITOR` и его executable (при unset используется `vim`), затем создаёт непустой однострочный raw AsciiDoc в путях с Unicode и пробелами с `:captured-at:` и `:source: manual`, защищает concurrent timestamp collisions и dangling symlink entries, удаляет неполный raw при ошибке записи и запускает `$EDITOR` с quoted путём и аргументами без eval.
 * Processed: `scripts/inbox/processed.zsh` принимает непосредственный файл raw, отклоняет внешние, вложенные и symlink targets, резервирует точное имя destination через POSIX `link` без перезаписи и без записи внутрь существующего каталога и удаляет raw после успешного резервирования.
 * Публичные `scripts/zt-inbox.zsh` и `scripts/zt-processed.zsh` — direct exec wrappers с прежними аргументами, диагностикой и exit status.
 * Данные остаются в `ZK_HOME/inbox/{raw,processed}`; fallback `ZETTELKASTEN_ROOT`, затем корень установки сохраняется.

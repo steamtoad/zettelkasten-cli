@@ -36,6 +36,21 @@ def quoted_editor(v):
     assert not (v.root / "NEVER-CREATE").exists()
 
 
+def editor_preflight(v):
+    before = v.snapshot()
+    for editor, message in (("", "Error: EDITOR must not be empty\n"),
+                            ("missing-editor-fixture", "Error: editor not found: missing-editor-fixture\n")):
+        result = v.run("zt-inbox.zsh", "Invalid editor", EDITOR=editor, code=None)
+        assert result.stdout == "" and result.stderr == message
+        assert v.snapshot() == before and not (v.home / "inbox").exists()
+    v.env.pop("EDITOR")
+    result = v.run("zt-inbox.zsh", "Default editor")
+    raw = Path(result.stdout.strip())
+    assert raw.is_file() and raw.parent == v.home / "inbox/raw"
+    editor_log = v.root / "editor-log"
+    assert editor_log.exists() and json.loads(editor_log.read_text()) == [str(raw)]
+
+
 def capture_write_failure(v):
     config = v.root / "zsh config"
     config.mkdir()
@@ -194,7 +209,7 @@ def boundary_substitution(v):
     assert not module.check(root)[1]
 
 
-CASES = {"unicode_capture": unicode_capture, "quoted_editor": quoted_editor,
+CASES = {"unicode_capture": unicode_capture, "quoted_editor": quoted_editor, "editor_preflight": editor_preflight,
          "capture_collisions": capture_collisions, "capture_write_failure": capture_write_failure, "internal_symlink": internal_symlink,
          "destination_directory": lambda v: destination_collision(v, "directory"),
          "destination_symlink_directory": lambda v: destination_collision(v, "symlink-directory"),
