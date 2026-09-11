@@ -67,7 +67,10 @@ feature list и прежние стабильные ID.
 * `PATH-005` — `:docfilename:` остаётся basename `UUID.adoc`, а `:doclink:` — `link:UUID.adoc[...]`.
 * `PATH-006` — `.last-diary` хранит basename `UUID.adoc`, который разрешается внутри `notes/`.
 * `PATH-007` — repository-level документы, Inbox, Workspace и дневные индексы не являются документами ядра и не перемещаются в `notes/`.
-* `PATH-008` — `zt-migrate-notes-dir.zsh` поддерживает dry-run и явный `--apply`, переносит только корневые документы известных постоянных типов и переписывает ссылки `all-todays`/Workspace.
+* `PATH-008` — `zt-migrate-notes-dir.zsh` поддерживает dry-run и явный `--apply`, переносит только корневые документы известных постоянных типов и переписывает поддерживаемые incoming links по всему Vault.
+* `MIGRATE-LINK-001` — dry-run показывает manifest переносов и rewrite decisions до записи.
+* `MIGRATE-LINK-002` — relative links пересчитываются для root overview, `all-todays`, Workspace и доступных plugin sources.
+* `MIGRATE-LINK-003` — backup удаляется только после полного postflight; failure возвращает recovery diagnostic.
 
 == Дневник
 

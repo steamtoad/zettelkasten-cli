@@ -1,6 +1,6 @@
 = Требования и инварианты zettelkasten-cli
 :revdate: 2026-09-11
-:revnumber: 17
+:revnumber: 18
 :toc:
 
 == Назначение документа
@@ -192,6 +192,9 @@
 * `MIGR-007 [PROCESS]` — для каждой Topic, у которой отображаемое название расходится с `:key-topic:`, явно выбирается одно из решений: восстановить её как следующую редакцию прежней линии либо выделить новую тематическую линию.
 * `MIGR-008 [PROCESS]` — миграция в новую тематическую линию явно определяет переносимые документы, сохраняет исторические ссылки и не создаёт новых связей с deprecated Topic.
 * `MIGR-009 [PROCESS]` — нормализация расположения `:deprecated:` выполняется отдельной проверяемой миграцией и не смешивается с изменением содержания документов.
+* `MIGRATE-LINK-001 [IMPLEMENTED]` — migration строит manifest root documents и всех поддерживаемых входящих `.adoc` links до apply; неподдерживаемый source блокирует запись.
+* `MIGRATE-LINK-002 [IMPLEMENTED]` — migration вычисляет rewritten relative target от будущего физического source для root overview, all-todays, Workspace и доступных plugin sources.
+* `MIGRATE-LINK-003 [IMPLEMENTED]` — migration выполняет graph/zt-check postflight до удаления backup; failure восстанавливает исходные bytes и не печатает success.
 
 == Deprecated
 

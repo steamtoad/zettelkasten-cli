@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # zt-migrate-notes-dir.zsh
 # Тип: Migration
-# Назначение: перенос UUID-документов ядра из корня в notes/
+# Назначение: перенос UUID-документов ядра в notes/ с проверкой входящих ссылок
 #------------------------------------------------------------------------------
 
 emulate -L zsh
@@ -14,305 +14,215 @@ source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/asciidoc.zsh"
 
 mode="dry-run"
-
-usage() {
-  print -u2 -- "Usage: ${0:t} [--dry-run|--apply]"
-}
-
-die() {
-  print -u2 -- "Error: $*"
-  exit 1
-}
+usage() { print -ru2 -- "Usage: ${0:t} [--dry-run|--apply]"; }
+die() { print -ru2 -- "ERROR migration: $*"; exit 1; }
 
 case "${1:---dry-run}" in
   --dry-run) mode="dry-run" ;;
   --apply) mode="apply" ;;
   *) usage; exit 1 ;;
 esac
-
-(( $# <= 1 )) || {
-  usage
-  exit 1
-}
+(( $# <= 1 )) || { usage; exit 1; }
 
 zk="$(zk_home)"
-notes_dir="$(zk_notes_dir)"
-
+zk="${zk:A}"
+notes_dir="$zk/notes"
 [[ -d "$zk" ]] || die "Zettelkasten not found: $zk"
 
-typeset -a documents
-typeset -a indexes
+typeset -a documents sources affected_sources moved
+typeset -A document_by_abs future_rel_by_source source_seen affected_seen
 documents=()
-indexes=()
+sources=()
+affected_sources=()
+moved=()
+document_by_abs=()
+future_rel_by_source=()
+source_seen=()
+affected_seen=()
+
+work_dir="$(mktemp -d "${TMPDIR:-/tmp}/zt-migrate-notes-plan.XXXXXX")" || die "cannot create planning directory"
+rewrites_file="$work_dir/rewrites.tsv"
+: > "$rewrites_file"
+trap 'rm -rf -- "$work_dir"' EXIT
+
+relative_path() {
+  local from_dir="$1" target="$2" ignored
+  local -a from_parts target_parts result
+  from_parts=("${(@s:/:)${from_dir}}")
+  target_parts=("${(@s:/:)${target}}")
+  from_parts=("${(@)from_parts:#}")
+  target_parts=("${(@)target_parts:#}")
+  while (( ${#from_parts} > 0 && ${#target_parts} > 0 )) && [[ "${from_parts[1]}" == "${target_parts[1]}" ]]; do
+    from_parts=("${from_parts[@]:1}")
+    target_parts=("${target_parts[@]:1}")
+  done
+  result=()
+  for ignored in "${from_parts[@]}"; do result+=(".."); done
+  result+=("${target_parts[@]}")
+  (( ${#result} > 0 )) || result=(".")
+  print -r -- "${(j:/:)result}"
+}
+
+add_source() {
+  local absolute="${1:A}"
+  [[ -n "${source_seen[$absolute]-}" ]] && return 0
+  source_seen[$absolute]=1
+  sources+=("$absolute")
+}
+
+add_affected_source() {
+  local absolute="${1:A}"
+  [[ -n "${affected_seen[$absolute]-}" ]] && return 0
+  affected_seen[$absolute]=1
+  affected_sources+=("$absolute")
+}
 
 for file in "$zk"/*.adoc; do
   [[ -f "$file" ]] || continue
-  type="$(zk_attr_value "$file" type)"
-
-  case "$type" in
-    note|memo|todo|diary|topic) documents+=("$file") ;;
+  case "$(zk_attr_value "$file" type)" in
+    note|memo|todo|diary|topic)
+      absolute="${file:A}"
+      documents+=("$absolute")
+      document_by_abs[$absolute]="${file:t}"
+      future_rel_by_source[$absolute]="notes/${file:t}"
+      add_affected_source "$absolute"
+      ;;
   esac
 done
 
-for file in "$zk/all-todays"/*.adoc "$zk/workspaces"/*.adoc; do
-  [[ -f "$file" ]] && indexes+=("$file")
+while IFS= read -r -d '' file; do add_source "$file"; done < <(
+  find "$zk" -type f -name '*.adoc' ! -path "$zk/.git/*" ! -path "$zk/.state/*" ! -path "$zk/.scripts/*" -print0
+)
+
+for file in "${sources[@]}"; do
+  [[ -n "${future_rel_by_source[$file]-}" ]] || future_rel_by_source[$file]="${file#$zk/}"
+  zk_extract_links "$file" > /dev/null || die "unsupported or unclosed opaque block: ${file#$zk/}"
+done
+
+for source_file in "${sources[@]}"; do
+  source_rel="${source_file#$zk/}"
+  future_source="$zk/${future_rel_by_source[$source_file]}"
+  while IFS= read -r raw_target; do
+    [[ -n "$raw_target" && "$raw_target" != /* ]] || continue
+    candidate="${source_file:h}/$raw_target"
+    [[ -f "$candidate" ]] || continue
+    candidate="${candidate:A}"
+    [[ -n "${document_by_abs[$candidate]-}" ]] || continue
+    future_target="$notes_dir/${document_by_abs[$candidate]}"
+    new_target="$(relative_path "${future_source:h}" "$future_target")" || die "cannot resolve target from $source_rel"
+    [[ "$raw_target" == "$new_target" ]] && continue
+    print -r -- "$source_file"$'\t'"$raw_target"$'\t'"$new_target" >> "$rewrites_file"
+    add_affected_source "$source_file"
+  done < <(zk_extract_links "$source_file")
 done
 
 for source_file in "${documents[@]}"; do
   destination="$notes_dir/${source_file:t}"
-  [[ ! -e "$destination" ]] || die "destination already exists: $destination"
+  [[ ! -e "$destination" && ! -L "$destination" ]] || die "destination already exists: $destination"
 done
 
+rewrite_count="$(wc -l < "$rewrites_file" | tr -d '[:space:]')"
 print -r -- "Mode: $mode"
 print -r -- "Root: $zk"
+print -r -- "Scan boundary: .adoc under Vault excluding .git, .state and .scripts"
 print -r -- "Documents to move: ${#documents[@]}"
-print -r -- "Index files to inspect: ${#indexes[@]}"
+print -r -- "Incoming links to rewrite: $rewrite_count"
+for source_file in "${documents[@]}"; do print -r -- "MOVE ${source_file:t} -> notes/${source_file:t}"; done
+while IFS=$'\t' read -r source_file raw_target new_target; do
+  [[ -n "$source_file" ]] && print -r -- "REWRITE ${source_file#$zk/}: link:${raw_target} -> link:${new_target}"
+done < "$rewrites_file"
 
-for source_file in "${documents[@]}"; do
-  print -r -- "MOVE ${source_file:t} -> notes/${source_file:t}"
-done
-
-[[ "$mode" == "apply" ]] || exit 0
-
-(( ${#documents[@]} > 0 )) || die "no root UUID documents found"
-
+[[ "$mode" == apply ]] || exit 0
+if (( ${#documents[@]} == 0 )); then
+  print -r -- "No migration work required"
+  exit 0
+fi
 if git -C "$zk" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  [[ -z "$(git -C "$zk" status --porcelain)" ]] ||
-    die "working tree must be clean before migration"
+  [[ -z "$(git -C "$zk" status --porcelain)" ]] || die "working tree must be clean before migration"
 fi
 
-for file in "${documents[@]}" "${indexes[@]}"; do
-  [[ -f "$file" ]] || continue
-  zk_extract_links "$file" > /dev/null ||
-    die "unsupported or unclosed opaque block: $file"
-done
-
-backup_dir="$(mktemp -d "${TMPDIR:-/tmp}/zt-migrate-notes.XXXXXX")" ||
-  die "cannot create backup directory"
-mkdir -p "$backup_dir/documents" "$backup_dir/all-todays" "$backup_dir/workspaces" ||
-  die "cannot initialize backup directory"
-typeset -a moved
-moved=()
+stage_dir="$(mktemp -d "${TMPDIR:-/tmp}/zt-migrate-notes-stage.XXXXXX")" || die "cannot create staging directory"
+backup_dir="$(mktemp -d "${TMPDIR:-/tmp}/zt-migrate-notes-backup.XXXXXX")" || { rm -rf -- "$stage_dir"; die "cannot create backup directory"; }
 
 rollback() {
-  local moved_file
-  local target
-
-  for moved_file in "${moved[@]}"; do
-    target="$zk/${moved_file:t}"
-    rm -f "$moved_file"
-    cp -p "$backup_dir/documents/${moved_file:t}" "$target"
-  done
-
-  for backup_file in "$backup_dir/all-todays"/*.adoc; do
+  local source_file source_rel destination backup_file
+  for source_file in "${documents[@]}"; do
+    source_rel="${source_file#$zk/}"
+    destination="$notes_dir/${source_file:t}"
+    backup_file="$backup_dir/$source_rel"
     [[ -f "$backup_file" ]] || continue
-    cp -p "$backup_file" "$zk/all-todays/${backup_file:t}"
+    rm -f -- "$destination"
+    cp -p "$backup_file" "$source_file" || true
   done
-
-  for backup_file in "$backup_dir/workspaces"/*.adoc; do
-    [[ -f "$backup_file" ]] || continue
-    cp -p "$backup_file" "$zk/workspaces/${backup_file:t}"
+  for source_file in "${affected_sources[@]}"; do
+    [[ -n "${document_by_abs[$source_file]-}" ]] && continue
+    source_rel="${source_file#$zk/}"
+    backup_file="$backup_dir/$source_rel"
+    [[ -f "$backup_file" ]] && cp -p "$backup_file" "$source_file" || true
   done
-
   rmdir "$notes_dir" 2>/dev/null || true
 }
 
-trap 'rollback; rm -rf "$backup_dir"; exit 1' INT TERM HUP
+fail_recoverable() {
+  rollback
+  print -ru2 -- "ERROR RECOVERY_REQUIRED: $1"
+  print -ru2 -- "Backup: $backup_dir"
+  exit 1
+}
+trap 'fail_recoverable interrupted' INT TERM HUP
 
-mkdir -p "$notes_dir" || die "cannot create notes directory"
+rewrite_file() {
+  local source_file="$1" staged_file="$2" source_rel="$3" mode_bits
+  mkdir -p "${staged_file:h}" || return 1
+  if [[ "${ZK_MIGRATE_TEST_LEAVE_OLD_TARGET:-}" == "$source_rel" ]]; then
+    cp -p "$source_file" "$staged_file" || return 1
+    return 0
+  fi
+  awk -F '\t' -v source="$source_file" '
+    FILENAME == ARGV[1] { if ($1 == source) replacement[$2] = $3; next }
+    function trimmed(value) { sub(/^[[:space:]]+/, "", value); sub(/[[:space:]]+$/, "", value); return value }
+    in_block { print; value = trimmed($0); if (block_delim == "```") { if (value ~ /^```/) in_block = 0 } else if (value == block_delim) in_block = 0; next }
+    /^```/ { in_block = 1; block_delim = "```"; print; next }
+    /^(----|\.{4,}|_{4,}|\*{4,}|={4,}|\+{4,}|\/{4,})[[:space:]]*$/ { in_block = 1; block_delim = trimmed($0); print; next }
+    /^:doclink:/ { print; next }
+    { line = $0; output = ""; while (match(line, /link:[^[]+\.adoc\[/)) { token = substr(line, RSTART, RLENGTH); target = substr(token, 6, length(token) - 6); output = output substr(line, 1, RSTART - 1); output = output ((target in replacement) ? "link:" replacement[target] "[" : token); line = substr(line, RSTART + RLENGTH) } print output line }
+  ' "$rewrites_file" "$source_file" > "$staged_file" || return 1
+  mode_bits="$(zk_file_mode "$source_file")" || return 1
+  chmod "$mode_bits" "$staged_file"
+}
 
-for source_file in "${documents[@]}"; do
-  cp -p "$source_file" "$backup_dir/documents/${source_file:t}" || {
-    rollback
-    die "cannot back up: $source_file"
-  }
+for source_file in "${affected_sources[@]}"; do
+  source_rel="${source_file#$zk/}"
+  backup_file="$backup_dir/$source_rel"
+  mkdir -p "${backup_file:h}" || fail_recoverable "cannot initialize backup"
+  cp -p "$source_file" "$backup_file" || fail_recoverable "cannot back up $source_rel"
+  staged_file="$stage_dir/${future_rel_by_source[$source_file]}"
+  rewrite_file "$source_file" "$staged_file" "$source_rel" || fail_recoverable "cannot stage $source_rel"
 done
 
-for index_file in "${indexes[@]}"; do
-  case "$index_file" in
-    "$zk/all-todays"/*) backup_path="$backup_dir/all-todays/${index_file:t}" ;;
-    "$zk/workspaces"/*) backup_path="$backup_dir/workspaces/${index_file:t}" ;;
-    *) die "unexpected index path: $index_file" ;;
-  esac
-
-  cp -p "$index_file" "$backup_path" || {
-    rollback
-    die "cannot back up: $index_file"
-  }
-done
-
+mkdir -p "$notes_dir" || fail_recoverable "cannot create notes directory"
 for source_file in "${documents[@]}"; do
   destination="$notes_dir/${source_file:t}"
-  mv "$source_file" "$destination" || {
-    rollback
-    die "cannot move: $source_file"
-  }
+  mv "$source_file" "$destination" || fail_recoverable "cannot move ${source_file:t}"
   moved+=("$destination")
 done
-
-typeset -a moved_names
-moved_names=()
-for moved_file in "${moved[@]}"; do
-  moved_names+=("${moved_file:t}")
-done
-moved_serialized="${(j:,:)moved_names}"
-
-moved_manifest="$backup_dir/moved-names"
-root_manifest="$backup_dir/root-targets"
-print -rl -- "${moved_names[@]}" > "$moved_manifest"
-
-find "$zk" -type f -name '*.adoc' ! -path "$notes_dir/*" -print |
-  while IFS= read -r root_target; do
-    print -r -- "${root_target#$zk/}"
-  done > "$root_manifest"
-
-for moved_file in "${moved[@]}"; do
-  tmp="$(mktemp "${TMPDIR:-/tmp}/zt-migrate-note.XXXXXX")" || {
-    rollback
-    die "cannot create temporary file"
-  }
-
-  awk -v moved_manifest="$moved_manifest" -v root_manifest="$root_manifest" '
-    BEGIN {
-      while ((getline name < moved_manifest) > 0) moved[name] = 1
-      close(moved_manifest)
-      while ((getline name < root_manifest) > 0) root[name] = 1
-      close(root_manifest)
-    }
-
-    function trimmed(value) {
-      sub(/^[[:space:]]+/, "", value)
-      sub(/[[:space:]]+$/, "", value)
-      return value
-    }
-
-    function migrated_target(target, without_parent) {
-      if (target ~ /^\.\.\/[0-9A-Fa-f-]+\.adoc$/) {
-        without_parent = substr(target, 4)
-        if (without_parent in moved) return without_parent
-      }
-
-      if (target in moved) return target
-      if (target in root) return "../" target
-      return target
-    }
-
-    in_block {
-      print
-      value = trimmed($0)
-      if (block_delim == "```") {
-        if (value ~ /^```/) in_block = 0
-      } else if (value == block_delim) {
-        in_block = 0
-      }
-      next
-    }
-
-    /^```/ {
-      in_block = 1
-      block_delim = "```"
-      print
-      next
-    }
-
-    /^(----|\.{4,}|_{4,}|\*{4,}|={4,}|\+{4,}|\/{4,})[[:space:]]*$/ {
-      in_block = 1
-      block_delim = trimmed($0)
-      print
-      next
-    }
-
-    /^:doclink:/ { print; next }
-
-    {
-      line = $0
-      output = ""
-
-      while (match(line, /link:[^[]+\.adoc\[/)) {
-        token = substr(line, RSTART, RLENGTH)
-        target = substr(token, 6, length(token) - 6)
-        output = output substr(line, 1, RSTART - 1)
-        output = output "link:" migrated_target(target) "["
-        line = substr(line, RSTART + RLENGTH)
-      }
-
-      print output line
-    }
-  ' "$moved_file" > "$tmp" || {
-    rm -f "$tmp"
-    rollback
-    die "cannot rewrite moved document: $moved_file"
-  }
-
-  if [[ "$(uname)" == Darwin ]]; then
-    mode_bits="$(stat -f '%Lp' "$moved_file")"
-  else
-    mode_bits="$(stat -c '%a' "$moved_file")"
-  fi
-  chmod "$mode_bits" "$tmp" && mv "$tmp" "$moved_file" || {
-    rm -f "$tmp"
-    rollback
-    die "cannot replace moved document: $moved_file"
-  }
+for source_file in "${affected_sources[@]}"; do
+  staged_file="$stage_dir/${future_rel_by_source[$source_file]}"
+  if [[ -n "${document_by_abs[$source_file]-}" ]]; then target_file="$notes_dir/${source_file:t}"; else target_file="$source_file"; fi
+  zk_replace_from_file_atomic "$target_file" "$staged_file" || fail_recoverable "cannot apply staged file ${source_file#$zk/}"
 done
 
-for index_file in "${indexes[@]}"; do
-  tmp="$(mktemp "${TMPDIR:-/tmp}/zt-migrate-index.XXXXXX")" || {
-    rollback
-    die "cannot create temporary file"
-  }
-
-  awk -v moved_serialized="$moved_serialized" '
-    BEGIN {
-      count = split(moved_serialized, names, ",")
-      for (i = 1; i <= count; i++) moved[names[i]] = 1
-    }
-
-    {
-      line = $0
-      output = ""
-
-      while (match(line, /link:\.\.\/[0-9A-Fa-f-]+\.adoc\[/)) {
-        token = substr(line, RSTART, RLENGTH)
-        name = substr(token, 9, length(token) - 9)
-        output = output substr(line, 1, RSTART - 1)
-
-        if (name in moved) {
-          output = output "link:../notes/" name "["
-        } else {
-          output = output token
-        }
-
-        line = substr(line, RSTART + RLENGTH)
-      }
-
-      print output line
-    }
-  ' "$index_file" > "$tmp" || {
-    rm -f "$tmp"
-    rollback
-    die "cannot rewrite index: $index_file"
-  }
-
-  mode_bits=""
-  if [[ "$(uname)" == Darwin ]]; then
-    mode_bits="$(stat -f '%Lp' "$index_file")"
-  else
-    mode_bits="$(stat -c '%a' "$index_file")"
-  fi
-  chmod "$mode_bits" "$tmp" || {
-    rm -f "$tmp"
-    rollback
-    die "cannot preserve mode: $index_file"
-  }
-  mv "$tmp" "$index_file" || {
-    rm -f "$tmp"
-    rollback
-    die "cannot replace index: $index_file"
-  }
-done
+postflight_failed=0
+for source_file in "${documents[@]}"; do [[ ! -e "$source_file" && -f "$notes_dir/${source_file:t}" ]] || postflight_failed=1; done
+while IFS=$'\t' read -r source_file raw_target new_target; do
+  [[ -n "$source_file" ]] || continue
+  if [[ -n "${document_by_abs[$source_file]-}" ]]; then target_file="$notes_dir/${source_file:t}"; else target_file="$source_file"; fi
+  zk_extract_links "$target_file" | grep -Fx -- "$new_target" >/dev/null || postflight_failed=1
+done < "$rewrites_file"
+if (( postflight_failed )) || ! "$script_dir/zt-check.zsh" > "$work_dir/postflight.out" 2> "$work_dir/postflight.err"; then
+  fail_recoverable "postflight validation failed"
+fi
 
 trap - INT TERM HUP
-rm -rf "$backup_dir"
-
-print -r -- "Migration complete: ${#moved[@]} document(s) moved"
+rm -rf -- "$stage_dir" "$backup_dir"
+print -r -- "Migration complete: ${#moved[@]} document(s) moved; $rewrite_count incoming link(s) rewritten"
