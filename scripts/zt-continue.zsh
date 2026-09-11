@@ -13,6 +13,7 @@ script_dir="${0:A:h}"
 
 source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/asciidoc.zsh"
+source "$script_dir/lib/transaction.zsh"
 source "$script_dir/objects/memo-create.zsh"
 source "$script_dir/zettelkasten/lib/today.zsh"
 source "$script_dir/zettelkasten/lib/bindings.zsh"
@@ -27,6 +28,13 @@ extract_memo_chain_link() {
 extract_memo_chain_links() {
   zk_extract_labeled_links "$1" "$2"
 }
+
+if [[ -z "${ZK_TXN_STAGE_MODE:-}" ]]; then
+  zt_require_fzf || exit 1
+  zk_require_command vim || exit 1
+  zk_txn_run_staged_workflow continue "$0" "$@"
+  exit $?
+fi
 
 zt_require_fzf || exit 1
 zk_require_command vim || exit 1
@@ -94,6 +102,5 @@ zt_today_append "$new_fname" "$title" || exit 1
 zk_append_text_atomic "$new_fname" "$previous_link" || exit 1
 zk_append_text_atomic "$source_file" "| $forward_link" || exit 1
 
-vim "$new_fname" || exit $?
-
-print -r -- "$new_link"
+zk_txn_open_editor "$(zk_note_path "$new_fname")" || exit $?
+zk_txn_defer_output "$new_link"

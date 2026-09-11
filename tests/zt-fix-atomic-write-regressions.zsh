@@ -149,7 +149,11 @@ print -rl -- \
 print -rl -- \
   '#!/bin/zsh' \
   'name="20000000-0000-1000-8000-000000000000"' \
-  'if [[ -n "${ZK_TEST_LATE_COLLISION:-}" ]]; then print -rn -- "LATE FOREIGN" > "${name}.adoc"; fi' \
+  'if [[ -n "${ZK_TEST_LATE_COLLISION:-}" ]]; then' \
+  '  target="${name}.adoc"' \
+  '  [[ -z "${ZK_TXN_ORIGINAL_ROOT:-}" ]] || target="$ZK_TXN_ORIGINAL_ROOT/notes/${name}.adoc"' \
+  '  print -rn -- "LATE FOREIGN" > "$target"' \
+  'fi' \
   'print -r -- "$name"' > "$fake_bin/uuid"
 cp "$fake_bin/uuid" "$fake_bin/uuidgen"
 
@@ -270,8 +274,8 @@ fi
   print -ru2 -- 'FAIL: Refine rollback deleted changed destination identity'
   exit 1
 }
-rg -qF 'preserved changed destination identity' "$fixture/refine-identity.err" || {
-  print -ru2 -- 'FAIL: Refine omitted identity-conflict diagnostic'
+rg -qF 'Refine failed; changes rolled back' "$fixture/refine-identity.err" || {
+  print -ru2 -- 'FAIL: Refine omitted staged apply-failure diagnostic'
   exit 1
 }
 
@@ -326,14 +330,14 @@ for producer_case in empty partial; do
     print -ru2 -- "FAIL: failed Full Copy printed success ($producer_case)"
     exit 1
   }
-  rg -qF "$root/all-todays/$(date +'%Y-%m-%d').adoc" "$fixture/full-copy-$producer_case.err" || {
-    print -ru2 -- "FAIL: failed Full Copy omitted newly created all-todays ($producer_case)"
+  [[ ! -e "$root/all-todays/$(date +'%Y-%m-%d').adoc" ]] || {
+    print -ru2 -- "FAIL: failed Full Copy published staged all-todays ($producer_case)"
     exit 1
   }
 done
 
-# A successor collision after journal creation lists only the journal and
-# preserves the foreign destination.
+# A successor collision remains confined to staging and preserves the foreign
+# destination without publishing the staged journal.
 early_collision="$fixture/reduce-early-collision"
 write_vault "$early_collision"
 print -rn -- 'REDUCE FOREIGN' > "$early_collision/notes/$new_name"
@@ -345,17 +349,8 @@ fi
   print -ru2 -- 'FAIL: Reduce changed foreign successor collision'
   exit 1
 }
-early_err="$fixture/reduce-early-collision.err"
-rg -qF "$early_collision/all-todays/$(date +'%Y-%m-%d').adoc" "$early_err" || {
-  print -ru2 -- 'FAIL: early Reduce collision omitted new all-todays'
-  exit 1
-}
-! rg -qFx '10000000-0000-1000-8000-000000000000.adoc' "$early_err" || {
-  print -ru2 -- 'FAIL: early Reduce collision claimed old Topic changed'
-  exit 1
-}
-! rg -qFx '10000001-0000-1000-8000-000000000000.adoc' "$early_err" || {
-  print -ru2 -- 'FAIL: early Reduce collision claimed Note changed'
+[[ ! -e "$early_collision/all-todays/$(date +'%Y-%m-%d').adoc" ]] || {
+  print -ru2 -- 'FAIL: early Reduce collision published staged all-todays'
   exit 1
 }
 
@@ -376,7 +371,7 @@ rg -q '^:type: topic$' "$full_success/notes/$new_name" || {
   exit 1
 }
 
-# Recovery diagnostics include existing and newly created all-todays.
+# A staged consumer failure publishes none of the prepared write set.
 for today_case in new existing; do
   root="$fixture/recovery-$today_case"
   if [[ "$today_case" == existing ]]; then
@@ -384,28 +379,38 @@ for today_case in new existing; do
   else
     write_vault "$root"
   fi
+  old_topic_hash="$(hash_file "$root/notes/10000000-0000-1000-8000-000000000000.adoc")"
+  note_hash="$(hash_file "$root/notes/10000001-0000-1000-8000-000000000000.adoc")"
+  if [[ -f "$root/all-todays/$(date +'%Y-%m-%d').adoc" ]]; then
+    today_hash="$(hash_file "$root/all-todays/$(date +'%Y-%m-%d').adoc")"
+  else
+    today_hash=""
+  fi
   if run_reduce "$root" "recovery-$today_case" 'Clean Successor' env \
     ZK_TEST_FAIL_MV_DEST='10000001-0000-1000-8000-000000000000.adoc'; then
     print -ru2 -- "FAIL: Reduce ignored Note failure ($today_case today)"
     exit 1
   fi
-  recovery_err="$fixture/recovery-$today_case.err"
-  rg -qF "$root/all-todays/$(date +'%Y-%m-%d').adoc" "$recovery_err" || {
-    print -ru2 -- "FAIL: recovery list omitted $today_case all-todays"
+  [[ "$(hash_file "$root/notes/10000000-0000-1000-8000-000000000000.adoc")" == "$old_topic_hash" ]] || {
+    print -ru2 -- "FAIL: staged failure changed old Topic ($today_case today)"
     exit 1
   }
-  rg -qFx "$new_name" "$recovery_err" || {
-    print -ru2 -- 'FAIL: recovery list omitted successor'
+  [[ "$(hash_file "$root/notes/10000001-0000-1000-8000-000000000000.adoc")" == "$note_hash" ]] || {
+    print -ru2 -- "FAIL: staged failure changed Note ($today_case today)"
     exit 1
   }
-  rg -qFx '10000000-0000-1000-8000-000000000000.adoc' "$recovery_err" || {
-    print -ru2 -- 'FAIL: recovery list omitted changed old Topic'
-    exit 1
-  }
-  ! rg -qFx '10000001-0000-1000-8000-000000000000.adoc' "$recovery_err" || {
-    print -ru2 -- 'FAIL: recovery list claimed failed Note destination changed'
-    exit 1
-  }
+  [[ ! -e "$root/notes/$new_name" ]] || { print -ru2 -- 'FAIL: staged failure published successor'; exit 1; }
+  if [[ -n "$today_hash" ]]; then
+    [[ "$(hash_file "$root/all-todays/$(date +'%Y-%m-%d').adoc")" == "$today_hash" ]] || {
+      print -ru2 -- 'FAIL: staged failure changed existing all-todays'
+      exit 1
+    }
+  else
+    [[ ! -e "$root/all-todays/$(date +'%Y-%m-%d').adoc" ]] || {
+      print -ru2 -- 'FAIL: staged failure published new all-todays'
+      exit 1
+    }
+  fi
 done
 
 # TOPIC-003/WRITE-SAFE-004: direct and sourced constructors reject empty keys.

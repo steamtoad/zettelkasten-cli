@@ -15,11 +15,17 @@ scripts_dir="${script_dir:h}"
 source "$scripts_dir/lib/paths.zsh"
 source "$scripts_dir/lib/asciidoc.zsh"
 source "$scripts_dir/lib/selection.zsh"
+source "$scripts_dir/lib/transaction.zsh"
 source "$scripts_dir/lib/uuid.zsh"
 source "$scripts_dir/objects/diary-create.zsh"
 source "$script_dir/lib/today.zsh"
 
 zk_require_command vim || exit 1
+
+if [[ -z "${ZK_TXN_STAGE_MODE:-}" ]]; then
+  zk_txn_run_staged_workflow diary "$0" "$@"
+  exit $?
+fi
 
 zt_diary_state_file() {
   print -r -- "$(zk_home)/.last-diary"
@@ -81,5 +87,5 @@ fi
 
 print -r -- "$fname" > "$last_diary_file" || exit 1
 
-vim "$diary_path" || exit $?
-print -r -- "$link"
+zk_txn_open_editor "$diary_path" || exit $?
+zk_txn_defer_output "$link"

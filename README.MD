@@ -106,6 +106,8 @@ Reduce создаёт новое поколение Topic, сохраняя ис
 
 Отмена `fzf` не изменяет Vault. Отсутствующая зависимость, ошибка selector или изменение выбранной цели после показа завершают команду диагностикой до mutation. Во всех workflow `ZK_HOME` имеет приоритет; для Inbox `ZETTELKASTEN_ROOT` остаётся совместимым fallback.
 
+Многофайловые creation, Diary, Continue, Reduce и Refine выполняются через persistent transaction в `.state/transactions`: исходный Vault изменяется только после подготовки staged write set и повторной проверки fingerprints. Незавершённую операцию показывают следующий writer и `zt-check`. Явное восстановление запускается командой `zsh scripts/lib/transaction.zsh recover "$ZK_HOME/.state/transactions/ID"`; повторный recovery идемпотентен.
+
 ---
 
 ## Агентная система разработки
@@ -236,6 +238,8 @@ This allows the knowledge base to evolve without losing its past.
 `zt-find.zsh` and `zt-read.zsh` perform case-insensitive literal full-content search, including document bodies. `zt-edit.zsh`, `zt-getlink.zsh`, and specialized selectors display `UUID.adoc - description` and search descriptions; the exact basename and fingerprint are carried separately from display text.
 
 Cancelling `fzf` leaves the Vault unchanged. A missing dependency, selector failure, or target changed after display stops the command before mutation. `ZK_HOME` takes precedence throughout; Inbox retains `ZETTELKASTEN_ROOT` as a compatibility fallback.
+
+Multi-file creation, Diary, Continue, Reduce, and Refine workflows use persistent transactions under `.state/transactions`: the original Vault changes only after a staged write set and fingerprint revalidation are complete. The next writer and `zt-check` report interrupted transactions. Explicit recovery is `zsh scripts/lib/transaction.zsh recover "$ZK_HOME/.state/transactions/ID"`; repeating a successful recovery is idempotent.
 
 ---
 

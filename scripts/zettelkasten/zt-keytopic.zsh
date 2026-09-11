@@ -14,8 +14,15 @@ scripts_dir="${script_dir:h}"
 source "$scripts_dir/lib/paths.zsh"
 source "$scripts_dir/lib/asciidoc.zsh"
 source "$scripts_dir/lib/selection.zsh"
+source "$scripts_dir/lib/transaction.zsh"
 source "$scripts_dir/objects/topic-create.zsh"
 source "$script_dir/lib/today.zsh"
+
+if [[ -z "${ZK_TXN_STAGE_MODE:-}" ]]; then
+  zk_require_command vim || exit 1
+  zk_txn_run_staged_workflow keytopic "$0" "$@"
+  exit $?
+fi
 
 read -r "?Введите название для новой ключевой темы: " key
 [[ -n "$key" ]] || exit 1
@@ -27,5 +34,5 @@ fname="$(zk_topic_create "$title" "$key" "topic" "$title")" || exit 1
 link="$(zk_link "$fname" "$title")"
 
 zt_today_append "$fname" "$title" || exit 1
-vim "$(zk_note_path "$fname")" || exit $?
-print -r -- "$link"
+zk_txn_open_editor "$(zk_note_path "$fname")" || exit $?
+zk_txn_defer_output "$link"

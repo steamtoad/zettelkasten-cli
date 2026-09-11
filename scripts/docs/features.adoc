@@ -254,6 +254,7 @@ feature list и прежние стабильные ID.
 * `CORE-005` — общая библиотека Workspace для безопасного именования, проверки наличия и выбора рабочей области.
 * `CORE-006` — общая нейтральная selector library проверяет `fzf`/editor dependencies до записи, различает cancel/no-result/error и повторно проверяет identity, type, active status и fingerprint выбранной цели.
 * `WRITE-SAFE-001`–`WRITE-SAFE-004` — атомарная одиночная замена с проверкой mode/owner/group/ACL policy, exclusive create с identity-aware Refine rollback, проверка producer/consumer и полный recovery-list Reduce, включая `all-todays`.
+* `TXN-001`–`TXN-004` — многофайловые creation/Diary/Continue/Reduce/Refine workflows выполняются в staged Vault с persistent manifest/backups, cooperative lock, per-target fingerprint revalidation, проверяемым rollback и идемпотентным recovery из `.state/transactions`.
 
 == Публикация
 

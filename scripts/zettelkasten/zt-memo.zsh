@@ -13,9 +13,17 @@ scripts_dir="${script_dir:h}"
 
 source "$scripts_dir/lib/paths.zsh"
 source "$scripts_dir/lib/asciidoc.zsh"
+source "$scripts_dir/lib/transaction.zsh"
 source "$scripts_dir/objects/memo-create.zsh"
 source "$script_dir/lib/today.zsh"
 source "$script_dir/lib/bindings.zsh"
+
+if [[ -z "${ZK_TXN_STAGE_MODE:-}" ]]; then
+  zt_require_fzf || exit 1
+  zk_require_command vim || exit 1
+  zk_txn_run_staged_workflow memo "$0" "$@"
+  exit $?
+fi
 
 read -r "?Введите название для нового Memo: " key
 [[ -n "$key" ]] || exit 1
@@ -84,5 +92,5 @@ if [[ -n "$topic_file" ]]; then
   zt_bind_memo_to_topic "$fname" "$topic_file" || exit 1
 fi
 
-vim "$(zk_note_path "$fname")" || exit $?
-print -r -- "$link"
+zk_txn_open_editor "$(zk_note_path "$fname")" || exit $?
+zk_txn_defer_output "$link"

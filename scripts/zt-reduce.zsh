@@ -16,6 +16,7 @@ source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/uuid.zsh"
 source "$script_dir/lib/asciidoc.zsh"
 source "$script_dir/lib/selection.zsh"
+source "$script_dir/lib/transaction.zsh"
 source "$script_dir/objects/topic-create.zsh"
 source "$script_dir/zettelkasten/lib/today.zsh"
 
@@ -319,6 +320,13 @@ confirm_reduce() {
   [[ "$answer" == [yY] ]]
 }
 
+if [[ -z "${ZK_TXN_STAGE_MODE:-}" ]]; then
+  zk_require_fzf || exit 1
+  zk_require_command vim || exit 1
+  zk_txn_run_staged_workflow reduce "$0" "$@"
+  exit $?
+fi
+
 zk_require_fzf || exit 1
 zk_require_command vim || exit 1
 zk_ensure_notes_dir || reduce_write_failed
@@ -484,12 +492,11 @@ for memo_file in "${active_memo_files[@]}"; do
   record_changed_file "$memo_file"
 done
 
-vim "$new_fname" || exit $?
-
-print -r -- "Reduce complete"
-print -r -- "Old Topic: $old_topic"
-print -r -- "New Topic: $new_fname"
-print -r -- "Deprecated Memo: ${#active_memo_files}"
-print -r -- "Linked Note: ${#active_note_files}"
-
-print -r -- "$new_link"
+zk_txn_open_editor "$(zk_note_path "$new_fname")" || exit $?
+zk_txn_defer_output \
+  "Reduce complete" \
+  "Old Topic: $old_topic" \
+  "New Topic: $new_fname" \
+  "Deprecated Memo: ${#active_memo_files}" \
+  "Linked Note: ${#active_note_files}" \
+  "$new_link"

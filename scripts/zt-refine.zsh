@@ -15,6 +15,7 @@ source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/uuid.zsh"
 source "$script_dir/lib/asciidoc.zsh"
 source "$script_dir/lib/selection.zsh"
+source "$script_dir/lib/transaction.zsh"
 source "$script_dir/objects/topic-create.zsh"
 source "$script_dir/zettelkasten/lib/today.zsh"
 
@@ -240,6 +241,13 @@ rollback_apply() {
     fi
   fi
 }
+
+if [[ -z "${ZK_TXN_STAGE_MODE:-}" ]]; then
+  zk_require_fzf || exit 1
+  zk_require_command vim || exit 1
+  zk_txn_run_staged_workflow refine "$0" "$@"
+  exit $?
+fi
 
 zk_require_fzf || exit 1
 zk_require_command vim || exit 1
@@ -519,15 +527,18 @@ trap - INT TERM HUP
 
 rm -rf "$stage_dir" "$backup_dir"
 
-vim "$new_fname" || exit $?
+zk_txn_open_editor "$(zk_note_path "$new_fname")" || exit $?
 
-print -r -- "Refine complete"
-print -r -- "Source Topic: $source_topic"
-print -r -- "New Topic: $new_fname"
-print -r -- "Rekeyed Documents: ${#selected_files}"
-print -r -- "Archived Source Topic: $archive_source"
+typeset -a refine_output
+refine_output=(
+  "Refine complete"
+  "Source Topic: $source_topic"
+  "New Topic: $new_fname"
+  "Rekeyed Documents: ${#selected_files}"
+  "Archived Source Topic: $archive_source"
+)
 if [[ "$archive_source" == "Да" ]]; then
-  print -r -- "Archived Unselected Documents: ${#unselected_files}"
+  refine_output+=("Archived Unselected Documents: ${#unselected_files}")
 fi
-
-print -r -- "$new_link"
+refine_output+=("$new_link")
+zk_txn_defer_output "${refine_output[@]}"

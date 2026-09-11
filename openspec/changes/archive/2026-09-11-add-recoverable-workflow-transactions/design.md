@@ -31,6 +31,8 @@ Cooperative vault lock сериализует CLI writers; перед каждо
 
 - `fix-atomic-document-writes`.
 - `unify-asciidoc-metadata-and-links`.
+- `validate-diary-and-memo-chains`.
+- `standardize-cli-preflight-and-selection`.
 
 Новые требования принадлежат только этому Change. Полные MODIFIED blocks используют точное baseline имя и stable ID. Перед интеграцией сверяются current baseline и связанные changes; при изменении одного ID выполняется явное объединение, не last-writer-wins.
 Существующие `refactor-diary-as-plugin`, `refactor-inbox-as-plugin`, `refactor-workspace-as-plugin`, `add-knowledge-plugin` и `add-openspec-archive-contract` сохраняют своих владельцев. Разделение plugin directories не является предпосылкой локального исправления безопасности; после relocation применяются те же поведенческие контракты.

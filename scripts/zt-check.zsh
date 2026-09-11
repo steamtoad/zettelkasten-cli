@@ -13,6 +13,7 @@ script_dir="${0:A:h}"
 source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/asciidoc.zsh"
 source "$script_dir/lib/uuid.zsh"
+source "$script_dir/lib/transaction.zsh"
 
 zk="$(zk_home)"
 notes_dir="$(zk_notes_dir)"
@@ -139,6 +140,16 @@ print -r -- "== Repository structure"
 [[ -d "$notes_dir" ]] && ok "notes" || err "notes not found"
 [[ -d "$zk/.scripts" ]] && ok ".scripts" || err ".scripts not found"
 [[ -f "$zk/.last-diary" ]] && ok ".last-diary" || warn ".last-diary not found"
+
+pending_transactions="$(zk_txn_pending_paths)"
+if [[ -n "$pending_transactions" ]]; then
+  while IFS= read -r pending_transaction; do
+    [[ -n "$pending_transaction" ]] || continue
+    err "RECOVERY_REQUIRED $pending_transaction"
+  done <<< "$pending_transactions"
+else
+  ok "transactions"
+fi
 
 typeset -a note_files
 note_files=("$notes_dir"/*.adoc)

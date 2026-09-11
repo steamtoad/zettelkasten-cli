@@ -1,6 +1,6 @@
 = Требования и инварианты zettelkasten-cli
 :revdate: 2026-09-11
-:revnumber: 15
+:revnumber: 16
 :toc:
 
 == Назначение документа
@@ -394,6 +394,13 @@
 * `SAFE-003 [ROADMAP]` — разрушительные и массовые операции должны поддерживать предварительный просмотр или явное подтверждение.
 * `SAFE-004 [INVARIANT]` — операция не изменяет документы, не входящие в явно выбранную область действия.
 * `SAFE-005 [PROCESS]` — локальный совместимый патч предпочтительнее большого рефакторинга без миграционного обоснования.
+
+== Восстановимые workflow transactions
+
+* `TXN-001 [IMPLEMENTED]` — creation workflows с activity/bindings, Diary, Continue, Reduce и Refine готовят persistent manifest, backups и staged Vault до первой knowledge-записи; success публикуется только после postflight всего ordered write set.
+* `TXN-002 [IMPLEMENTED]` — apply failure запускает проверяемый rollback; неполное восстановление возвращает `RECOVERY_REQUIRED`, перечисляет transaction/backup path и не сообщает ложный полный откат, а подтверждённый rollback восстанавливает bytes/modes и удаляет собственные partial targets.
+* `TXN-003 [IMPLEMENTED]` — cooperative Vault lock сериализует writers, source identity/fingerprint и expected absence повторно проверяются перед каждой заменой, а внешний edit сохраняется с `STATE_CONFLICT`.
+* `TXN-004 [IMPLEMENTED]` — незавершённая transaction сохраняется в `.state/transactions`, обнаруживается следующим writer и `zt-check`, а явный `transaction.zsh recover` идемпотентен и не перезаписывает чужую identity.
 
 == Безопасность файловой записи
 

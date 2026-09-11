@@ -50,6 +50,8 @@ Reduce не имеет общего rollback; Refine скрывает ошибк
 
 - `fix-atomic-document-writes`.
 - `unify-asciidoc-metadata-and-links`.
+- `validate-diary-and-memo-chains`.
+- `standardize-cli-preflight-and-selection`.
 
 ## Verification
 
