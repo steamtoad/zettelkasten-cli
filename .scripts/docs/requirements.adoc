@@ -353,6 +353,7 @@
 * `CHECK-021 [ROADMAP]` — интеграционный тест подтверждает, что ошибка разбора заголовка не приводит к добавлению `:deprecated:` в тело или конец документа.
 * `CHECK-022 [IMPLEMENTED]` — metadata scanner прекращает разбор header на первой пустой строке после title и не принимает атрибутоподобные строки body за обязательные metadata или `:deprecated:`.
 * `CHECK-023 [IMPLEMENTED]` — repository regression suite на временном `ZK_HOME` проверяет canonical constructors Note, Memo, Todo, Diary и Topic, обязательные metadata, UUID filename, успешную проверку валидного Vault и обнаружение broken link через `zt-check`.
+* `SCRIPT-FORMAT-001 [IMPLEMENTED]` — `zt-scripts-patch --check` работает read-only, отдельно диагностирует пустые файлы и файлы без LF; fix-режим передаёт ошибки записи и не сообщает ложный `patched`.
 
 == Workflow
 
@@ -372,6 +373,13 @@
 * `SAFE-003 [ROADMAP]` — разрушительные и массовые операции должны поддерживать предварительный просмотр или явное подтверждение.
 * `SAFE-004 [INVARIANT]` — операция не изменяет документы, не входящие в явно выбранную область действия.
 * `SAFE-005 [PROCESS]` — локальный совместимый патч предпочтительнее большого рефакторинга без миграционного обоснования.
+
+== Безопасность файловой записи
+
+* `WRITE-SAFE-001 [INVARIANT]` — одиночная замена постоянного файла подготавливается рядом с целью и сохраняет исходные байты и mode при ошибке подготовки.
+* `WRITE-SAFE-002 [IMPLEMENTED]` — Reduce проверяет каждую обязательную запись, прекращает архивирование после ошибки связи и сообщает уже затронутые файлы для восстановления.
+* `WRITE-SAFE-003 [INVARIANT]` — constructors, Reduce/Refine successor и Workspace create используют exclusive create и не перезаписывают обычный файл или symlink при коллизии.
+* `WRITE-SAFE-004 [INVARIANT]` — Continue, read, binding и creation entrypoints передают ошибки обязательного чтения, записи и запуска редактора без итогового success output.
 
 == Развитие проекта
 

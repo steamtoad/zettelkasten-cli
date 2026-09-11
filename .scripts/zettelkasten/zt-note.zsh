@@ -57,5 +57,5 @@ if [[ -n "$memo_file" ]]; then
   zt_bind_note_to_memo "$fname" "$memo_file" || exit 1
 fi
 
-vim "$(zk_note_path "$fname")"
+vim "$(zk_note_path "$fname")" || exit $?
 print -r -- "$link"

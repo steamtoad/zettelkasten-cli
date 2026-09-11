@@ -53,5 +53,5 @@ fi
 
 print -r -- "$fname" > "$last_diary_file" || exit 1
 
-vim "$diary_path"
+vim "$diary_path" || exit $?
 print -r -- "$link"

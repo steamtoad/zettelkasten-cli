@@ -69,12 +69,9 @@ fi
 
 zt_today_append "$new_fname" "$title" || exit 1
 
-{
-  print -r -- "$previous_link"
-} >> "$new_fname" || exit 1
+zk_append_text_atomic "$new_fname" "$previous_link" || exit 1
+zk_append_text_atomic "$source_file" "| $forward_link" || exit 1
 
-print -r -- "| $forward_link" >> "$source_file"
-
-vim "$new_fname"
+vim "$new_fname" || exit $?
 
 print -r -- "$new_link"

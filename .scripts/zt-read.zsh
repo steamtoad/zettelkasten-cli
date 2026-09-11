@@ -30,6 +30,9 @@ for file in notes/*.adoc; do
   zk_is_deprecated "$file" && continue
   grep -qiF -- "$key" "$file" || continue
 
-  cat "$file"
+  cat -- "$file" || {
+    print -ru2 -- "ERROR cannot read file: $file"
+    exit 1
+  }
   print -r -- ""
 done

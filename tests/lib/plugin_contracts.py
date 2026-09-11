@@ -109,8 +109,9 @@ def diary(v):
     assert ":type: diary" in body and f":docfilename: {one}" in body
     assert "= Diary - 05-09-2026" in body
     assert first.stdout == f"link:{one}[Diary - 05-09-2026]\n"
-    # Existing Diary reports the link even when Vim exits nonzero.
-    v.run("zt-diary.zsh", EDITOR_EXIT="37")
+    # Creation entrypoints propagate editor failures and omit the success link.
+    editor_failure = v.run("zt-diary.zsh", code=37, EDITOR_EXIT="37")
+    assert editor_failure.stdout == ""
     two = state.read_text().strip()
     assert two != one
     assert f"| link:{two}[Следующая запись]" in (v.home / "notes" / one).read_text()

@@ -63,5 +63,5 @@ if [[ -n "$topic_file" ]]; then
   zt_bind_memo_to_topic "$fname" "$topic_file" || exit 1
 fi
 
-vim "$(zk_note_path "$fname")"
+vim "$(zk_note_path "$fname")" || exit $?
 print -r -- "$link"

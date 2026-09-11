@@ -28,18 +28,10 @@ zk_diary_create() {
   fname="$(zk_new_adoc_filename)" || return 1
   target_path="$(zk_note_path "$fname")"
 
-  [[ ! -e "$target_path" ]] || {
-    print -ru2 -- "ERROR target already exists: $target_path"
-    return 1
-  }
-
   {
     zk_metadata "$fname" "$title" "$keywords" "diary" "$description"
     print -r -- ""
-  } > "$target_path" || {
-    rm -f "$target_path"
-    return 1
-  }
+  } | zk_create_exclusive_from_stdin "$target_path" || return 1
 
   print -r -- "$fname"
 }

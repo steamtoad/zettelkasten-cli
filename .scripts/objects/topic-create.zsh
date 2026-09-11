@@ -62,15 +62,12 @@ zk_topic_create() {
   fname="$(zk_new_adoc_filename)" || return 1
   target_path="$(zk_note_path "$fname")"
 
-  [[ ! -e "$target_path" ]] || {
-    print -ru2 -- "ERROR target already exists: $target_path"
-    return 1
-  }
-
-  zk_topic_write "$target_path" "$fname" "$title" "$key_topic" "$keywords" "$description" || {
-    rm -f "$target_path"
-    return 1
-  }
+  {
+    zk_metadata "$fname" "$title" "$keywords" "topic" "$description"
+    print -r -- ":key-topic: $key_topic"
+    print -r -- ""
+    print -r -- ""
+  } | zk_create_exclusive_from_stdin "$target_path" || return 1
 
   print -r -- "$fname"
 }

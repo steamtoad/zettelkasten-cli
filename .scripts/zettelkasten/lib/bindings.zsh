@@ -180,7 +180,7 @@ zt_bind_note_to_memo() {
   note_link="$(zk_link "$note_fname" "$note_description")"
 
   zk_append_related_link "$note_file" "== Связи" "Memo" "$memo_link" || return 1
-  zk_append_related_link "$memo_file" "== Связанные note" "" "$note_link"
+  zk_append_related_link "$memo_file" "== Связанные note" "" "$note_link" || return 1
 }
 
 zt_bind_memo_to_topic() {
@@ -209,5 +209,5 @@ zt_bind_memo_to_topic() {
   memo_link="$(zk_link "$memo_fname" "$memo_description")"
 
   zk_append_related_link "$memo_file" "== Связи" "Topic" "$topic_link" || return 1
-  zk_append_related_link "$topic_file" "== Связанные memo" "" "$memo_link"
+  zk_append_related_link "$topic_file" "== Связанные memo" "" "$memo_link" || return 1
 }

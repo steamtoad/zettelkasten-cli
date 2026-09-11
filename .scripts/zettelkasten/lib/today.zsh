@@ -24,7 +24,7 @@ zt_ensure_today() {
     {
       print -r -- "= Заметки за $(date +"%d-%m-%Y")"
       print -r -- ""
-    } > "$today_file" || return 1
+    } | zk_create_exclusive_from_stdin "$today_file" || [[ -f "$today_file" ]] || return 1
   fi
 }
 
@@ -59,5 +59,5 @@ zt_today_append() {
   }
 
   zt_ensure_today || return 1
-  zt_today_entry "$fname" "$title" >> "$(zt_today_file)"
+  zk_append_text_atomic "$(zt_today_file)" "$(zt_today_entry "$fname" "$title")"
 }

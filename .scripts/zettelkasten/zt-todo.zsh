@@ -24,5 +24,5 @@ fname="$(zk_todo_create "$title" "todo" "$title")" || exit 1
 link="$(zk_link "$fname" "$title")"
 
 zt_today_append "$fname" "$title" || exit 1
-vim "$(zk_note_path "$fname")"
+vim "$(zk_note_path "$fname")" || exit $?
 print -r -- "$link"

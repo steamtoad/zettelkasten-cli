@@ -512,11 +512,19 @@ trap 'rollback_apply; print -ru2 -- "ERROR Refine interrupted; changes rolled ba
 
 for file in "$source_topic" "${selected_files[@]}" "${unselected_files[@]}" "$new_fname"; do
   [[ -f "$stage_dir/$file" ]] || continue
-  cp "$stage_dir/$file" "$file" || apply_failed=1
+  if [[ "$file" == "$new_fname" ]]; then
+    cat -- "$stage_dir/$file" | zk_create_exclusive_from_stdin "$file" || apply_failed=1
+  else
+    zk_replace_from_file_atomic "$file" "$stage_dir/$file" || apply_failed=1
+  fi
 done
 
 mkdir -p "${today_file:h}" || apply_failed=1
-cp "$stage_dir/all-todays/${today_file:t}" "$today_file" || apply_failed=1
+if [[ -f "$today_file" ]]; then
+  zk_replace_from_file_atomic "$today_file" "$stage_dir/all-todays/${today_file:t}" || apply_failed=1
+else
+  cat -- "$stage_dir/all-todays/${today_file:t}" | zk_create_exclusive_from_stdin "$today_file" || apply_failed=1
+fi
 
 if (( apply_failed )); then
   rollback_apply
@@ -528,6 +536,8 @@ trap - INT TERM HUP
 
 rm -rf "$stage_dir" "$backup_dir"
 
+vim "$new_fname" || exit $?
+
 print -r -- "Refine complete"
 print -r -- "Source Topic: $source_topic"
 print -r -- "New Topic: $new_fname"
@@ -536,7 +546,5 @@ print -r -- "Archived Source Topic: $archive_source"
 if [[ "$archive_source" == "Да" ]]; then
   print -r -- "Archived Unselected Documents: ${#unselected_files}"
 fi
-
-vim "$new_fname"
 
 print -r -- "$new_link"

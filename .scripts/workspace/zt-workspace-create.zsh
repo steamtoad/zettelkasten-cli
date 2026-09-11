@@ -10,6 +10,7 @@ emulate -L zsh
 
 script_dir="${0:A:h}"
 source "$script_dir/../lib/paths.zsh"
+source "$script_dir/../lib/asciidoc.zsh"
 source "$script_dir/lib/workspace.zsh"
 
 read -r "?Введите название рабочего места: " title
@@ -32,16 +33,11 @@ workspace_path="$workspaces_dir/$fname"
 
 mkdir -p "$workspaces_dir" || exit 1
 
-if [[ -e "$workspace_path" ]]; then
-  print -ru2 -- "ERROR workspace already exists: workspaces/$fname"
-  exit 1
-fi
-
 {
   print -r -- "= $title"
   print -r -- ""
   print -r -- "== Документы"
   print -r -- ""
-} > "$workspace_path" || exit 1
+} | zk_create_exclusive_from_stdin "$workspace_path" || exit 1
 
 print -r -- "workspaces/$fname"

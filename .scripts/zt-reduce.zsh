@@ -87,7 +87,7 @@ mark_deprecated() {
 
   is_header_deprecated "$file" && return 0
 
-  tmp="$(mktemp "${TMPDIR:-/tmp}/zk-deprecated.XXXXXX")" || return 1
+  tmp="$(mktemp "${file:h}/.${file:t}.deprecated.XXXXXX")" || return 1
 
   if ! awk '
     BEGIN {
@@ -136,12 +136,10 @@ mark_deprecated() {
     return 1
   fi
 
-  if ! cat "$tmp" > "$file"; then
-    rm -f "$tmp"
+  if ! zk_replace_with_prepared_file "$file" "$tmp"; then
+    print -ru2 -- "ERROR prepared replacement retained for recovery: $tmp"
     return 1
   fi
-
-  rm -f "$tmp"
 }
 
 create_full_copy_topic() {
@@ -199,7 +197,7 @@ create_full_copy_topic() {
       {
         print
       }
-    ' "$src" > "$dst"
+    ' "$src" | zk_create_exclusive_from_stdin "$dst"
 }
 
 create_clean_topic() {
@@ -208,7 +206,12 @@ create_clean_topic() {
   local title="$3"
   local key_topic="$4"
 
-  zk_topic_write "$dst" "$new_fname" "$title" "$key_topic" "topic" "$title"
+  {
+    zk_metadata "$new_fname" "$title" "topic" "topic" "$title"
+    print -r -- ":key-topic: $key_topic"
+    print -r -- ""
+    print -r -- ""
+  } | zk_create_exclusive_from_stdin "$dst"
 }
 
 validate_topic_metadata() {
@@ -401,16 +404,28 @@ case "$mode" in
     ;;
 esac
 
-new_description="$(zk_link_description "$new_fname")"
-old_description="$(zk_link_description "$old_topic")"
+typeset -a changed_files
+changed_files=("$new_fname")
 
-new_link="$(zk_link "$new_fname" "$new_description")"
-old_link="$(zk_link "$old_topic" "$old_description")"
+reduce_write_failed() {
+  print -ru2 -- "ERROR Reduce write failed"
+  print -ru2 -- "Already changed files:"
+  print -rlu2 -- "${changed_files[@]}"
+  print -ru2 -- "Recovery: inspect these files before retrying Reduce"
+  exit 1
+}
 
-zt_today_append "$new_fname" "$new_description" || exit 1
+new_description="$(zk_link_description "$new_fname")" || reduce_write_failed
+old_description="$(zk_link_description "$old_topic")" || reduce_write_failed
 
-zk_append_related_link "$old_topic" "== Связанные Topic" "Развитие" "$new_link"
-zk_append_related_link "$new_fname" "== Связанные Topic" "Основано на" "$old_link"
+new_link="$(zk_link "$new_fname" "$new_description")" || reduce_write_failed
+old_link="$(zk_link "$old_topic" "$old_description")" || reduce_write_failed
+
+zt_today_append "$new_fname" "$new_description" || reduce_write_failed
+
+zk_append_related_link "$old_topic" "== Связанные Topic" "Развитие" "$new_link" || reduce_write_failed
+changed_files+=("$old_topic")
+zk_append_related_link "$new_fname" "== Связанные Topic" "Основано на" "$old_link" || reduce_write_failed
 
 # Notes are durable knowledge units.
 # Reduce links active Notes to the new Topic, but never deprecates Notes.
@@ -418,23 +433,25 @@ for note_file in "${active_note_files[@]}"; do
   note_description="$(zk_link_description "$note_file")"
   note_link="$(zk_link "$note_file" "$note_description")"
 
-  zk_append_related_link "$new_fname" "== Связанные note" "" "$note_link"
-  zk_append_related_link "$note_file" "== Связи" "Topic" "$new_link"
+  zk_append_related_link "$new_fname" "== Связанные note" "" "$note_link" || reduce_write_failed
+  zk_append_related_link "$note_file" "== Связи" "Topic" "$new_link" || reduce_write_failed
+  changed_files+=("$note_file")
 done
 
 # Reduce deprecates only the old Topic and active Memo with the same :key-topic:.
-mark_deprecated "$old_topic" || exit 1
+mark_deprecated "$old_topic" || reduce_write_failed
 
 for memo_file in "${active_memo_files[@]}"; do
-  mark_deprecated "$memo_file" || exit 1
+  mark_deprecated "$memo_file" || reduce_write_failed
+  changed_files+=("$memo_file")
 done
+
+vim "$new_fname" || exit $?
 
 print -r -- "Reduce complete"
 print -r -- "Old Topic: $old_topic"
 print -r -- "New Topic: $new_fname"
 print -r -- "Deprecated Memo: ${#active_memo_files}"
 print -r -- "Linked Note: ${#active_note_files}"
-
-vim "$new_fname"
 
 print -r -- "$new_link"

@@ -229,6 +229,7 @@ feature list и прежние стабильные ID.
 == Обслуживание и инфраструктура
 
 * `MAINT-001` — исправление отсутствующего завершающего LF в CLI-скриптах через `zt-scripts-patch.zsh`.
+* `SCRIPT-FORMAT-001` — read-only режим `zt-scripts-patch.zsh --check`, отдельная диагностика пустых файлов и достоверные ошибки исправления.
 * `MAINT-002` — вывод всех CLI-скриптов и библиотек для ревью через `zt-scripts-review.zsh`.
 * `MAINT-003` — проверка и вывод всех управляемых OpenClaw-навыков `zettelkasten-*/SKILL.md` через integration-команду `zt-skills-review.zsh`.
 * `MAINT-004` — `zt-skills-review.zsh` использует `ZK_SKILLS_HOME` или `$HOME/.openclaw/workspace/skills`, сверяет runtime skills с `.scripts/docs/managed-skills.adoc`, SHA-256, script mapping и обязательными Detailed Note, затем выводит read-only секции; отсутствие или несовпадение managed skills является ошибкой.
@@ -238,6 +239,7 @@ feature list и прежние стабильные ID.
 * `CORE-003` — локализованные русские приглашения, сообщения и заголовки.
 * `CORE-004` — использование zsh как языка CLI-скриптов.
 * `CORE-005` — общая библиотека Workspace для безопасного именования, проверки наличия и выбора рабочей области.
+* `WRITE-SAFE-001`–`WRITE-SAFE-004` — атомарная одиночная замена, exclusive create и передача ошибок записи через вызывающий CLI.
 
 == Публикация
 
