@@ -21,7 +21,7 @@ print -r -- 'stale' > "$destination/dev/skills/stale.txt"
 
 ZK_DEV_HOME="$repo" ZK_PUBLISH_HOME="$destination" "$publisher" --apply >/dev/null
 
-for d in scripts openspec dev/skills tests; do
+for d in scripts dev/scripts openspec dev/skills tests; do
   [[ -d "$destination/$d" ]] || { print -u2 -- "FAIL: published directory missing: $d"; exit 1; }
 done
 

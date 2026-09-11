@@ -10,7 +10,7 @@ emulate -L zsh
 setopt errexit pipe_fail no_unset
 
 repo="${0:A:h:h}"
-checker="$repo/scripts/dev/zt-agent-skills-check.zsh"
+checker="$repo/dev/scripts/zt-agent-skills-check.zsh"
 fixture="$(mktemp -d "${TMPDIR:-/tmp}/zt-agent-skills-test.XXXXXX")"
 trap 'rm -rf -- "$fixture"' EXIT HUP INT TERM
 

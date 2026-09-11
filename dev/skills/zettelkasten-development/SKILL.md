@@ -43,7 +43,7 @@ Authorization: L1 for a bounded patch; L2 for an explicitly requested coordinate
 5. Implement the smallest compatible patch. Preserve stable UUID/link/storage contracts unless the task is an authorized migration.
 6. Add or update focused regression tests. Use a temporary `ZK_HOME` for integration behavior.
 7. Update `scripts/docs/features.adoc` for newly confirmed behavior and legacy traceability when IDs/statuses changed.
-8. Run applicable tests, `scripts/dev/zt-openspec-check.zsh`, `scripts/dev/zt-agent-skills-check.zsh`, `git diff --check`, and `zt-check` where the changed behavior touches Vault semantics.
+8. Run applicable tests, `dev/scripts/zt-openspec-check.zsh`, `dev/scripts/zt-agent-skills-check.zsh`, `git diff --check`, and `zt-check` where the changed behavior touches Vault semantics.
 9. Report changed contracts, files, checks, skipped optional tools, and remaining gaps.
 
 Do not commit, tag, push, publish, or apply a persistent-data migration unless separately authorized.

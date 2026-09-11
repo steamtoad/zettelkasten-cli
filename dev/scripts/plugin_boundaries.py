@@ -176,7 +176,7 @@ def check(root):
 
 
 if __name__ == "__main__":
-    root = Path(os.environ.get("ZK_SCRIPTS_ROOT", Path(__file__).resolve().parents[1])).resolve()
+    root = Path(os.environ.get("ZK_SCRIPTS_ROOT", Path(__file__).resolve().parents[2])).resolve()
     count, errors = check(root)
     for error in errors:
         print("ERROR: " + error, file=sys.stderr)

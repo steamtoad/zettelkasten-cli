@@ -146,12 +146,12 @@ Development, migration или runtime process MUST соблюдать следу
 - **THEN** указанное process rule SHALL быть выполнено
 - **AND** его обход SHALL считаться нарушением project contract
 
-### Requirement: DEVAGENT-011 — scripts/dev/zt-agent-skills-check.zsh проверяет packaging development skills, canonical refe...
+### Requirement: DEVAGENT-011 — dev/scripts/zt-agent-skills-check.zsh проверяет packaging development skills, canonical refe...
 
 **Legacy status:** `PROCESS`.
 **Traceability:** `scripts/docs/requirements.adoc` → section `Агент разработки и repo-local development skills`.
 
-Development, migration или runtime process MUST соблюдать следующее правило: `scripts/dev/zt-agent-skills-check.zsh` проверяет packaging development skills, canonical references, authorization levels и корректность OpenSpec requirement references.
+Development, migration или runtime process MUST соблюдать следующее правило: `dev/scripts/zt-agent-skills-check.zsh` проверяет packaging development skills, canonical references, authorization levels и корректность OpenSpec requirement references.
 
 #### Scenario: DEVAGENT-011 contract is verified
 
@@ -165,11 +165,11 @@ Development, migration или runtime process MUST соблюдать следу
 **Legacy status:** `PROCESS`.
 **Traceability:** `scripts/docs/requirements.adoc` → section `Агент разработки и repo-local development skills`.
 
-Development, migration или runtime process MUST соблюдать следующее правило: `scripts/dev/zt-openspec-check.zsh` проверяет, что все действующие legacy requirement ID host CLI и Zettelkasten plugin покрыты OpenSpec baseline ровно один раз, сохраняют legacy status и имеют проверяемый Scenario.
+Development, migration или runtime process MUST соблюдать следующее правило: `dev/scripts/zt-openspec-check.zsh` проверяет, что все действующие legacy requirement ID host CLI и Zettelkasten plugin покрыты OpenSpec baseline ровно один раз, сохраняют legacy status и имеют проверяемый Scenario.
 
 #### Scenario: Legacy status drift is rejected
 
 - **GIVEN** legacy requirement и соответствующий OpenSpec requirement имеют разные status
-- **WHEN** `scripts/dev/zt-openspec-check.zsh` проверяет baseline
+- **WHEN** `dev/scripts/zt-openspec-check.zsh` проверяет baseline
 - **THEN** checker SHALL завершиться ненулевым кодом
 - **AND** diagnostic SHALL назвать requirement ID и оба status

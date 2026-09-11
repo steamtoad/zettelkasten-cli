@@ -46,14 +46,14 @@ Legacy sources с exact-once stable IDs:
 
 [source,zsh]
 ----
-scripts/dev/zt-plugin-boundaries-check.zsh
+dev/scripts/zt-plugin-boundaries-check.zsh
 tests/zt-plugin-boundaries.zsh
 tests/zt-diary-as-plugin.zsh
 tests/zt-inbox-as-plugin.zsh
 tests/zt-workspace-as-plugin.zsh
 tests/zt-plugin-edge-cases.zsh
 tests/zt-runtime-core.zsh
-scripts/dev/zt-openspec-check.zsh
+dev/scripts/zt-openspec-check.zsh
 tests/zt-all.zsh
 openspec validate --all --strict --no-interactive
 git diff --check

@@ -16,7 +16,7 @@ dst="${ZK_PUBLISH_HOME:-$HOME/dev/zettelkasten-cli}"
 
 apply=0
 
-typeset -a publish_dirs=(scripts openspec dev/skills tests)
+typeset -a publish_dirs=(scripts dev/scripts openspec dev/skills tests)
 typeset -a publish_files=(LICENSE README.MD AGENTS.MD .gitignore)
 
 fail() {

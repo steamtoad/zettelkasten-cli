@@ -133,7 +133,7 @@ inbox/ or workspace/ -> objects/
 там, где они уже зафиксированы baseline requirements. Новые такие зависимости не
 добавлять без архитектурного решения. Continue/Reduce/Refine используют today,
 Continue использует bindings; Workspace использует только собственный plugin.
-Проверка зависимостей: `scripts/dev/zt-plugin-boundaries-check.zsh`;
+Проверка зависимостей: `dev/scripts/zt-plugin-boundaries-check.zsh`;
 процедура и ограничения анализатора: `scripts/docs/plugin-development.adoc`.
 
 ---
@@ -395,13 +395,13 @@ For OpenSpec changes:
 
 ```text
 openspec validate --all        # when CLI is available
-scripts/dev/zt-openspec-check.zsh
+dev/scripts/zt-openspec-check.zsh
 ```
 
 For development skills:
 
 ```text
-scripts/dev/zt-agent-skills-check.zsh
+dev/scripts/zt-agent-skills-check.zsh
 ```
 
 For user-data migration:

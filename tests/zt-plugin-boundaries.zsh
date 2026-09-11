@@ -17,7 +17,7 @@ import sys
 import tempfile
 sys.dont_write_bytecode = True
 repo = Path(sys.argv[1])
-spec = importlib.util.spec_from_file_location('boundaries', repo / 'scripts/dev/plugin_boundaries.py')
+spec = importlib.util.spec_from_file_location('boundaries', repo / 'dev/scripts/plugin_boundaries.py')
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 with tempfile.TemporaryDirectory(prefix='zt-boundaries-') as tmp:

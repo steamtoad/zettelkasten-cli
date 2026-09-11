@@ -41,7 +41,7 @@ case "$mode" in
     check_present "$repo_root/AGENTS.MD"
     check_present "$repo_root/openspec/config.yaml"
     check_present "$repo_root/scripts/docs/requirements.adoc"
-    check_present "$repo_root/scripts/dev"
+    check_present "$repo_root/dev/scripts"
     check_present "$repo_root/dev/skills"
     check_absent "$repo_root/.scripts"
     check_absent "$repo_root/skills"

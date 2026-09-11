@@ -39,9 +39,9 @@
 | `AGENTS.MD`, `openspec/config.yaml` | Марта определена как development agent; обычная разработка не разрешает изменения пользовательского Vault |
 | `openspec/specs/agent-governance/spec.md` | Привязка CLI → skill; Skill Workshop; Detailed Note; SHA-256; специальные OpenClaw binding rules |
 | `openspec/specs/development-agent/spec.md` | Семь скиллов разработки, source/data boundary, авторизация и проверки |
-| `scripts/dev/docs/skill-contracts/` | Уже существуют общие development, authorization, migration и release contracts |
-| `scripts/dev/zt-openspec-check.zsh` | Выполнен: `PASS`, 336 legacy requirements покрыты ровно один раз |
-| `scripts/dev/zt-agent-skills-check.zsh` | Выполнен: `PASS`, семь development skills |
+| `dev/scripts/docs/skill-contracts/` | Уже существуют общие development, authorization, migration и release contracts |
+| `dev/scripts/zt-openspec-check.zsh` | Выполнен: `PASS`, 336 legacy requirements покрыты ровно один раз |
+| `dev/scripts/zt-agent-skills-check.zsh` | Выполнен: `PASS`, семь development skills |
 
 SHA-256 исходных архивов:
 
@@ -138,9 +138,9 @@ Archive.zip
 | `Agents/adapters/openclaw/README.md` | Поддерживаемые версии, установка, effective discovery и обновление сессии |
 | `Agents/migrations/` | Импортный отчёт, сопоставление старых и новых путей, принятых редакций |
 | `tests/zt-agent-*.zsh` | Проверки каталога, профилей, routing, установки и поведений |
-| `scripts/dev/` | Детерминированные средства проверки/развёртывания; точные новые CLI определяет соответствующая дельта |
+| `dev/scripts/` | Детерминированные средства проверки/развёртывания; точные новые CLI определяет соответствующая дельта |
 
-Существующие `scripts/dev/docs/skill-contracts/` остаются каноническими development references. Новые runtime contracts не копируют их целиком. Их возможный последующий перенос выполняется отдельно, с проверкой всех ссылок.
+Существующие `dev/scripts/docs/skill-contracts/` остаются каноническими development references. Новые runtime contracts не копируют их целиком. Их возможный последующий перенос выполняется отдельно, с проверкой всех ссылок.
 
 В первой дельте семь development skills перемещаются из `dev/skills/` в `Agents/skills/`. Все repo-local consumers изменяются в том же scope. Старый каталог удаляется только после проверки отсутствия действующих ссылок; две независимо редактируемые копии не сохраняются. Если нужен переходный compatibility export, он помечается generated, имеет срок удаления и не становится источником для авторинга.
 

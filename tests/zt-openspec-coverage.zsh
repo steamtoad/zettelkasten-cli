@@ -10,7 +10,7 @@ emulate -L zsh
 setopt errexit pipe_fail no_unset
 
 repo="${0:A:h:h}"
-checker="$repo/scripts/dev/zt-openspec-check.zsh"
+checker="$repo/dev/scripts/zt-openspec-check.zsh"
 fixture="$(mktemp -d "${TMPDIR:-/tmp}/zt-openspec-test.XXXXXX")"
 trap 'rm -rf -- "$fixture"' EXIT HUP INT TERM
 

@@ -114,7 +114,10 @@ OpenSpec baseline + scripts + tests
 legacy stable-ID traceability + Feature List
 ```
 
-Семь development skills разделяют implementation, OpenSpec changes, script review, system review, validation, migration и release. Общие operational contracts хранятся в `scripts/dev/docs/skill-contracts/`; drift skills и coverage OpenSpec проверяются через `scripts/dev/zt-agent-skills-check.zsh` и `scripts/dev/zt-openspec-check.zsh`. Интеграционные проверки development agent должны использовать временный `ZK_HOME`, а не пользовательские документы.
+Семь development skills разделяют implementation, OpenSpec changes, script review, system review, validation, migration и release. Общие operational contracts хранятся в `dev/scripts/docs/skill-contracts/`; drift skills и coverage OpenSpec проверяются через `dev/scripts/zt-agent-skills-check.zsh` и `dev/scripts/zt-openspec-check.zsh`. Интеграционные проверки development agent должны использовать временный `ZK_HOME`, а не пользовательские документы.
+
+Старый путь `scripts/dev/*` больше не поддерживается; development scripts
+вызываются из `dev/scripts/*`. Совместимый silent fallback не предоставляется.
 
 ## Управляемые runtime-навыки
 
@@ -234,7 +237,10 @@ OpenSpec baseline + scripts + tests
 legacy stable-ID traceability + Feature List
 ```
 
-Seven development skills separate implementation, OpenSpec changes, script review, system review, validation, migration, and release. Shared operational contracts live under `scripts/dev/docs/skill-contracts/`; `scripts/dev/zt-agent-skills-check.zsh` and `scripts/dev/zt-openspec-check.zsh` detect skill drift and OpenSpec coverage regressions. Development integration tests use a temporary `ZK_HOME` rather than user knowledge documents.
+Seven development skills separate implementation, OpenSpec changes, script review, system review, validation, migration, and release. Shared operational contracts live under `dev/scripts/docs/skill-contracts/`; `dev/scripts/zt-agent-skills-check.zsh` and `dev/scripts/zt-openspec-check.zsh` detect skill drift and OpenSpec coverage regressions. Development integration tests use a temporary `ZK_HOME` rather than user knowledge documents.
+
+The former `scripts/dev/*` path is no longer supported; development scripts are
+invoked from `dev/scripts/*`. No silent compatibility fallback is provided.
 
 ## Managed Runtime Skills
 

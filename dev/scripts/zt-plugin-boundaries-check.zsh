@@ -8,4 +8,6 @@
 
 emulate -L zsh
 setopt errexit pipe_fail no_unset
-exec python3 "${0:A:h}/plugin_boundaries.py"
+repo_root="${0:A:h:h:h}"
+ZK_SCRIPTS_ROOT="${ZK_SCRIPTS_ROOT:-${repo_root}/scripts}" \
+  exec python3 "${0:A:h}/plugin_boundaries.py"

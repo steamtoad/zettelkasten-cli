@@ -175,7 +175,7 @@ def diary_existing_today(v):
 
 
 def boundary_substitution(v):
-    spec = importlib.util.spec_from_file_location("boundary", REPO / "scripts/dev/plugin_boundaries.py")
+    spec = importlib.util.spec_from_file_location("boundary", REPO / "dev/scripts/plugin_boundaries.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     root = v.root / "boundary/scripts"

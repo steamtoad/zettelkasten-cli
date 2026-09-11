@@ -32,7 +32,7 @@ Authorization: L0 for analysis/draft; L2 when the user explicitly asks to change
 6. Keep ROADMAP status distinct from verified implementation status in legacy traceability.
 7. Add design only where architecture, migration, rollback/recovery or rejected alternatives need explanation.
 8. Make implementation tasks trace directly to proposal/spec/design.
-9. Run `openspec validate --all` when available and always run `scripts/dev/zt-openspec-check.zsh`.
+9. Run `openspec validate --all` when available and always run `dev/scripts/zt-openspec-check.zsh`.
 10. Report any baseline/implementation mismatch instead of silently editing code outside the requested change.
 
 Do not delete or reuse stable legacy requirement IDs.

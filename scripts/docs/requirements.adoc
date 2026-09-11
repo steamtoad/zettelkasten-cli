@@ -162,8 +162,8 @@
 * `DEVAGENT-008 [PROCESS]` — интеграционные проверки development agent выполняются на временном Zettelkasten через `ZK_HOME`, если тест прямо не является read-only проверкой текущего checkout.
 * `DEVAGENT-009 [PROCESS]` — сложная migration или массовая mutation требует отдельного dry-run/plan, проверки Git preconditions, явного scope и проверки целостности после применения.
 * `DEVAGENT-010 [PROCESS]` — release workflow сначала выполняет dry-run публикации и verification; apply, commit, tag и push не считаются подразумеваемыми одним фактом подготовки release.
-* `DEVAGENT-011 [PROCESS]` — `scripts/dev/zt-agent-skills-check.zsh` проверяет packaging development skills, canonical references, authorization levels и корректность OpenSpec requirement references.
-* `DEVAGENT-012 [PROCESS]` — `scripts/dev/zt-openspec-check.zsh` проверяет, что все действующие legacy requirement ID host CLI и Zettelkasten plugin покрыты OpenSpec baseline ровно один раз, сохраняют legacy status и имеют проверяемый Scenario.
+* `DEVAGENT-011 [PROCESS]` — `dev/scripts/zt-agent-skills-check.zsh` проверяет packaging development skills, canonical references, authorization levels и корректность OpenSpec requirement references.
+* `DEVAGENT-012 [PROCESS]` — `dev/scripts/zt-openspec-check.zsh` проверяет, что все действующие legacy requirement ID host CLI и Zettelkasten plugin покрыты OpenSpec baseline ровно один раз, сохраняют legacy status и имеют проверяемый Scenario.
 
 == Миграции
 

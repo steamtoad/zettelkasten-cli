@@ -22,7 +22,7 @@ Authorization: L0 for repository/static checks and read-only validation. Tempora
 ## Workflow
 
 1. Determine the narrowest sufficient validation scope: files, capability, integration workflow, or whole repository.
-2. Run `scripts/dev/zt-openspec-check.zsh` and `scripts/dev/zt-agent-skills-check.zsh` when their artifacts are in scope.
+2. Run `dev/scripts/zt-openspec-check.zsh` and `dev/scripts/zt-agent-skills-check.zsh` when their artifacts are in scope.
 3. Run relevant regression tests; prefer `tests/zt-all.zsh` for full repository validation.
 4. For Vault semantics, create/use a temporary `ZK_HOME` and run `scripts/zt-check.zsh` there unless the user explicitly requested read-only validation of a real Vault.
 5. Run `git diff --check` on changed files. Run `shellcheck`/`asciidoctor`/`openspec validate --all` when available and applicable.
