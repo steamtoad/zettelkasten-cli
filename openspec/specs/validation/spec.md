@@ -25,7 +25,13 @@
 **Legacy status:** `IMPLEMENTED`.
 **Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
-Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-check` проверяет структуру репозитория, заголовки, обязательные метаданные, известные типы, `:docfilename:`, `:doclink:`, ссылки, `all-todays`, `.last-diary` и существование элементов diary-цепочки.
+Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-check` проверяет структуру хранилища, title, обязательные metadata, domain types, `:docfilename:`, `:doclink:`, links, `all-todays`, `.last-diary`, Diary и Memo chains. Инициализированный Vault без Diary и `.last-diary` допустим; при наличии Diary pointer и chain graph должны быть согласованы.
+
+#### Scenario: Инициализированный пустой Vault
+
+- **GIVEN** существуют `notes/`, `all-todays/`, `workspaces/` и `.scripts/`, но Diary ещё нет
+- **WHEN** выполнен `zt-check`
+- **THEN** структурная проверка проходит без искусственного первого Diary
 
 #### Scenario: CHECK-002 contract is verified
 

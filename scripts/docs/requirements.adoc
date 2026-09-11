@@ -81,6 +81,12 @@
 * `DATA-003 [IMPLEMENTED]` — Diary образует двунаправленную хронологическую цепочку; индексом активности является `all-todays`.
 * `DATA-004 [IMPLEMENTED]` — Topic агрегирует только явно связанные с ней Memo и Note.
 
+== Проверка цепочек
+
+* `CHAIN-CHECK-001 [IMPLEMENTED]` — `zt-diary` до первой записи проверяет UUID v1 basename, существование, `:type: diary:` и отсутствие следующей записи у `.last-diary`; отсутствующий pointer допустим только в инициализированном Vault без Diary.
+* `CHAIN-CHECK-002 [IMPLEMENTED]` — `zt-check` проверяет Diary graph на type, взаимность, единственные previous/next, циклы, единую компоненту, pointer на хвост и неубывающую дату, допуская несколько записей одной даты.
+* `CHAIN-CHECK-003 [IMPLEMENTED]` — `zt-continue` и `zt-check` учитывают Memo chain links только вне opaque blocks, проверяют основную линию, взаимность, type и циклы и допускают несколько веток.
+
 == Topic и тематический ключ
 
 * `TOPIC-001 [INVARIANT]` — `:key-topic:` является машинным идентификатором тематической линии; `:description:` и заголовок не используются вместо него.
@@ -221,7 +227,7 @@
 * `CHAIN-003 [IMPLEMENTED]` — первая ссылка продолжения, созданная `zt-continue`, называется `Следующее memo`.
 * `CHAIN-004 [IMPLEMENTED]` — дополнительные ссылки продолжения, созданные `zt-continue`, называются `Ветка: <description>`.
 * `CHAIN-005 [IMPLEMENTED]` — каждая Memo, созданная через `zt-continue`, имеет одну обратную ссылку `Предыдущее memo`.
-* `CHAIN-006 [ROADMAP]` — `zt-check` проверяет структуру, цели и взаимность Memo Chain.
+* `CHAIN-006 [IMPLEMENTED]` — `zt-check` проверяет структуру, цели, взаимность и циклы Memo Chain вне opaque AsciiDoc blocks.
 
 == Reduce
 
@@ -335,7 +341,7 @@
 == Проверки
 
 * `CHECK-001 [IMPLEMENTED]` — `zt-check` выполняет проверку без автоматического изменения документов.
-* `CHECK-002 [IMPLEMENTED]` — `zt-check` проверяет структуру репозитория, заголовки, обязательные метаданные, известные типы, `:docfilename:`, `:doclink:`, ссылки, `all-todays`, `.last-diary` и существование элементов diary-цепочки.
+* `CHECK-002 [IMPLEMENTED]` — `zt-check` проверяет структуру хранилища, title, обязательные metadata, domain types, `:docfilename:`, `:doclink:`, links, `all-todays`, `.last-diary`, Diary и Memo chains; инициализированный Vault без Diary и pointer допустим.
 * `CHECK-003 [IMPLEMENTED]` — `zt-check` игнорирует псевдометаданные и ссылки внутри блоков исходного кода.
 * `CHECK-004 [PROCESS]` — изменяющие структуру или данные операции завершаются запуском `zt-check`.
 * `CHECK-005 [ROADMAP]` — `zt-check` должен проверять deprecated-семантику, взаимность diary-цепочки и структуру постоянных индексов, если такие индексы появятся.

@@ -24,6 +24,10 @@ extract_memo_chain_link() {
   zk_extract_labeled_link "$file" "$label"
 }
 
+extract_memo_chain_links() {
+  zk_extract_labeled_links "$1" "$2"
+}
+
 zk_ensure_notes_dir || exit 1
 zt_ensure_today || exit 1
 zk_cd_notes || exit 1
@@ -34,7 +38,20 @@ selected="$(zt_select_file_by_type "memo" "continue memo> ")" || exit 0
 
 source_file="$(zt_selected_filename "$selected")"
 
-existing_next="$(extract_memo_chain_link "$source_file" "Следующее memo")"
+existing_next_links=("${(@f)$(extract_memo_chain_links "$source_file" "Следующее memo")}")
+existing_next_links=("${(@)existing_next_links:#}")
+if (( ${#existing_next_links[@]} > 1 )); then
+  print -ru2 -- "ERROR MEMO_MULTIPLE_NEXT: $source_file"
+  exit 1
+fi
+existing_next="${existing_next_links[1]-}"
+if [[ -n "$existing_next" ]]; then
+  existing_next_path="$(zk_note_path "$existing_next")"
+  if [[ ! -f "$existing_next_path" || "$(zk_attr_value "$existing_next_path" type)" != memo ]]; then
+    print -ru2 -- "ERROR MEMO_NEXT_INVALID: $source_file -> $existing_next"
+    exit 1
+  fi
+fi
 
 read -r "?Введите название продолжения memo: " key
 [[ -n "$key" ]] || exit 1

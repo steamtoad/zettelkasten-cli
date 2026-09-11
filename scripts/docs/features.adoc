@@ -218,6 +218,9 @@ feature list и прежние стабильные ID.
 * `CHECK-014` — ненулевой код завершения при наличии ошибок.
 * `CHECK-015` — проверка без автоматического изменения файлов.
 * `CHECK-016` — исключение placeholder-ссылок `UUID.adoc`, `previous.adoc` и `next.adoc` из проверки битых ссылок.
+* `CHAIN-CHECK-001` — Diary preflight до записи отклоняет invalid, non-Diary или non-tail `.last-diary` без mutation.
+* `CHAIN-CHECK-002` — `zt-check` проверяет взаимность, graph, tail pointer и date order Diary chain.
+* `CHAIN-CHECK-003` — Memo chain parser игнорирует opaque blocks, допускает branches и отклоняет duplicate main/cyclic links.
 
 == Система разработки и OpenSpec
 

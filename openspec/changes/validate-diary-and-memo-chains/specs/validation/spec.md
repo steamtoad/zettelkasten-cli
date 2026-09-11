@@ -3,7 +3,7 @@
 ### Requirement: CHECK-002 — zt-check проверяет структуру репозитория, заголовки, обязательные метаданные, известные типы,...
 
 **Baseline legacy status до дельты:** `IMPLEMENTED`.
-**Traceability:** `.scripts/docs/requirements.adoc` → section `Проверки`.
+**Traceability:** `scripts/docs/requirements.adoc` → section `Проверки`.
 
 **Статус изменения:** `PROPOSED`, не подтверждение реализации.
 

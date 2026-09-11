@@ -12,6 +12,7 @@ setopt null_glob
 script_dir="${0:A:h}"
 source "$script_dir/lib/paths.zsh"
 source "$script_dir/lib/asciidoc.zsh"
+source "$script_dir/lib/uuid.zsh"
 
 zk="$(zk_home)"
 notes_dir="$(zk_notes_dir)"
@@ -101,6 +102,28 @@ extract_diary_chain_link() {
   zk_extract_labeled_link "$file" "$label"
 }
 
+extract_diary_chain_links() {
+  zk_extract_labeled_links "$1" "$2"
+}
+
+diary_error() {
+  err "$1 $2"
+}
+
+memo_cycle_visit() {
+  local node="$1"
+  local child
+
+  [[ "${memo_visit[$node]-}" == done ]] && return 0
+  [[ "${memo_visit[$node]-}" == visiting ]] && return 2
+
+  memo_visit[$node]=visiting
+  for child in ${(f)"${memo_children[$node]-}"}; do
+    memo_cycle_visit "$child" || return $?
+  done
+  memo_visit[$node]=done
+}
+
 print -r -- "== zt-check"
 print -r -- "Repository: $zk"
 print -r -- ""
@@ -115,7 +138,7 @@ print -r -- "== Repository structure"
 [[ -d "$zk/all-todays" ]] && ok "all-todays" || err "all-todays not found"
 [[ -d "$notes_dir" ]] && ok "notes" || err "notes not found"
 [[ -d "$zk/.scripts" ]] && ok ".scripts" || err ".scripts not found"
-[[ -f "$zk/.last-diary" ]] && ok ".last-diary" || err ".last-diary not found"
+[[ -f "$zk/.last-diary" ]] && ok ".last-diary" || warn ".last-diary not found"
 
 typeset -a note_files
 note_files=("$notes_dir"/*.adoc)
@@ -236,44 +259,184 @@ done
 (( errors == workspace_links_errors_before )) && ok "Workspace links: $workspace_links_count"
 
 print -r -- ""
-print -r -- "== .last-diary"
-
-if [[ -f "$zk/.last-diary" ]]; then
-  last="$(< "$zk/.last-diary")"
-
-  if [[ -z "$last" ]]; then
-    err ".last-diary is empty"
-  elif [[ "$last" == */* || ! -f "$notes_dir/$last" ]]; then
-    err ".last-diary points to missing file"
-  else
-    ok ".last-diary -> $last"
-  fi
-fi
-
 print -r -- ""
 print -r -- "== Diary chain"
 
 diary_chain_errors_before=$errors
 diary_chain_count=0
+typeset -a diary_files
+typeset -A diary_prev diary_next diary_seen
+diary_files=()
 for file in "${note_files[@]}"; do
   base="${file:t}"
 
   [[ "$(attr_value "$file" type)" == "diary" ]] || continue
   (( diary_chain_count++ ))
+  diary_files+=("$base")
 
-  prev="$(extract_diary_chain_link "$file" "Предыдущая запись")"
-  next="$(extract_diary_chain_link "$file" "Следующая запись")"
+  prev_links=("${(@f)$(extract_diary_chain_links "$file" "Предыдущая запись")}")
+  next_links=("${(@f)$(extract_diary_chain_links "$file" "Следующая запись")}")
+  prev_links=("${(@)prev_links:#}")
+  next_links=("${(@)next_links:#}")
 
-  if [[ -n "$prev" ]]; then
-    is_placeholder_link "$prev" || target_exists_from_source "$file" "$prev" || broken_diary_chain "$base" "$prev"
+  if (( ${#prev_links[@]} > 1 )); then
+    diary_error "DIARY_MULTIPLE_PREVIOUS" "notes/$base has ${#prev_links[@]} previous links"
+  elif (( ${#prev_links[@]} == 1 )); then
+    prev="${prev_links[1]}"
+    if [[ "$prev" == */* || ! -f "$notes_dir/$prev" ]]; then
+      diary_error "DIARY_LINK_MISSING" "notes/$base previous -> $prev"
+    elif [[ "$(attr_value "$notes_dir/$prev" type)" != diary ]]; then
+      diary_error "DIARY_LINK_TYPE" "notes/$base previous -> $prev"
+    else
+      diary_prev[$base]="$prev"
+    fi
   fi
 
-  if [[ -n "$next" ]]; then
-    is_placeholder_link "$next" || target_exists_from_source "$file" "$next" || broken_diary_chain "$base" "$next"
+  if (( ${#next_links[@]} > 1 )); then
+    diary_error "DIARY_MULTIPLE_NEXT" "notes/$base has ${#next_links[@]} next links"
+  elif (( ${#next_links[@]} == 1 )); then
+    next="${next_links[1]}"
+    if [[ "$next" == */* || ! -f "$notes_dir/$next" ]]; then
+      diary_error "DIARY_LINK_MISSING" "notes/$base next -> $next"
+    elif [[ "$(attr_value "$notes_dir/$next" type)" != diary ]]; then
+      diary_error "DIARY_LINK_TYPE" "notes/$base next -> $next"
+    else
+      diary_next[$base]="$next"
+    fi
   fi
 done
 
+for base in "${diary_files[@]}"; do
+  prev="${diary_prev[$base]-}"
+  next="${diary_next[$base]-}"
+  if [[ -n "$prev" && "${diary_next[$prev]-}" != "$base" ]]; then
+    diary_error "DIARY_LINK_RECIPROCITY" "notes/$base previous -> $prev is not reciprocal"
+  fi
+  if [[ -n "$next" && "${diary_prev[$next]-}" != "$base" ]]; then
+    diary_error "DIARY_LINK_RECIPROCITY" "notes/$base next -> $next is not reciprocal"
+  fi
+  if [[ -n "$prev" ]]; then
+    prev_date="$(attr_value "$notes_dir/$prev" date)"
+    date_value="$(attr_value "$notes_dir/$base" date)"
+    [[ "$prev_date" > "$date_value" ]] && diary_error "DIARY_DATE_ORDER" "notes/$prev -> $base"
+  fi
+done
+
+typeset -a diary_heads diary_tails
+diary_heads=()
+diary_tails=()
+for base in "${diary_files[@]}"; do
+  [[ -z "${diary_prev[$base]-}" ]] && diary_heads+=("$base")
+  [[ -z "${diary_next[$base]-}" ]] && diary_tails+=("$base")
+done
+
+print -r -- ""
+print -r -- "== .last-diary"
+last=""
+[[ -f "$zk/.last-diary" ]] && last="$(< "$zk/.last-diary")"
+if (( diary_chain_count == 0 )); then
+  if [[ -n "$last" ]]; then
+    diary_error "DIARY_POINTER_ORPHAN" ".last-diary points to $last but no Diary exists"
+  else
+    ok ".last-diary absent for initialized empty Vault"
+  fi
+else
+  if [[ -z "$last" ]]; then
+    diary_error "DIARY_POINTER_MISSING" "existing Diary chain has no .last-diary"
+  elif [[ "$last" == */* || ! -f "$notes_dir/$last" ]] || ! zk_is_uuid_v1 "${last:r}"; then
+    diary_error "DIARY_POINTER_INVALID" ".last-diary -> $last"
+  elif [[ "$(attr_value "$notes_dir/$last" type)" != diary ]]; then
+    diary_error "DIARY_POINTER_TYPE" ".last-diary -> $last"
+  elif (( ${#diary_tails[@]} == 1 )) && [[ "$last" != "${diary_tails[1]}" ]]; then
+    diary_error "DIARY_POINTER_NOT_TAIL" ".last-diary -> $last"
+  else
+    ok ".last-diary -> $last"
+  fi
+fi
+
+if (( diary_chain_count > 0 )); then
+  if (( ${#diary_heads[@]} != 1 || ${#diary_tails[@]} != 1 )); then
+    diary_error "DIARY_CHAIN_GRAPH" "expected one head and one tail, got ${#diary_heads[@]} and ${#diary_tails[@]}"
+  elif [[ -n "${diary_heads[1]-}" ]]; then
+    current="${diary_heads[1]}"
+    while [[ -n "$current" ]]; do
+      if [[ -n "${diary_seen[$current]-}" ]]; then
+        diary_error "DIARY_CHAIN_CYCLE" "notes/$current"
+        break
+      fi
+      diary_seen[$current]=1
+      current="${diary_next[$current]-}"
+    done
+    if (( ${#diary_seen[@]} != diary_chain_count )); then
+      diary_error "DIARY_CHAIN_DISCONNECTED" "visited ${#diary_seen[@]} of $diary_chain_count Diary documents"
+    fi
+  fi
+fi
+
 (( errors == diary_chain_errors_before )) && ok "Diary chain: $diary_chain_count"
+
+print -r -- ""
+print -r -- "== Memo chain"
+
+memo_chain_errors_before=$errors
+memo_chain_count=0
+typeset -a memo_files
+typeset -A memo_prev memo_children memo_visit
+memo_files=()
+for file in "${note_files[@]}"; do
+  base="${file:t}"
+  [[ "$(attr_value "$file" type)" == memo ]] || continue
+  (( memo_chain_count++ ))
+  memo_files+=("$base")
+
+  prev_links=("${(@f)$(zk_extract_labeled_links "$file" "Предыдущее memo")}")
+  next_links=("${(@f)$(zk_extract_labeled_links "$file" "Следующее memo")}")
+  branch_links=("${(@f)$(zk_extract_labeled_links "$file" "Ветка:")}")
+  prev_links=("${(@)prev_links:#}")
+  next_links=("${(@)next_links:#}")
+  branch_links=("${(@)branch_links:#}")
+
+  if (( ${#prev_links[@]} > 1 )); then
+    err "MEMO_MULTIPLE_PREVIOUS notes/$base"
+  elif (( ${#prev_links[@]} == 1 )); then
+    prev="${prev_links[1]}"
+    if [[ "$prev" == */* || ! -f "$notes_dir/$prev" || "$(attr_value "$notes_dir/$prev" type)" != memo ]]; then
+      err "MEMO_LINK_TYPE notes/$base previous -> $prev"
+    else
+      memo_prev[$base]="$prev"
+    fi
+  fi
+
+  if (( ${#next_links[@]} > 1 )); then
+    err "MEMO_MULTIPLE_NEXT notes/$base"
+  fi
+  outgoing=("${next_links[@]}" "${branch_links[@]}")
+  for target in "${outgoing[@]}"; do
+    [[ -n "$target" ]] || continue
+    if [[ "$target" == */* || ! -f "$notes_dir/$target" || "$(attr_value "$notes_dir/$target" type)" != memo ]]; then
+      err "MEMO_LINK_TYPE notes/$base next -> $target"
+      continue
+    fi
+    memo_children[$base]+="${target}"$'\n'
+  done
+done
+
+for base in "${memo_files[@]}"; do
+  for target in ${(f)"${memo_children[$base]-}"}; do
+    [[ "${memo_prev[$target]-}" == "$base" ]] || err "MEMO_LINK_RECIPROCITY notes/$base -> $target"
+  done
+done
+
+for base in "${memo_files[@]}"; do
+  memo_cycle_visit "$base"
+  case $? in
+    0) ;;
+    2) err "MEMO_CHAIN_CYCLE notes/$base"; break ;;
+    *) err "MEMO_CHAIN_INVALID notes/$base"; break ;;
+  esac
+done
+
+(( errors == memo_chain_errors_before )) && ok "Memo chain: $memo_chain_count"
 
 print -r -- ""
 print -r -- "== Summary"

@@ -171,6 +171,38 @@ zk_extract_labeled_link() {
   ' "$file"
 }
 
+zk_extract_labeled_links() {
+  local file="$1"
+  local label="$2"
+
+  awk -v label="$label" '
+    function trim(line) { sub(/^[[:space:]]+/, "", line); sub(/[[:space:]]+$/, "", line); return line }
+    function delimiter(line, value) {
+      value = trim(line)
+      if (value ~ /^`{3,}/) return substr(value, 1, 3)
+      if (value ~ /^-{4,}$/ || value ~ /^\.{4,}$/ || value ~ /^_{4,}$/ ||
+          value ~ /^\*{4,}$/ || value ~ /^={4,}$/ || value ~ /^\+{4,}$/ || value ~ /^\/{4,}$/) return value
+      return ""
+    }
+    {
+      current = delimiter($0)
+      if (in_block) {
+        if ((block == "```" && current == "```") || (block != "```" && trim($0) == block)) { in_block = 0; block = "" }
+        next
+      }
+      if (current != "") { in_block = 1; block = current; next }
+      if (index($0, label)) {
+        line = $0
+        while (match(line, /link:[^[]+\.adoc\[/)) {
+          print substr(line, RSTART + 5, RLENGTH - 6)
+          line = substr(line, RSTART + RLENGTH)
+        }
+      }
+    }
+    END { if (in_block) exit 2 }
+  ' "$file"
+}
+
 zk_validate_extra_attrs() {
   emulate -L zsh
 

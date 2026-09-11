@@ -78,16 +78,14 @@ Zettelkasten-CLI MUST сохранять следующий инвариант: 
 
 ### Requirement: CHAIN-006 — zt-check проверяет структуру, цели и взаимность Memo Chain
 
-**Legacy status:** `ROADMAP`.
+**Legacy status:** `IMPLEMENTED`.
 **Traceability:** `scripts/docs/requirements.adoc` → section `Memo Chains`.
 
-Целевая архитектура или поведение MUST сохранять следующий target contract: `zt-check` проверяет структуру, цели и взаимность Memo Chain.
-
-До подтверждённой реализации проект MUST NOT описывать этот contract как `IMPLEMENTED`.
+Текущая реализация Zettelkasten-CLI MUST сохранять следующее подтверждённое поведение: `zt-check` проверяет структуру, цели, взаимность и циклы Memo Chain вне opaque AsciiDoc blocks.
 
 #### Scenario: CHAIN-006 contract is verified
 
-- **GIVEN** соответствующая roadmap capability планируется, проектируется или реализуется
-- **WHEN** оценивается целевое поведение и его implementation status
-- **THEN** target contract SHALL быть сохранён
-- **AND** capability SHALL NOT считаться `IMPLEMENTED` без подтверждения кодом, проверками и traceability
+- **GIVEN** текущий checkout содержит реализацию этой capability
+- **WHEN** соответствующий workflow выполняется или проверяется
+- **THEN** наблюдаемое поведение SHALL соответствовать requirement
+- **AND** regression SHALL считаться validation failure

@@ -7,12 +7,14 @@
 #------------------------------------------------------------------------------
 
 emulate -L zsh
+setopt null_glob
 
 script_dir="${0:A:h}"
 scripts_dir="${script_dir:h}"
 
 source "$scripts_dir/lib/paths.zsh"
 source "$scripts_dir/lib/asciidoc.zsh"
+source "$scripts_dir/lib/uuid.zsh"
 source "$scripts_dir/objects/diary-create.zsh"
 source "$script_dir/lib/today.zsh"
 
@@ -24,14 +26,37 @@ last_diary_file="$(zt_diary_state_file)"
 last=""
 [[ -f "$last_diary_file" ]] && last="$(< "$last_diary_file")"
 
-if [[ -n "$last" && "$last" == */* ]]; then
-  print -ru2 -- "ERROR invalid .last-diary value: $last"
-  exit 1
+typeset -a existing_diaries
+existing_diaries=()
+for candidate in "$(zk_notes_dir)"/*.adoc; do
+  [[ "$(zk_attr_value "$candidate" type 2>/dev/null)" == diary ]] && existing_diaries+=("$candidate")
+done
+
+if [[ -n "$last" ]]; then
+  if [[ "$last" == */* || "${last:t:r}" == "$last" ]] || ! zk_is_uuid_v1 "${last:r}"; then
+    print -ru2 -- "ERROR DIARY_POINTER_INVALID: invalid .last-diary value: $last"
+    exit 1
+  fi
 fi
 
 last_path=""
 if [[ -n "$last" ]]; then
   last_path="$(zk_note_path "$last")"
+  if [[ ! -f "$last_path" ]]; then
+    print -ru2 -- "ERROR DIARY_POINTER_MISSING: .last-diary points to missing file: $last"
+    exit 1
+  fi
+  if [[ "$(zk_attr_value "$last_path" type)" != diary ]]; then
+    print -ru2 -- "ERROR DIARY_POINTER_TYPE: .last-diary does not point to a Diary: $last"
+    exit 1
+  fi
+  if [[ -n "$(zk_extract_labeled_links "$last_path" "Следующая запись")" ]]; then
+    print -ru2 -- "ERROR DIARY_POINTER_NOT_TAIL: .last-diary already has next: $last"
+    exit 1
+  fi
+elif (( ${#existing_diaries[@]} > 0 )); then
+  print -ru2 -- "ERROR DIARY_POINTER_MISSING: existing Diary chain has no .last-diary"
+  exit 1
 fi
 
 title="Diary - $(date +"%d-%m-%Y")"
